@@ -89,7 +89,7 @@ SET TMP=C:\temp
 SET TEMP=C:\temp
 SET DJGPP=C:\djgpp\djgpp.env</screen>
 
-  <para>A batch file, <command>djgpp.bat</command> is included in
+  <para>A batch file, <command>djgpp.bat</command>, is included in
    <filename>djgpp.zip</filename> that sets these environment
    variables.  It is necessary to edit this file (to change the
    directory locations if necessary) and run it in every DOS box you
