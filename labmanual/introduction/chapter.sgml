@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/08/12 21:34:53 pete Exp $
 -->
 
 <chapter id="introduction">
@@ -152,7 +152,7 @@
    </itemizedlist>
 
    <para>The lab computers have Intel Pentium III processors running
-    at 866Mhz.  If you own or have access to other PC compatible
+    at 1 Ghz.  If you own or have access to other PC compatible
     computers, you will probably be able to do a lot of the lab work
     outside of the lab.  However, your program must eventually be
     demonstrated in the lab, and there are often subtle differences
