@@ -1,6 +1,6 @@
 #
 # $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.42 2001/07/28 03:00:03 murray Exp $
-# $Id: doc.docbook.mk,v 1.6 2001/08/02 01:46:40 pete Exp $
+# $Id: doc.docbook.mk,v 1.7 2001/08/07 07:02:01 pete Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -99,9 +99,11 @@ ECE291CATALOG=	${DOC_PREFIX}/share/sgml/catalog
 .if defined(OS) && ${OS} == "Windows_NT"
 DOCBOOKCATALOG= ${PREFIX}/lib/sgml/dtd/docbook41/docbook.cat
 DSSSLCATALOG=   ${PREFIX}/lib/sgml/stylesheets/docbook-dsssl-1.70/catalog
+DSSSLBIN=	${PREFIX}/lib/sgml/stylesheets/docbook-dsssl-1.70/bin
 .else
 DOCBOOKCATALOG=	${PREFIX}/share/sgml/docbook/catalog
 DSSSLCATALOG=	${PREFIX}/share/sgml/docbook/dsssl/modular/catalog
+DSSSLBIN=	${PREFIX}/share/sgml/docbook/dsssl/modular/bin
 .endif
 
 IMAGES_LIB?=
@@ -312,7 +314,13 @@ ${DOC}.tex-ps: ${SRCS} ${IMAGES_EPS} ${INDEX_SGML} ${PRINT_INDEX}
 
 ${DOC}.tex-pdf: ${SRCS} ${IMAGES_PDF} ${INDEX_SGML} ${PRINT_INDEX}
 	cp ${DOC_PREFIX}/share/web2c/pdftex.def ${.TARGET}
+.if defined(OS) && ${OS} == "Windows_NT"
+	${JADE} -Vtex-backend ${PRINTOPTS} -ioutput.print.pdf ${JADEOPTS} -d ${DSLPRINT} -t tex -o ${.TARGET}.2 ${MASTERDOC}
+	cat ${.TARGET}.2 >> ${.TARGET}
+	rm -f ${.TARGET}.2
+.else
 	${JADE} -Vtex-backend ${PRINTOPTS} -ioutput.print.pdf ${JADEOPTS} -d ${DSLPRINT} -t tex -o /dev/stdout ${MASTERDOC} >> ${.TARGET}
+.endif
 
 ${DOC}.dvi: ${DOC}.tex-ps
 	@echo "==> TeX pass 1/3"
@@ -363,7 +371,7 @@ lint validate:
 
 .if defined(GEN_INDEX)
 ${INDEX_SGML}:
-	perl ${PREFIX}/share/sgml/docbook/dsssl/modular/bin/collateindex.pl -N -o ${.TARGET}
+	perl ${DSSSLBIN}/collateindex.pl -N -o ${.TARGET}
 .else
 ${INDEX_SGML}:
 	touch ${.TARGET}
@@ -371,11 +379,11 @@ ${INDEX_SGML}:
 
 ${HTML_INDEX}:
 	${JADE} -V html-index -ioutput.html -ioutput.html.images -V nochunks ${JADEOPTS} -d ${DSLHTML} -t sgml ${MASTERDOC} > /dev/null
-	perl ${PREFIX}/share/sgml/docbook/dsssl/modular/bin/collateindex.pl -g -o ${INDEX_SGML} ${.TARGET}
+	perl ${DSSSLBIN}/collateindex.pl -g -o ${INDEX_SGML} ${.TARGET}
 
 ${HTML_SPLIT_INDEX}:
 	${JADE} -V html-index -ioutput.html -ioutput.html.images ${JADEOPTS} -d ${DSLHTML} -t sgml ${MASTERDOC} > /dev/null
-	perl ${PREFIX}/share/sgml/docbook/dsssl/modular/bin/collateindex.pl -g -o ${INDEX_SGML} ${.TARGET}
+	perl ${DSSSLBIN}/collateindex.pl -g -o ${INDEX_SGML} ${.TARGET}
 
 ${PRINT_INDEX}: ${HTML_INDEX}
 	mv ${HTML_INDEX} ${.TARGET}
