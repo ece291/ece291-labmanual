@@ -795,12 +795,13 @@ _main
     addresses are passed to it.  This will be clearer when we look at
     the code.</para>
 
-   <para>Under Windows 2000, we need to load a special graphics driver
-    called <command>EX291</command> before running any program that
-    uses PModeLib graphics.  Just enter <userinput>EX291</userinput>
-    at the command prompt before running the program to load the
-    driver.  Currently, PModeLib graphics <emphasis>require</emphasis>
-    Windows 2000, they cannot work on Windows 98 or Windows ME.</para>
+   <para>Under Windows 2000/XP, we need to load a special graphics
+    driver called <command>EX291</command> before running any program
+    that uses PModeLib graphics.  Just enter
+    <userinput>EX291</userinput> at the command prompt before running
+    the program to load the driver.  Currently, PModeLib graphics
+    <emphasis>require</emphasis> Windows 2000 or Windows XP, they
+    cannot work on Windows 98 or Windows ME.</para>
   </sect2>
 
   <sect2 id="pmodelib-intro-graphics-screen-image">
@@ -810,7 +811,7 @@ _main
     a 640x480 image named <filename>image.jpg</filename> and displays
     it on the 640x480 display.  Since this program uses PModeLib
     graphics, we'll need to load the <command>EX291</command> driver
-    before running it on Windows 2000.</para>
+    before running it on Windows 2000/XP.</para>
 
    <para>This program combines all of the concepts earlier in this
     chapter, except we're using a specialized image loading function
