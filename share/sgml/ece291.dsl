@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.15 2001/08/13 06:15:39 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.16 2001/08/13 06:45:29 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -239,6 +239,22 @@
 	      (process-node-list subtitles))
             ($section-info$ info))))
 
+	<!-- Center all mediaobjects -->
+	(element mediaobject
+	  (make paragraph
+	    quadding: 'center
+	    ($mediaobject$)))
+	(define ($graphic$ fileref 
+		   #!optional (display #f) (format #f) (scale #f) (align #f))
+	  (let ((graphic-format (if format format ""))
+		(graphic-scale  (if scale (/  (string->number scale) 100) 1)))
+	    (make external-graphic
+	      entity-system-id: (graphic-file fileref)
+	      notation-system-id: graphic-format
+	      scale: graphic-scale
+	      display?: display
+	      display-alignment: 'center)))
+
 	<!-- Support for PModeLibRef -->
 	(element pmodelibref
 	  (if (node-list-empty? (children (current-node)))
@@ -366,7 +382,10 @@
       ]]>
 
       <!-- Both sets of stylesheets .................................... -->
-      
+
+      (define %titlepage-in-info-order%
+	#t)
+
       (define %section-autolabel%
         #t)
 
