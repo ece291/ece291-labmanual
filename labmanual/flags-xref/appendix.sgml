@@ -45,7 +45,7 @@
 
     <row>
      <entry>R</entry>
-     <entry>Instruction restors prior value of flag.</entry>
+     <entry>Instruction restores prior value of flag.</entry>
     </row>
 
     <row>
