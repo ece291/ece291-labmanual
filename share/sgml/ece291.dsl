@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.11 2001/08/03 06:00:33 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.12 2001/08/03 06:17:18 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -95,7 +95,11 @@
 	    (make element gi: "A"
 	          attributes: (list (list "HREF" href)
 				    (list "TARGET" "_top"))
-		  (process-children))))
+		  (if (node-list-empty? (children (current-node)))
+		      (literal (string-append "_"
+					      (attribute-string
+						(normalize "function"))))
+		      (process-children)))))
 
       ]]>
 
