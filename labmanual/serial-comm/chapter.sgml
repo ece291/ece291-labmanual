@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/07/03 05:46:40 pete Exp $
 -->
 
 <chapter id="serial-comm">
@@ -94,7 +94,7 @@
 
    <mediaobject>
     <imageobject>
-     <imagedata fileref="serial-comm/baudfreq">
+     <imagedata fileref="serial-comm/baudfreq" format=eps>
     </imageobject>
    </mediaobject>
   </figure>
@@ -198,12 +198,11 @@
    has female connectors at each end.</para>
 
   <figure id="serial-comm-fig-nullmodem">
-   <title>Typical Null-Modem Cables: (a) without handshaking; (b)
-    Dummy handshaking; (c) Full handshaking</title>
+   <title>Typical Null-Modem Cables</title>
 
    <mediaobject>
     <imageobject>
-     <imagedata fileref="serial-comm/nullmodem">
+     <imagedata fileref="serial-comm/nullmodem" format=eps>
     </imageobject>
    </mediaobject>
   </figure>
@@ -451,7 +450,7 @@
 
    <mediaobject>
     <imageobject>
-     <imagedata fileref="serial-comm/adapter">
+     <imagedata fileref="serial-comm/adapter" format=eps>
     </imageobject>
    </mediaobject>
   </figure>
@@ -693,7 +692,7 @@
   <informalfigure>
    <mediaobject>
     <imageobject>
-     <imagedata fileref="serial-comm/plug9pins">
+     <imagedata fileref="serial-comm/plug9pins" format=eps>
     </imageobject>
    </mediaobject>
   </informalfigure>
@@ -705,7 +704,7 @@
   <informalfigure>
    <mediaobject>
     <imageobject>
-     <imagedata fileref="serial-comm/plug9pins-null">
+     <imagedata fileref="serial-comm/plug9pins-null" format=eps>
     </imageobject>
    </mediaobject>
   </informalfigure>

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.5 2001/07/03 02:31:05 pete Exp $
+# $Id: Makefile,v 1.6 2001/07/03 05:46:40 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -50,6 +50,11 @@ IMAGES+= data-structures/hfmod.tex
 IMAGES+= data-structures/hfxor.tex
 IMAGES+= io-devices/speaker.dia
 IMAGES+= serial-comm/typconn.dia
+IMAGES+= serial-comm/baudfreq.dia
+IMAGES+= serial-comm/nullmodem.dia
+IMAGES+= serial-comm/adapter.dia
+IMAGES+= serial-comm/plug9pins.dia
+IMAGES+= serial-comm/plug9pins-null.dia
 
 SYMLINKS= ${DESTDIR} index.html
 
