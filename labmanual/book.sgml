@@ -160,6 +160,31 @@
  <part>
   <title>Getting Started</title>
 
+  <partintro>
+   <para>This part of the lab manual introduces students to ECE 291
+    and covers some of the tools and commands used for working on
+    course assignments.  These chapters:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>Introduce ECE 291 and course grading procedures for MPs
+      (Machine Problems).</para>
+    </listitem>
+
+    <listitem>
+     <para>Describe the operation of a variety of useful commands
+      available from the DOS prompt, including the assembler and
+      linker.</para>
+    </listitem>
+
+    <listitem>
+     <para>Give a short overview and summary of features of the
+      various text editors available for editing assembly source files
+      on the ECE 291 lab machines.</para>
+    </listitem>
+   </itemizedlist>
+  </partintro>
+
   <![ %chap.introduction;    [ &chap.introduction;    ]]>
   <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
   <![ %chap.text-editors;    [ &chap.text-editors;    ]]>
@@ -167,6 +192,44 @@
 
  <part>
   <title>Assembly Programming</title>
+
+  <partintro>
+   <para>This part of the lab manual covers the essentials of assembly
+    language programming in the 16-bit DOS environment using the NASM
+    assembler.  These chapters:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>Introduce some important aspects of x86 assembly
+      language.</para>
+    </listitem>
+
+    <listitem>
+     <para>Describe in detail the syntax of the NASM assembler.</para>
+    </listitem>
+
+    <listitem>
+     <para>Give a short introduction to debugging and specifically,
+      the Turbo Debugger.</para>
+    </listitem>
+
+    <listitem>
+     <para>Describe the basic structure and usefulness of various data
+      structures.</para>
+    </listitem>
+
+    <listitem>
+     <para>Demonstrate the C calling convention and its usefulness
+      when mixing assembly and C languages in writing a
+      program.</para>
+    </listitem>
+
+    <listitem>
+     <para>Supply a reference for the LIB291 library of
+      subroutines.</para>
+    </listitem>
+   </itemizedlist>
+  </partintro>
 
   <![ %chap.assembly;        [ &chap.assembly;        ]]>
   <![ %chap.nasm;            [ &chap.nasm;            ]]>
@@ -179,6 +242,11 @@
  <part>
   <title>Interfacing With the World</title>
 
+  <partintro>
+   <para>This part of the lab manual shows how assembly language
+    programs interface with the world outside of the computer.</para>
+  </partintro>
+
   <![ %chap.io-devices;      [ &chap.io-devices;      ]]>
   <![ %chap.graphics;        [ &chap.graphics;        ]]>
   <![ %chap.serial-comm;     [ &chap.serial-comm;     ]]>
@@ -187,6 +255,12 @@
 
  <part>
   <title>Protected Mode</title>
+
+  <partintro>
+   <para>This part of the lab manual serves as a tutorial for
+    programming in assembly in the 32-bit protected mode available on
+    32-bit x86 processors.</para>
+  </partintro>
 
   <![ %chap.pmode-intro;     [ &chap.pmode-intro;     ]]>
   <![ %chap.djgpp;           [ &chap.djgpp;           ]]>
@@ -197,6 +271,11 @@
 
  <part>
   <title>Advanced Topics</title>
+
+  <partintro>
+   <para>This part of the lab manual goes into more detail on various
+    topics that may be of interest when coding final projects.</para>
+  </partintro>
 
   <![ %chap.sound;           [ &chap.sound;           ]]>
  </part>
