@@ -1,6 +1,6 @@
 #
-# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.40 2001/07/16 15:11:54 nik Exp $
-# $Id: doc.docbook.mk,v 1.2 2001/07/16 20:06:51 pete Exp $
+# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.41 2001/07/21 03:44:27 murray Exp $
+# $Id: doc.docbook.mk,v 1.3 2001/07/25 03:14:55 pete Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -210,10 +210,6 @@ CLEANFILES+= ${DOC}.${_curformat}.${_curcomp}
 .endfor
 .endif
 
-.if defined(NICE_HEADERS)
-JADEOPTS+=		-ioutput.print.niceheaders
-.endif
-
 #
 # Index generation
 #
@@ -282,8 +278,13 @@ ${DOC}.rtf: ${SRCS}
 # we need to create a different .tex file depending on our eventual output
 # format, which will then lead on to a different .dvi file as well.
 #
+.if defined(NICE_HEADERS)
+${DOC}.tex-ps: ${SRCS} ${IMAGES_EPS} ${INDEX_SGML} ${PRINT_INDEX}
+	${JADE} -Vtex-backend -ioutput.print -ioutput.print.niceheaders ${JADEOPTS} -d ${DSLPRINT} -t tex -o ${.TARGET} ${MASTERDOC}
+.else
 ${DOC}.tex-ps: ${SRCS} ${IMAGES_EPS} ${INDEX_SGML} ${PRINT_INDEX}
 	${JADE} -Vtex-backend -ioutput.print ${JADEOPTS} -d ${DSLPRINT} -t tex -o ${.TARGET} ${MASTERDOC}
+.endif
 
 ${DOC}.tex-pdf: ${SRCS} ${IMAGES_PDF} ${INDEX_SGML} ${PRINT_INDEX}
 	cp ${DOC_PREFIX}/share/web2c/pdftex.def ${.TARGET}
