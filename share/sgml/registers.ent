@@ -1,7 +1,7 @@
 <!--
      Names of x86 registers
 
-     $Id: registers.ent,v 1.1 2001/07/03 09:23:44 pete Exp $
+     $Id: registers.ent,v 1.2 2001/07/25 08:24:16 pete Exp $
 -->
 
 <!-- 8 bit -->
@@ -41,6 +41,47 @@
 <!ENTITY reg.edi                    "<literal role=reg32>EDI</literal>">
 <!ENTITY reg.ebp                    "<literal role=reg32>EBP</literal>">
 <!ENTITY reg.esp                    "<literal role=reg32>ESP</literal>">
+
+<!-- floating point -->
+<!ENTITY reg.st0                    "<literal role=fpreg>ST0</literal>">
+<!ENTITY reg.st1                    "<literal role=fpreg>ST1</literal>">
+<!ENTITY reg.st2                    "<literal role=fpreg>ST2</literal>">
+<!ENTITY reg.st3                    "<literal role=fpreg>ST3</literal>">
+<!ENTITY reg.st4                    "<literal role=fpreg>ST4</literal>">
+<!ENTITY reg.st5                    "<literal role=fpreg>ST5</literal>">
+<!ENTITY reg.st6                    "<literal role=fpreg>ST6</literal>">
+<!ENTITY reg.st7                    "<literal role=fpreg>ST7</literal>">
+
+<!-- MMX -->
+<!ENTITY reg.mm0                    "<literal role=mmxreg>MM0</literal>">
+<!ENTITY reg.mm1                    "<literal role=mmxreg>MM1</literal>">
+<!ENTITY reg.mm2                    "<literal role=mmxreg>MM2</literal>">
+<!ENTITY reg.mm3                    "<literal role=mmxreg>MM3</literal>">
+<!ENTITY reg.mm4                    "<literal role=mmxreg>MM4</literal>">
+<!ENTITY reg.mm5                    "<literal role=mmxreg>MM5</literal>">
+<!ENTITY reg.mm6                    "<literal role=mmxreg>MM6</literal>">
+<!ENTITY reg.mm7                    "<literal role=mmxreg>MM7</literal>">
+
+<!-- control -->
+<!ENTITY reg.cr0                    "<literal role=controlreg>CR0</literal>">
+<!ENTITY reg.cr2                    "<literal role=controlreg>CR2</literal>">
+<!ENTITY reg.cr3                    "<literal role=controlreg>CR3</literal>">
+<!ENTITY reg.cr4                    "<literal role=controlreg>CR4</literal>">
+
+<!-- debug -->
+<!ENTITY reg.dr0                    "<literal role=debugreg>DR0</literal>">
+<!ENTITY reg.dr1                    "<literal role=debugreg>DR1</literal>">
+<!ENTITY reg.dr2                    "<literal role=debugreg>DR2</literal>">
+<!ENTITY reg.dr3                    "<literal role=debugreg>DR3</literal>">
+<!ENTITY reg.dr6                    "<literal role=debugreg>DR6</literal>">
+<!ENTITY reg.dr7                    "<literal role=debugreg>DR7</literal>">
+
+<!-- test -->
+<!ENTITY reg.tr3                    "<literal role=testreg>TR3</literal>">
+<!ENTITY reg.tr4                    "<literal role=testreg>TR4</literal>">
+<!ENTITY reg.tr5                    "<literal role=testreg>TR5</literal>">
+<!ENTITY reg.tr6                    "<literal role=testreg>TR6</literal>">
+<!ENTITY reg.tr7                    "<literal role=testreg>TR7</literal>">
 
 <!-- flags -->
 <!ENTITY flag.zf                    "<literal role=flag>ZF</literal>">
