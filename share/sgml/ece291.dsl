@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.19 2001/08/14 05:31:09 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.20 2001/08/14 19:47:31 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -277,6 +277,15 @@
 				      (attribute-string
 					(normalize "function")))))
 	      (process-children)))
+
+	<!-- Don't unindent term in varlistentry -->
+	(element (varlistentry term)
+	  (make paragraph
+	    space-before: (if (first-sibling?)
+			    %block-sep%
+			    0pt)
+	    keep-with-next?: #t
+	    (process-children)))
 
       ]]>
 
