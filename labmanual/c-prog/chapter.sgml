@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.5 2001/08/15 01:55:36 pete Exp $
+     $Id: chapter.sgml,v 1.6 2001/08/15 02:11:30 pete Exp $
 -->
 
 <chapter id="c-prog">
@@ -374,7 +374,7 @@ _main
    example, &reg.sp; and &reg.bp; should be used instead of &reg.esp;
    and &reg.ebp; respectively in <xref
     linkend="c-prog-mixing-using-asm-stack-setup"> and the first and
-   second argmenuts in <xref
+   second arguments in <xref
     linkend="c-prog-mixing-using-asm-c-param-pass"> are at
    <literal>[&reg.bp;+4]</literal> and
    <literal>[&reg.bp;+6]</literal>.</para>

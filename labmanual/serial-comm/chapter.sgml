@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.4 2001/08/02 19:20:13 pete Exp $
+     $Id: chapter.sgml,v 1.5 2001/08/15 02:11:30 pete Exp $
 -->
 
 <chapter id="serial-comm">
@@ -70,7 +70,7 @@
 
   <para>A voice-grade telephone line has a useful frequency range of
    300-3000 Hz but modems typically use tones restricted to the range
-   300-2400 Hz, primarily to avoid a 2600 Hz signalling tone that
+   300-2400 Hz, primarily to avoid a 2600 Hz signaling tone that
    causes call disconnect.  Various modulation schemes are used to
    convert the representation of information from the RS-232C discrete
    voltage levels to amplitude, phase, or frequency shift keyed analog
@@ -317,7 +317,7 @@
   <para>RS-232C interfaces are frequently used in applications for
    which the standard was not originally intended, specifically
    DTE-DTE connections.  Computers, terminals, printers, plotters, and
-   other DTEs often have serial interfaces labelled <quote>RS-232C
+   other DTEs often have serial interfaces labeled <quote>RS-232C
    compatible.</quote>  Generally this means that the signals that are
    implemented do not violate the standard but that not all of the
    standard's signals are implemented, that the device will therefore
@@ -349,7 +349,7 @@
   </figure>
 
   <para>The printer of other DTE device may deviate from the standard
-   even further by usinga female D-shell connector wired in such a way
+   even further by using a female D-shell connector wired in such a way
    that a straight-through extension cable rather than a null-modem
    cable is used for the DTE-DTE connection.  Also, a 9-pin connector
    may be used instead of the standard 25-pin connector.  Furthermore,
@@ -372,7 +372,7 @@
   <itemizedlist>
    <listitem>
     <para>The 0v output of a TTL driver may not be recognized by an
-     RS-232C linereceiver as a valid input.  Line receivers generally
+     RS-232C line receiver as a valid input.  Line receivers generally
      use hysteresis to improve noise immunity, i.e., as long as the
      input level stays between the lower and upper thresholds the
      output will maintain the previous value;  these thresholds
@@ -425,7 +425,7 @@
    character) and allows for slight differences between the transmit
    and receive clocks.</para>
 
-  <para>Common buad rates for 8-bit (or 7-bit and parity) characters
+  <para>Common baud rates for 8-bit (or 7-bit and parity) characters
    with 1 start and 1 stop bit are 300, 1200, 2400, 4800, 9600, and
    19200 baud, corresponding to 30, 120, etc. characters per second
    (since the start and stop bits must be included in the bit count);
@@ -767,7 +767,7 @@
       <row>
        <entry>Desired Baud Rate</entry>
        <entry>Decimal Divisor</entry>
-       <entry>Hexidecimal Divisor</entry>
+       <entry>Hexadecimal Divisor</entry>
       </row>
      </thead>
 
@@ -860,7 +860,7 @@
     set if the line was not at the MARK level when the first stop bit
     was expected, and the Overrun Error Flag is set if the previous
     character in RBR had not been removed and was overwritten when the
-    new character was moved into RBR from RSR.  In addion, the Break
+    new character was moved into RBR from RSR.  In addition, the Break
     Detected Flag is set if the line was in the SPACE condition for
     more than a character frame time (<quote>long space</quote>).
     These five flags are found in the LINE STATUS Register; they are
@@ -1127,7 +1127,7 @@
     (20h) to port 20h before returning form the interrupt service
     routine.</para>
 
-   <para>Unfortunately, the behaviour of some versions of the UART is
+   <para>Unfortunately, the behavior of some versions of the UART is
     less than ideal.  The following anomalies were described in an
     obscure application note:</para>
 
@@ -1191,7 +1191,7 @@
   <title>Creating a Null-Modem</title>
 
   <para>Often during testing of software which utilizes the serial
-   port, it is useful to have yourmachine <quote>talk to
+   port, it is useful to have your machine <quote>talk to
     itself.</quote>  In other words, the receive and send lines on the
    serial port are in some fashion connected to one another.  This
    means that whatever your computer sends out will be immediately

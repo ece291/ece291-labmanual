@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.6 2001/08/14 18:27:47 pete Exp $
+     $Id: chapter.sgml,v 1.7 2001/08/15 02:11:30 pete Exp $
 -->
 
 <chapter id="introduction">
@@ -109,7 +109,7 @@
      echoing the instruction itself.</para>
 
     <para>Procedure comments, also known as <firstterm>header
-      comments</firstterm>, are required for each andevery procedure
+      comments</firstterm>, are required for each and every procedure
      in your program.  Foremost, they describe what the procedure is
      supposed to do.  They should also describe which registers and/or
      memory locations hold the procedure's input values, which
@@ -168,7 +168,7 @@
     <title>Modularity</title>
 
     <para>Modularity and style are closely related.  A modular program
-     will use subroutines inthe obvious places; see above.  A modular
+     will use subroutines in the obvious places; see above.  A modular
      program will also use loops instead of in-line code, and tables
      instead of a long series of compare and branch instructions.  All
      these practices will make your program much easier to write and

@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.5 2001/08/02 21:34:40 pete Exp $
+     $Id: chapter.sgml,v 1.6 2001/08/15 02:11:30 pete Exp $
 -->
 
 <chapter id="parallel-comm">
@@ -289,7 +289,7 @@
    to transfer data from the In buffers to register &reg.al;. A
    simplified logic diagram is shown in <xref
     linkend="parallel-comm-fig-logic">. Machine language control is
-   straightfoward but several peculiarities of the adapter logic must
+   straightforward but several peculiarities of the adapter logic must
    be noted:</para>
 
   <itemizedlist>
@@ -542,7 +542,7 @@
    ENABLE) input to the Data Out Latch is under program control. Bit 5
    of the Control Out Latch can be used for this purpose; in fact,
    since bit 5 of the control byte is held low by the present version
-   of BIOS this modification would not interefere with normal BIOS
+   of BIOS this modification would not interfere with normal BIOS
    use. An improved adapter design would allow bit 5 of the Control
    Out Latch to be read back via the Control In Buffer.</para>
  </sect1>

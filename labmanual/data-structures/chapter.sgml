@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.3 2001/07/26 06:08:36 pete Exp $
+     $Id: chapter.sgml,v 1.4 2001/08/15 02:11:30 pete Exp $
 -->
 
 <chapter id="data-structures">
@@ -357,7 +357,7 @@ Z       resb    r*s*b</programlisting>
    advance only to just before <varname>Front</varname>; then
    <varname>Front</varname>=<varname>Rear</varname> means empty,
    <varname>Rear</varname>=<varname>Front</varname>-1 (mod
-   <varname>QLen</varname>) means full.  The maximum useable queue
+   <varname>QLen</varname>) means full.  The maximum usable queue
    length is <varname>QLen</varname>-1 when this method is used.
    Alternately, the number of characters currently in the queue can be
    monitored - as in the example below.</para>
@@ -504,7 +504,7 @@ RQ      istruc QSpec
    requires a slow, awkward relocation of all records between the
    insertion point and the end of the array.</para>
 
-  <para>An approrpiate solution to this problem is the
+  <para>An appropriate solution to this problem is the
    <firstterm>linked list</firstterm>, which, at some cost in memory
    space, permits lists to be constructed and modified easily.  In a
    linked list, each record contains a link field which holds the
@@ -678,7 +678,7 @@ LINK    equ     b</programlisting>
    the LIFO property, it is really a stack.</para>
 
   <para>Suppose we wish to delete a record R from a linked list.
-   Assume that &reg.bx; contains theoffset of the record immediately
+   Assume that &reg.bx; contains the offset of the record immediately
    preceding R in the list.  To delete R, we unlink it from the list
    and link it onto the head of the FSL:</para>
 
