@@ -69,9 +69,9 @@
     <literal>endproc</literal>).  PModeLib itself uses the
     <literal>proc</literal> and <literal>endproc</literal> macros, so
     its source code (located in the <filename
-     class="directory">src</filename> subdirectory of the PModeLib
-    distribution) contains many examples of the use of these two
-    macros.</para>
+     class="directory">src</filename> directory in <filename
+     class="directory">V:\classes\ece291\pmodelib</filename>) contains
+    many examples of the use of these two macros.</para>
 
    <tip>
     <para>Look at the PModeLib source as a guide on writing code in

@@ -14,6 +14,7 @@
 <!ENTITY chap.start-pmode           SYSTEM "start-pmode/chapter.sgml">
 <!ENTITY chap.realprot-diff         SYSTEM "realprot-diff/chapter.sgml">
 <!ENTITY chap.pmodelib-intro        SYSTEM "pmodelib-intro/chapter.sgml">
+<!ENTITY chap.sound                 SYSTEM "sound/chapter.sgml">
 
 <!-- Appendices -->
 <!ENTITY chap.pmodelib-ref          SYSTEM "pmodelib-ref/appendix.sgml">

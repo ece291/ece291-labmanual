@@ -4922,6 +4922,11 @@ ENDSTRUC</programlisting>
  <sect1 id="pmodelib-ref-sound">
   <title>Sound Programming</title>
 
+  <para>See <xref linkend="sound"> for more details on sound
+   programming, including how to play long sounds.  The DMA functions
+   in <xref linkend="pmodelib-ref-dma"> will also be very useful when
+   doing sound programming.</para>
+
   <sect2 id="pmodelib-ref-sb16-init" xreflabel="_SB16_Init">
    <title><function>SB16_Init()</function></title>
 
@@ -5355,6 +5360,12 @@ ENDSTRUC</programlisting>
 
  <sect1 id="pmodelib-ref-dma">
   <title>DMA Functions</title>
+
+  <para>These functions are perhaps most useful for doing sound.  See
+   the PModeLib sound functions reference in <xref
+    linkend="pmodelib-ref-sound"> and the discussion on sound
+   programming (particularly in regards to playing long sounds using
+   DMA) in <xref linkend="sound">.</para>
 
   <sect2 id="pmodelib-ref-dma-allocate-mem" xreflabel="_DMA_Allocate_Mem">
    <title><function>DMA_Allocate_Mem()</function></title>

@@ -1,0 +1,207 @@
+<!--
+     ECE 291 Protected Mode Tutorial
+
+     XXX: Sound info really doesn't belong in this tutorial
+
+     $IdPath$
+-->
+
+<chapter id="sound">
+ <title>Sound</title>
+
+ <para>PModeLib contains a <emphasis>lot</emphasis> of sound-related
+  functions in the SB16 (see <xref linkend="pmodelib-ref-sound">) and
+  DMA (see <xref linkend="pmodelib-ref-dma">) modules.  These
+  functions provide all the pieces to make a program that plays sounds
+  in the foreground or in the background.  However, as one might
+  expect, it takes a bit of work to actually get sounds
+  playing.</para>
+
+ <para>Fortunately, there's some free sample code available in the
+   <filename>testsb16.asm</filename> file in the <filename
+    class="directory">examples</filename> directory in <filename
+    class="directory">V:\classes\ece291\pmodelib</filename> that plays
+   a short sound in the foreground.</para>
+
+ <sect1 id="sound-long">
+  <title>How to Play Long Sounds</title>
+
+  <subtitle>(or Why Records Have a Spiral Groove)</subtitle>
+
+  <para>Depending on the needs of the program, and the size of the DMA
+   buffer, chances are the program will want to play or record a sound
+   longer than the length of the DMA buffer.  This section will
+   explain the necessary steps to do so.</para>
+
+  <sect2 id="sound-long-review">
+   <title>Review</title>
+
+   <para>What information do we have when playing a sound?</para>
+
+   <note>
+    <para>Recording a sound is just like playing a sound, but reversed
+     in both action and timing.</para>
+   </note>
+
+   <itemizedlist>
+    <listitem>
+     <para>All the various settings of the DSP.</para>
+    </listitem>
+
+    <listitem>
+     <para>The location of the DMA buffer.</para>
+    </listitem>
+
+    <listitem>
+     <para>The exact location of the read point (via <link
+       linkend="pmodelib-ref-dma-todo"><function>DMA_Todo()</function></link>).</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>Looking at that, it should be enough. But <link
+     linkend="pmodelib-ref-dma-todo"><function>DMA_Todo()</function></link> 
+    is a (relatively) long operation, so using it is not really an
+    option. What else do we have?</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>An Interrupt (or at least a callback), generated as often
+      as we want.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>Insight: we can use the ISR (or callback) to set variables so
+    we know exactly where we are, without the overhead of <link
+     linkend="pmodelib-ref-dma-todo"><function>DMA_Todo()</function></link>!</para>
+  </sect2>
+
+  <sect2 id="sound-long-first">
+   <title>First Attempt</title>
+
+   <para>The most obvious way to use this would be to generate the IRQ
+    every time we finish loading the buffer's current contents. If we
+    were to use a 4k buffer to play a 11k sound, and program the DMA
+    and the DSP with a length of 4k, auto initialized, we should get
+    something that looks like <xref
+     linkend="sound-long-first-figure">.</para>
+
+   <figure id="sound-long-first-figure">
+    <title>Interrupt at DMA Loop Point</title>
+
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="sound/dma1" format="eps">
+     </imageobject>
+
+     <textobject>
+      <phrase>Interrupt at DMA Loop Point</phrase>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+   <para>Looks good, right?  Whenever an interrupt is generated at the
+    end of the buffer, we can just refill the buffer with more sound
+    data. The DMA will then feed the new data to the DSP.</para>
+
+   <para>But there's a problem with this.  The DMA and DSP just keep
+    going, and don't need even as much as an "I heard you,"<footnote>
+     <para>This isn't quite true. If the program does not acknowledge
+      the DSP, chances are it will stop accepting data.  However this
+      is likely to cause a much worse audio artifact than we are
+      addressing here.</para>
+    </footnote> so just because the program just ran the ISR and set a
+    flag, and just noticed the flag you set back in the main loop, it
+    doesn't mean the DMA hasn't read the first bit of the buffer all
+    over again.</para>
+
+   <para>If it <emphasis>does</emphasis> read old information, chances
+    are the sound output is going to get a pop, blip, or worst case a
+    noticeable repeat, followed by a sudden switch to the new sound.
+    It's somewhat like a record player, but instead of a long spiral,
+    there's a series of concentric circles. If the needle isn't pushed
+    into the next circle, the sound it plays will be incorrect. If
+    it's pushed too late, the listener will recognize something old.
+    If it's early, the listener will hear something new too soon. If
+    it's not exactly perfect, the listener will hear a pop.</para>
+
+   <para>So let's give our DMA a <quote>spiral groove.</quote></para>
+  </sect2>
+
+  <sect2 id="sound-long-second">
+   <title>Second Attempt</title>
+
+   <para>Let's divide our DMA buffer in half.  The DMA will still read
+    the entire thing before it loops back to the beginning, but
+    instead of generating an Interrupt at only the rightmost end,
+    let's generate one in the middle too.</para>
+
+   <para>Our theoretical invocations would now still be auto
+    initialized, but now we'll tell the DMA to use a length of 4k, and
+    the DSP to Interrupt every 2k.  For our same 11k sound, that
+    should get us something that looks like <xref
+     linkend="sound-long-second-figure">.</para>
+
+   <figure id="sound-long-second-figure">
+    <title>Interrupt at DMA Loop Point and at Halfway Point</title>
+
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="sound/dma" format="eps">
+     </imageobject>
+
+     <textobject>
+      <phrase>Interrupt at DMA Loop Point and at Halfway Point</phrase>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+   <para>Looks good, right? Whenever an interrupt is generated, we can
+    refill half of the buffer with more sound data. The DMA will
+    continue feeding data from the other half, and then feed the new
+    data to the DSP. When it reaches the new data, we'll get another
+    interrupt and can refill the other half.</para>
+
+   <para>What's the downside? Only that we have to keep track of which
+    half of the buffer we're in, and which is safe to fill. But sound
+    won't be interrupted, as we've just managed to move the groove of
+    our record over to align with the next section of sound; the
+    needle won't need to jump.</para>
+  </sect2>
+
+  <sect2 id="sound-long-anything-else">
+   <title>Anything Else?</title>
+
+   <para>Just be careful. Figure out how the end case works. When you
+    tell the DSP to step down to single cycle from auto init, it will
+    wait until the next time it generates an interrupt to do so. (This
+    is a good thing!)</para>
+
+   <para>And as always, keep your ISR or callback simple. Increment a
+    counter, set a flag, whatever. Don't mix four samples together for
+    an entire half-buffer's worth. Don't read from a file.<footnote>
+     <para>Of the several <quote>Do</quote>s and <quote>Don't</quote>s
+      here, this last one is the most important. In general DOS
+      interrupts (which is what <link
+       linkend="pmodelib-ref-readfile"><function>ReadFile()</function></link> 
+      uses, for example) are not reentrant, which just means if they
+      get interrupted in the middle (for example, by an interrupt) and
+      called again (for example, by the ISR), they will provide
+      inconsistent results, and generally cause your program to crash.
+      The first three suggestions are really all the same as each
+      other: keep your ISRs short.</para>
+    </footnote> All the standard rules.</para>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
