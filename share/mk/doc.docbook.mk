@@ -1,6 +1,6 @@
 #
-# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.33 2001/06/18 14:24:08 nik Exp $
-# $Id: doc.docbook.mk,v 1.1 2001/06/25 18:57:11 pete Exp $
+# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.40 2001/07/16 15:11:54 nik Exp $
+# $Id: doc.docbook.mk,v 1.2 2001/07/16 20:06:51 pete Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -49,6 +49,11 @@
 #
 #	CSS_SHEET	Full path to a CSS stylesheet suitable for DocBook.
 #			Default is ${DOC_PREFIX}/share/misc/docbook.css
+#
+#       NICE_HEADERS    If defined, customized chapter headers will be created
+#			that you may find more aesthetically pleasing.	Note
+#			that this option only effects print output formats for
+#			Enlish language books.
 #
 # Documents should use the += format to access these.
 #
@@ -135,19 +140,23 @@ _cf=${_curformat}
 .if ${_cf} == "html-split"
 _docs+= index.html HTML.manifest ln*.html
 CLEANFILES+= `[ -f HTML.manifest ] && xargs < HTML.manifest` HTML.manifest ln*.html
+CLEANFILES+= docbook.css
 
 .elif ${_cf} == "html-split.tar"
 _docs+= ${DOC}.html-split.tar
 CLEANFILES+= `[ -f HTML.manifest ] && xargs < HTML.manifest` HTML.manifest ln*.html
 CLEANFILES+= ${DOC}.html-split.tar
+CLEANFILES+= docbook.css
 
 .elif ${_cf} == "html"
 _docs+= ${DOC}.html
 CLEANFILES+= ${DOC}.html
+CLEANFILES+= docbook.css
 
 .elif ${_cf} == "html.tar"
 _docs+= ${DOC}.html.tar
 CLEANFILES+= ${DOC}.html ${DOC}.html.tar
+CLEANFILES+= docbook.css
 
 .elif ${_cf} == "txt"
 _docs+= ${DOC}.txt
@@ -201,17 +210,21 @@ CLEANFILES+= ${DOC}.${_curformat}.${_curcomp}
 .endfor
 .endif
 
+.if defined(NICE_HEADERS)
+JADEOPTS+=		-ioutput.print.niceheaders
+.endif
+
 #
 # Index generation
 #
-.if defined(GEN_INDEX)
 INDEX_SGML?=		index.sgml
+CLEANFILES+=		${INDEX_SGML}
 
+.if defined(GEN_INDEX)
 HTML_SPLIT_INDEX?=	html-split.index
 HTML_INDEX?=		html.index
 PRINT_INDEX?=		print.index
 
-CLEANFILES+= 		${INDEX_SGML}
 CLEANFILES+= 		${HTML_SPLIT_INDEX} ${HTML_INDEX} ${PRINT_INDEX}
 .endif
 
@@ -309,7 +322,7 @@ ${DOC}.tar: ${SRCS}
 #
 
 lint validate:
-	${NSGMLS} -s -c ${ECE291CATALOG} -c ${DSSSLCATALOG} -c ${DOCBOOKCATALOG} -c ${JADECATALOG} ${EXTRA_CATALOGS:S/^/-c /g} ${MASTERDOC}
+	${NSGMLS} ${JADEFLAGS} -s -c ${ECE291CATALOG} -c ${DSSSLCATALOG} -c ${DOCBOOKCATALOG} -c ${JADECATALOG} ${EXTRA_CATALOGS:S/^/-c /g} ${MASTERDOC}
 
 # ------------------------------------------------------------------------
 #
@@ -319,9 +332,17 @@ lint validate:
 #
 # Generate a different .index file based on the format name
 #
+# If we're not generating an index (the default) then we need to create
+# an empty index.sgml file so that we can reference index.sgml in book.sgml
+#
 
+.if defined(GEN_INDEX)
 ${INDEX_SGML}:
 	perl ${PREFIX}/share/sgml/docbook/dsssl/modular/bin/collateindex.pl -N -o ${.TARGET}
+.else
+${INDEX_SGML}:
+	touch ${.TARGET}
+.endif
 
 ${HTML_INDEX}:
 	${JADE} -V html-index -ioutput.html -ioutput.html.images -V nochunks ${JADEOPTS} -d ${DSLHTML} -t sgml ${MASTERDOC} > /dev/null
@@ -527,5 +548,5 @@ package-${_curformat}: install-${_curformat}
 		-p ${DESTDIR} ${PACKAGES}/${.CURDIR:T}.${LANGCODE}.${_curformat}.tgz
 .endfor
 
-docbook.css:
+docbook.css: ${CSS_SHEET}
 	cp ${CSS_SHEET} ${.CURDIR}/docbook.css
