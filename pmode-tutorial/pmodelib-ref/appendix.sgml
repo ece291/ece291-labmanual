@@ -5061,7 +5061,7 @@ ENDSTRUC</programlisting>
       <funcsynopsis>
        <funcprototype>
 	<funcdef>bool <function>SB16_Start</function></funcdef>
-	<paramdef>int <parameter>Size</parameter></paramdef>
+	<paramdef>int <parameter>Samples</parameter></paramdef>
 	<paramdef>bool <parameter>AutoInit</parameter></paramdef>
 	<paramdef>bool <parameter>Write</parameter></paramdef>
        </funcprototype>
@@ -5081,8 +5081,8 @@ ENDSTRUC</programlisting>
      <term>Inputs</term>
 
      <listitem>
-      <para><parameter>Size</parameter>, size, in bytes, to transfer
-       before generating interrupt.</para>
+      <para><parameter>Samples</parameter>, number of 8 or 16 bit
+       samples, to transfer before generating interrupt.</para>
 
       <para><parameter>AutoInit</parameter>, whether to keep going
        after each interrupt (0 to stop after each interrupt).</para>
@@ -5289,6 +5289,62 @@ ENDSTRUC</programlisting>
        Adding stereo will require changes to <link
 	linkend="pmodelib-ref-sb16-start"><function>SB16_Start()</function></link> 
        in addition to this function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-getchannel" xreflabel="_SB16_GetChannel">
+   <title><function>SB16_GetChannel()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_GetChannel</function></funcdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Retrieves the DMA channels the SB16 is using.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns &reg.ah; = 16 bit DMA channel, &reg.al; = 8 bit DMA
+       channel.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-sb16-init"><function>SB16_Init()</function></link> 
+       has been called successfully.</para>
+
+      <para>Use the 16 bit channel for 16 bit transfers and the 8 bit
+       channel for 8 bit transfers.</para>
      </listitem>
     </varlistentry>
    </variablelist>
