@@ -1,14 +1,12 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.6 2001/07/03 09:23:44 pete Exp $
+     $Id: book.sgml,v 1.7 2001/07/03 17:32:41 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY % registers PUBLIC "-//ECE291//ENTITIES DocBook Register Entities//EN"> %registers;
 <!ENTITY % chapters SYSTEM "chapters.ent"> %chapters;
-<!ENTITY preface SYSTEM "preface.sgml">
-<!ENTITY glossary SYSTEM "glossary.sgml">
 ]>
 
 <book>
@@ -93,7 +91,7 @@
   </abstract>
  </bookinfo>
 
- &preface;
+ &chap.preface;
  &chap.introduction;
  &chap.using-pc;
  &chap.c-prog;
@@ -141,7 +139,7 @@
   </sect1>
  </appendix>
 
- &glossary;
+ &chap.glossary;
 
  <index id="book-index"></index>
 </book>
