@@ -1,7 +1,7 @@
 <!--
      ECE 291 PModeLib Lecture
 
-     $Id: article.sgml,v 1.6 2001/08/03 07:16:01 pete Exp $
+     $Id: article.sgml,v 1.7 2001/08/03 07:22:45 pete Exp $
 -->
 
 <!DOCTYPE article PUBLIC "-//ECE291//DTD DocBook V4.1-Based Extension//EN" [
@@ -315,12 +315,14 @@ _main
    functions make it easy to install a standard interrupt handler in
    protected mode (eg, one for timer or keyboard).  The interrupt
    handler is just a normal subroutine (it should end with a
-   <literal>ret</literal> instruction), and it should return a value
-   in &reg.eax; to indicate whether the interrupt should be chained to
-   the old handler or not: a zero value indicates the interrupt should
-   just return (real-mode <literal>iret</literal>), a nonzero value
-   indicates the interrupt should chain to the old handler (real-mode
-   <literal>jmp</literal> or <literal>call</literal>).</para>
+   <instruction>ret</instruction> instruction), and it should return a
+   value in &reg.eax; to indicate whether the interrupt should be
+   chained to the old handler or not: a zero value indicates the
+   interrupt should just return (real-mode
+   <instruction>iret</instruction>), a nonzero value indicates the
+   interrupt should chain to the old handler (real-mode
+   <instruction>jmp</instruction> or
+   <instruction>call</instruction>).</para>
 
   <para>One thing that is important to remember is to
    <firstterm>lock</firstterm> the memory areas an interrupt handler
