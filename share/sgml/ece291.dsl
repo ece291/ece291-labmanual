@@ -90,15 +90,17 @@
 
 	<!-- Support for PModeLibRef -->
 	(element pmodelibref
-          (let* ((baseurl	"http://courses.ece.uiuc.edu/ece291/resources/pmodelib-doc/ref/")
+          (let* ((baseurl	"http://courses.ece.uiuc.edu/ece291/books/pmode-tutorial/pmodelib-ref")
 		 (section	(case-fold-down
 				  (attribute-string (normalize "section"))))
 		 (sectionurl	(if (equal? section "top")
-				    "reference.html"
-				    (string-append section ".html")))
+				    ".html"
+				    (string-append "-" section ".html")))
 		 (function	(attribute-string (normalize "function")))
 		 (functionurl	(if function
-                                    (string-append "#" function)
+                                    (string-append "#PMODELIB-REF-"
+				      (string-replace (case-fold-up function)
+					"_" "-"))
 				    ""))
 		 (href		(string-append baseurl
 					       sectionurl
@@ -107,9 +109,9 @@
 	          attributes: (list (list "HREF" href)
 				    (list "TARGET" "_top"))
 		  (if (node-list-empty? (children (current-node)))
-		      ($mono-seq$ (literal (string-append "_"
-					      (attribute-string
-						(normalize "function")))))
+		      (if function
+			  ($mono-seq$ (literal (string-append "_" function)))
+			  (literal href))
 		      (process-children)))))
 
 	<!-- Support for DPMIRef -->
