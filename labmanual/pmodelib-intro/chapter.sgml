@@ -18,7 +18,7 @@
    interrupts and callbacks, text mode, graphics mode, networking,
    sound, and DMA in addition to some other general purpose functions.
    <xref linkend="pmodelib-ref"> contains a full reference to all of
-   the functions inclued in PModeLib.</para>
+   the functions included in PModeLib.</para>
  </sect1>
 
  <sect1 id="pmodelib-intro-proc-invoke">
