@@ -595,7 +595,7 @@ _main
 
         ; Install the keyboard handler
         movzx   eax, byte [kbINT]
-        invoke  <pmodelibref section="int" function="Install_Int"></>, dword eax, dword TimerDriver
+        invoke  <pmodelibref section="int" function="Install_Int"></>, dword eax, dword KeyboardHandler
         test    eax, eax         ; Check for error (nonzero return value)
         jnz     near .exitgraphics
 
