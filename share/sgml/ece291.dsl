@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.13 2001/08/03 07:14:24 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.14 2001/08/07 22:46:29 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -240,7 +240,12 @@
             ($section-info$ info))))
 
 	<!-- Support for PModeLibRef -->
-	(element pmodelibref ($charseq$))
+	(element pmodelibref
+	  (if (node-list-empty? (children (current-node)))
+	      ($mono-seq$ (literal (string-append "_"
+				      (attribute-string
+					(normalize "function")))))
+	      (process-children)))
 
       ]]>
 
