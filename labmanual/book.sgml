@@ -62,7 +62,7 @@
 
   <subtitle>Computer Engineering II</subtitle>
 
-  <title>Spring 2002 Laboratory Notes</title>
+  <title>Summer 2002 Laboratory Notes</title>
 
   <authorgroup>
    <corpauthor>The ECE 291 Documentation Project</corpauthor>
@@ -139,6 +139,14 @@
     <authorinitials>PLBJ</authorinitials>
     <revremark>Added protected mode material.  Reordered
      chapters.</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>7</revnumber>
+    <date>2002</date>
+    <authorinitials>PLBJ</authorinitials>
+    <revremark>Updated instruction reference and NASM
+     chapter.</revremark>
    </revision>
   </revhistory>
 
