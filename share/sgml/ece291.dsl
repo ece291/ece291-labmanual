@@ -1,5 +1,5 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.34 2001/06/24 02:46:40 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.5 2001/07/25 07:39:37 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.6 2001/07/26 01:34:15 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -232,6 +232,12 @@
       ]]>
 
       <![ %output.print.pdf; [
+
+      (declare-characteristic heading-level
+        "UNREGISTERED::James Clark//Characteristic::heading-level" 2)
+
+      (define %generate-heading-level%
+        #t)
 
       ]]>
 
