@@ -1,7 +1,7 @@
 <!--
      ECE 291 PModeLib Lecture
 
-     $Id: article.sgml,v 1.1 2001/07/11 00:23:35 pete Exp $
+     $Id: article.sgml,v 1.2 2001/07/11 00:54:29 pete Exp $
 -->
 
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -455,7 +455,7 @@ _main
     </listitem>
 
     <listitem>
-     <para>JPG - JPEG group image format.  Lossy compression, no alpha
+     <para>JPG - JPEG image format.  Lossy compression, no alpha
       support, only 24-bit images.  It's excellent for photographic
       images, as very high compression rates can be achieved with
       little quality loss.  The <filename
