@@ -1,5 +1,5 @@
 # $IdPath$
-# $FreeBSD: doc/share/mk/doc.images.mk,v 1.16 2002/02/06 16:26:41 bmah Exp $
+# $FreeBSD: doc/share/mk/doc.images.mk,v 1.20 2002/11/02 21:45:53 blackend Exp $
 #
 # This include file <doc.images.mk> handles image processing.
 #
@@ -50,6 +50,7 @@
 _IMAGES_PNG= ${IMAGES:M*.png}
 _IMAGES_EPS= ${IMAGES:M*.eps}
 _IMAGES_SCR= ${IMAGES:M*.scr}
+_IMAGES_TXT= ${IMAGES:M*.txt}
 _IMAGES_PIC= ${IMAGES:M*.pic}
 _IMAGES_DIA= ${IMAGES:M*.dia}
 _IMAGES_TEX= ${IMAGES:M*.tex}
@@ -62,6 +63,7 @@ IMAGES_GEN_PDF= ${_IMAGES_EPS:S/.eps$/.pdf/}
 IMAGES_SCR_PNG= ${_IMAGES_SCR:S/.scr$/.png/}
 IMAGES_SCR_EPS= ${_IMAGES_SCR:S/.scr$/.eps/}
 IMAGES_SCR_PDF= ${_IMAGES_SCR:S/.scr$/.pdf/}
+IMAGES_SCR_TXT= ${_IMAGES_TXT:S/.scr$/.txt/}
 IMAGES_PIC_PNG= ${_IMAGES_PIC:S/.pic$/.png/}
 IMAGES_PIC_EPS= ${_IMAGES_PIC:S/.pic$/.eps/}
 IMAGES_PIC_PDF= ${_IMAGES_PIC:S/.pic$/.pdf/}
@@ -73,7 +75,7 @@ IMAGES_GEN_PDF+= ${IMAGES_PIC_PDF} ${IMAGES_SCR_PDF} ${IMAGES_DIA_PDF}
 CLEANFILES+= ${IMAGES_GEN_PNG} ${IMAGES_GEN_EPS} ${IMAGES_GEN_PDF}
 CLEANFILES+= ${_IMAGES_TEX:S/.tex$/-img.tex/} ${_IMAGES_TEX:S/.tex$/-img.dvi/}
 CLEANFILES+= ${_IMAGES_TEX:S/.tex$/.eps/}
-CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS}
+CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS} ${IMAGES_SCR_TXT}
 CLEANFILES+= ${IMAGES_DIA_PNG} ${IMAGES_DIA_EPS}
 CLEANFILES+= ${IMAGES_PIC_PNG} ${IMAGES_PIC_EPS} ${_IMAGES_PIC:S/.pic$/.ps/}
 
@@ -81,6 +83,7 @@ IMAGES_PNG= ${_IMAGES_PNG} ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
 IMAGES_PNG+= ${IMAGES_DIA_PNG} ${IMAGES_PIC_PNG}
 IMAGES_EPS= ${_IMAGES_EPS} ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS}
 IMAGES_EPS+= ${IMAGES_DIA_EPS} ${IMAGES_PIC_EPS}
+IMAGES_TXT= ${_IMAGES_TXT} ${IMAGES_SCR_TXT}
 
 .if ${.OBJDIR} != ${.CURDIR}
 LOCAL_IMAGES= ${IMAGES:S|^|${.OBJDIR}/|}
@@ -94,16 +97,22 @@ LOCAL_IMAGES_PNG= ${_IMAGES_PNG:S|^|${.OBJDIR}/|}
 LOCAL_IMAGES_EPS= ${_IMAGES_EPS:S|^|${.OBJDIR}/|}
 .endif
 
+.if !empty(_IMAGES_TXT)
+LOCAL_IMAGES_TXT= ${_IMAGES_TXT:S|^|${.OBJDIR}/|}
+.endif
+
 .else
 LOCAL_IMAGES= ${IMAGES}
 LOCAL_IMAGES_PNG= ${_IMAGES_PNG}
 LOCAL_IMAGES_EPS= ${_IMAGES_EPS}
+LOCAL_IMAGES_TXT= ${_IMAGES_TXT}
 .endif
 
 LOCAL_IMAGES_PNG+= ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG} ${IMAGES_DIA_PNG}
 LOCAL_IMAGES_PNG+= ${IMAGES_PIC_PNG}
 LOCAL_IMAGES_EPS+= ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS} ${IMAGES_DIA_EPS}
 LOCAL_IMAGES_EPS+= ${IMAGES_PIC_EPS}
+LOCAL_IMAGES_TXT+= ${IMAGES_SCR_TXT}
 
 # The default resolution eps2png (82) assumes a 640x480 monitor, and is too
 # low for the typical monitor in use today. The resolution of 100 looks
@@ -118,6 +127,9 @@ IMAGES_PDF=${IMAGES_GEN_PDF}
 
 SCR2PNG?=	${PREFIX}/bin/scr2png
 SCR2PNGOPTS?=	${SCR2PNGFLAGS}
+SCR2TXT?=	${PREFIX}/bin/scr2txt
+SCR2TXTOPTS?=	-l ${SCR2TXTFLAGS}
+SED?=		/usr/bin/sed
 EPS2PNG?=	${DOC_PREFIX}/share/tools/eps2png
 EPS2PNGOPTS?=	-res ${EPS2PNG_RES} ${EPS2PNGFLAGS}
 PNGTOPNM?=	${PREFIX}/bin/pngtopnm
@@ -128,19 +140,31 @@ EPSTOPDF?=	${PREFIX}/bin/epstopdf
 EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
 PS2EPS?=	${PREFIX}/bin/ps2epsi
 PIC2PS?=	${GROFF} -p -S -Wall -mtty-char -man
+REALPATH?=	/bin/realpath
 
-# Use suffix rules to convert .scr files to .png files
-.SUFFIXES:	.dia .scr .pic .png .eps
+# Use suffix rules to convert .scr files to other formats
+.SUFFIXES:	.dia .scr .pic .png .eps .txt
 
 .scr.png:
 	${SCR2PNG} ${SCR2PNGOPTS} < ${.IMPSRC} > ${.TARGET}
+
 .scr.eps:
 	${SCR2PNG} ${SCR2PNGOPTS} < ${.ALLSRC} | \
 		${PNGTOPNM} ${PNGTOPNMOPTS} | \
 		${PNMTOPS} ${PNMTOPSOPTS} > ${.TARGET}
 
+# The .txt files need to have any trailing spaces trimmed from
+# each line, which is why the output from ${SCR2TXT} is run
+# through ${SED}
+.scr.txt:
+	${SCR2TXT} ${SCR2TXTOPTS} < ${.IMPSRC} | ${SED} -E -e 's/ +$$//' > ${.TARGET}
+
+# Some versions of ghostscript (7.04) have problems with the use of
+# relative path when the arguments are passed by peps; realpath will
+# correct the problem.
 .pic.png: ${.TARGET:S/.png$/.eps/}
-	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} ${.ALLSRC}
+	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} \
+	`${REALPATH} ${.TARGET:S/.png$/.eps/}`
 .pic.eps:
 	${PIC2PS} ${.ALLSRC} > ${.TARGET:S/.eps$/.ps/}
 	${PS2EPS} ${.OBJDIR}/${.TARGET:S/.eps$/.ps/} ${.OBJDIR}/${.TARGET}
@@ -157,7 +181,7 @@ PIC2PS?=	${GROFF} -p -S -Wall -mtty-char -man
 
 .for _curimage in ${IMAGES_GEN_PNG}
 ${_curimage}: ${_curimage:S/.png$/.eps/}
-	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} ${.ALLSRC}
+	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} `${REALPATH} ${.ALLSRC}`
 .endfor
 
 .for _curimage in ${IMAGES_GEN_PNG_TEX}
