@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.9 2001/08/03 01:19:48 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.10 2001/08/03 03:54:10 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -428,6 +428,10 @@
           (list (normalize "sect4")             "  ")
           (list (normalize "sect5")             "  ")
           ))
+
+      <!-- Tell the stylesheet about our local customizations -->
+      (element register ($mono-seq$))
+      (element instruction ($mono-seq$))
 
     </style-specification-body>
   </style-specification>
