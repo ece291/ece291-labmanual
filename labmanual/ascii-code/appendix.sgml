@@ -27,7 +27,7 @@
  <sect1 id="ascii-code-table">
   <title>ASCII Codes in Hex, Octal, and Decimal</title>
 
-  <informaltable frame="none" colsep="0" rowsep="1" pgwide="1">
+  <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
    <tgroup cols="5">
     <colspec colname="chara">
     <colspec colname="charb">
@@ -71,7 +71,7 @@
       <entry>2</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>ETX</entry>
       <entry>^C</entry>
       <entry>03</entry>
@@ -103,7 +103,7 @@
       <entry>6</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>BEL</entry>
       <entry>^G</entry>
       <entry>07</entry>
@@ -135,7 +135,7 @@
       <entry>10</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>VT</entry>
       <entry>^K</entry>
       <entry>0B</entry>
@@ -167,7 +167,7 @@
       <entry>14</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>SI</entry>
       <entry>^O</entry>
       <entry>0F</entry>
@@ -199,7 +199,7 @@
       <entry>18</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>DC3</entry>
       <entry>^S</entry>
       <entry>13</entry>
@@ -231,7 +231,7 @@
       <entry>22</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>ETB</entry>
       <entry>^W</entry>
       <entry>17</entry>
@@ -263,7 +263,7 @@
       <entry>26</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry>ESC</entry>
       <entry>^[</entry>
       <entry>1B</entry>
@@ -292,7 +292,7 @@
       <entry>30</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">US down</entry>
       <entry>1F</entry>
       <entry>037</entry>
@@ -320,7 +320,7 @@
       <entry>34</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">#</entry>
       <entry>23</entry>
       <entry>043</entry>
@@ -348,7 +348,7 @@
       <entry>38</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">' apostr.</entry>
       <entry>27</entry>
       <entry>047</entry>
@@ -376,7 +376,7 @@
       <entry>42</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">+</entry>
       <entry>2B</entry>
       <entry>053</entry>
@@ -404,7 +404,7 @@
       <entry>46</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">/</entry>
       <entry>2F</entry>
       <entry>057</entry>
@@ -432,7 +432,7 @@
       <entry>50</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">3</entry>
       <entry>33</entry>
       <entry>063</entry>
@@ -460,7 +460,7 @@
       <entry>54</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">7</entry>
       <entry>37</entry>
       <entry>067</entry>
@@ -488,7 +488,7 @@
       <entry>58</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">;</entry>
       <entry>3B</entry>
       <entry>073</entry>
@@ -516,7 +516,7 @@
       <entry>62</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">?</entry>
       <entry>3F</entry>
       <entry>077</entry>
@@ -544,7 +544,7 @@
       <entry>66</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">C</entry>
       <entry>43</entry>
       <entry>103</entry>
@@ -572,7 +572,7 @@
       <entry>70</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">G</entry>
       <entry>47</entry>
       <entry>107</entry>
@@ -600,7 +600,7 @@
       <entry>74</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">K</entry>
       <entry>4B</entry>
       <entry>113</entry>
@@ -628,7 +628,7 @@
       <entry>78</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">O</entry>
       <entry>4F</entry>
       <entry>117</entry>
@@ -656,7 +656,7 @@
       <entry>82</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">S</entry>
       <entry>53</entry>
       <entry>123</entry>
@@ -684,7 +684,7 @@
       <entry>86</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">W</entry>
       <entry>57</entry>
       <entry>127</entry>
@@ -712,7 +712,7 @@
       <entry>90</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">[</entry>
       <entry>5B</entry>
       <entry>133</entry>
@@ -740,7 +740,7 @@
       <entry>94</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">_ underln</entry>
       <entry>5F</entry>
       <entry>137</entry>
@@ -768,7 +768,7 @@
       <entry>98</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">c</entry>
       <entry>63</entry>
       <entry>143</entry>
@@ -796,7 +796,7 @@
       <entry>102</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">g</entry>
       <entry>67</entry>
       <entry>147</entry>
@@ -824,7 +824,7 @@
       <entry>106</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">k</entry>
       <entry>6B</entry>
       <entry>153</entry>
@@ -852,7 +852,7 @@
       <entry>110</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">o</entry>
       <entry>6F</entry>
       <entry>157</entry>
@@ -880,7 +880,7 @@
       <entry>114</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">s</entry>
       <entry>73</entry>
       <entry>163</entry>
@@ -908,7 +908,7 @@
       <entry>118</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">w</entry>
       <entry>77</entry>
       <entry>167</entry>
@@ -936,7 +936,7 @@
       <entry>122</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">{</entry>
       <entry>7B</entry>
       <entry>173</entry>
@@ -964,7 +964,7 @@
       <entry>126</entry>
      </row>
 
-     <row>
+     <row rowsep="1">
       <entry spanname="char">DELete</entry>
       <entry>7F</entry>
       <entry>177</entry>
