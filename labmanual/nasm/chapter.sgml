@@ -1,0 +1,2146 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/08/01 17:32:30 pete Exp $
+-->
+
+<chapter id="nasm">
+ <chapterinfo>
+  <authorgroup>
+   <corpauthor>NASM Development Group</corpauthor>
+
+   <author>
+    <firstname>Julian</firstname>
+    <surname>Hall</surname>
+    <affiliation>
+     <address><email>jules@acris.co.uk</email></address>
+    </affiliation>
+    <contrib>Original co-author of NASM</contrib>
+   </author>
+
+   <author>
+    <firstname>Simon</firstname>
+    <surname>Tantham</surname>
+    <affiliation>
+     <address><email>anakin@pobox.com</email></address>
+    </affiliation>
+    <contrib>Original co-author of NASM</contrib>
+   </author>
+
+   <author>
+    <firstname>Stephen</firstname>
+    <surname>Silver</surname>
+    <affiliation>
+     <address><email>nasm@argentum.freeserve.co.uk</email></address>
+    </affiliation>
+    <contrib>"3DNow!" instructions and misc.</contrib>
+   </author>
+
+   <othercredit>
+    <firstname>Peter</firstname>
+    <othername>L. B.</othername>
+    <surname>Johnson</surname>
+    <affiliation>
+     <address><email>johnsonp@bilogic.org</email></address>
+    </affiliation>
+    <contrib>Converted to DocBook</contrib>
+   </othercredit>
+  </authorgroup>
+ </chapterinfo>
+
+ <title>NASM</title>
+
+ <sect1 id="nasm-syntax">
+  <title>Layout of a NASM Source Line</title>
+
+  <para>Like most assemblers, each NASM source line contains (unless
+   it is a macro, a preprocessor directive or an assembler directive:
+   see <xref linkend="nasm-directive">) some combination of the four
+   fields</para>
+
+  <programlisting>label:  instruction operands        ; comment</programlisting>
+
+  <para>As usual, most of these fields are optional; the presence or
+   absence of any combination of a label, an instruction and a comment
+   is allowed. Of course, the operand field is either required or
+   forbidden by the presence and nature of the instruction
+   field.</para>
+
+  <indexterm>
+   <primary>colon</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>orphan-labels</primary>
+  </indexterm>
+
+  <para>NASM places no restrictions on white space within a line:
+   labels may have white space before them, or instructions may have
+   no space before them, or anything. The colon after a label is also
+   optional.  Note that this means that if you intend to code
+   <literal>lodsb</literal> alone on a line, and type
+   <literal>lodab</literal> by accident, then that's still a valid
+   source line which does nothing but define a label.  Running NASM
+   with the command-line option <literal>-w+orphan-labels</literal>
+   will cause it to warn you if you define a label alone on a line
+   without a trailing colon.</para>
+
+  <indexterm>
+   <primary>Valid characters</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>$</literal> prefix</primary>
+  </indexterm>
+
+  <para>Valid characters in labels are letters, numbers,
+   <literal>_</literal>, <literal>$</literal>, <literal>#</literal>,
+   <literal>@</literal>, <literal>~</literal>, <literal>.</literal>,
+   and <literal>?</literal>. The only characters which may be used as
+   the <emphasis>first</emphasis> character of an identifier are
+   letters, <literal>.</literal> (with special meaning: see
+   <xref linkend="nasm-locallab">), <literal>_</literal> and
+   <literal>?</literal>. An identifier may also be prefixed with a
+   <literal>$</literal> to indicate that it is intended to be read as
+   an identifier and not a reserved word; thus, if some other module
+   you are linking with defines a symbol called &reg.eax;, you can
+   refer to <literal>$eax</literal> in NASM code to distinguish the
+   symbol from the register.</para>
+
+  <indexterm>
+   <primary>address-size prefixes</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>operand-size prefixes</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>segment override</primary>
+  </indexterm>
+
+  <para>The instruction field may contain any machine instruction:
+   Pentium and P6 instructions, FPU instructions, MMX instructions and
+   even undocumented instructions are all supported. The instruction
+   may be prefixed by <literal>LOCK</literal>, <literal>REP</literal>,
+   <literal>REPE</literal>/<literal>REPZ</literal> or
+   <literal>REPNE</literal>/<literal>REPNZ</literal>, in the usual
+   way. Explicit address-size and operand-size prefixes
+   <literal>A16</literal>, <literal>A32</literal>,
+   <literal>O16</literal> and <literal>O32</literal> are
+   provided&mdash;. You can also use the name of a segment register as
+   an instruction prefix: coding <literal>es mov [bx],ax</literal> is
+   equivalent to coding <literal>mov [es:bx],ax</literal>. We
+   recommend the latter syntax, since it is consistent with other
+   syntactic features of the language, but for instructions such as
+   <literal>LODSB</literal>, which has no operands and yet can require
+   a segment override, there is no clean syntactic way to proceed
+   apart from <literal>es lodsb</literal>.</para>
+
+  <para>An instruction is not required to use a prefix: prefixes such
+   as <literal>CS</literal>, <literal>A32</literal>,
+   <literal>LOCK</literal> or <literal>REPE</literal> can appear on a
+   line by themselves, and NASM will just generate the prefix
+   bytes.</para>
+
+  <para>In addition to actual machine instructions, NASM also supports
+   a number of pseudo-instructions, described in <xref
+    linkend="nasm-pseudop">.</para>
+
+  <indexterm>
+   <primary>operands</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>effective addresses</primary>
+  </indexterm>
+
+  <para>Instruction operands may take a number of forms: they can be
+   registers, described simply by the register name (e.g. &reg.ax;,
+   &reg.bp;, &reg.ebx;, &reg.cr0;: NASM does not use the
+   <literal>gas</literal>-style syntax in which register names must be
+   prefixed by a <literal>%</literal> sign), or they can be effective
+   addresses (see <xref
+    linkend="nasm-effaddr">), constants (<xref linkend="nasm-const">)
+   or expressions (<xref linkend="nasm-expr">).</para>
+
+  <indexterm>
+   <primary>floating-point</primary>
+  </indexterm>
+
+  <para>For floating-point instructions, NASM accepts a wide range of
+   syntaxes: you can use two-operand forms like MASM supports, or you
+   can use NASM's native single-operand forms in most cases. Details
+   of all forms of each supported instruction are given in <xref
+    linkend="inst-ref">. For example, you can code:</para>
+
+  <programlisting>        fadd    st1             ; this sets st0 := st0 + st1
+        fadd    st0, st1        ; so does this
+
+        fadd    st1, st0        ; this sets st1 := st1 + st0
+        fadd    to st1          ; so does this</programlisting>
+
+  <indexterm>
+   <primary><literal>DWORD</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>QWORD</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>TWORD</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>memory operand</primary>
+  </indexterm>
+
+  <para>Almost any floating-point instruction that references memory
+   must use one of the prefixes <literal>DWORD</literal>,
+   <literal>QWORD</literal> or <literal>TWORD</literal> to indicate
+   what size of memory operand it refers to.</para>
+ </sect1>
+
+ <sect1 id="nasm-pseudop">
+  <title>Pseudo-Instructions</title>
+
+  <indexterm>
+   <primary><literal>DB</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>DW</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>DD</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>DQ</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>DT</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>uninitialized</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>RESB</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>RESW</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>RESD</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>RESQ</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>REST</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>INCBIN</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>EQU</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>TIMES</literal></primary>
+  </indexterm>
+
+  <para>Pseudo-instructions are things which, though not real x86
+   machine instructions, are used in the instruction field anyway
+   because that's the most convenient place to put them. The current
+   pseudo-instructions are <literal>DB</literal>,
+   <literal>DW</literal>, <literal>DD</literal>, <literal>DQ</literal>
+   and <literal>DT</literal>, their uninitialized counterparts
+   <literal>RESB</literal>, <literal>RESW</literal>,
+   <literal>RESD</literal>, <literal>RESQ</literal> and
+   <literal>REST</literal>, the <literal>INCBIN</literal> command, the
+   <literal>EQU</literal> command, and the <literal>TIMES</literal>
+   prefix.</para>
+
+  <sect2 id="nasm-pseudop-db">
+   <title><literal>DB</literal> and Friends: Declaring Initialized
+    Data</title>
+
+   <indexterm>
+    <primary>Initialized</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DB</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DW</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DD</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DQ</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DT</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>floating-point</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>character constant</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>string constant</primary>
+   </indexterm>
+
+   <para><literal>DB</literal>, <literal>DW</literal>,
+    <literal>DD</literal>, <literal>DQ</literal> and
+    <literal>DT</literal> are used to declare initialized data in the
+    output file.  They can be invoked in a wide range of ways:</para>
+
+   <programlisting>        db      0x55                ; just the byte 0x55
+        db      0x55,0x56,0x57      ; three bytes in succession
+        db      'a',0x55            ; character constants are OK
+        db      'hello',13,10,'$'   ; so are string constants
+        dw      0x1234              ; 0x34 0x12
+        dw      'a'                 ; 0x41 0x00 (it's just a number)
+        dw      'ab'                ; 0x41 0x42 (character constant)
+        dw      'abc'               ; 0x41 0x42 0x43 0x00 (string)
+        dd      0x12345678          ; 0x78 0x56 0x34 0x12
+        dd      1.234567e20         ; floating-point constant
+        dq      1.234567e20         ; double-precision float
+        dt      1.234567e20         ; extended-precision float</programlisting>
+
+   <indexterm>
+    <primary>numeric constant</primary>
+   </indexterm>
+
+   <para><literal>DQ</literal> and <literal>DT</literal> do not accept
+    numeric constants or string constants as operands.</para>
+  </sect2>
+
+  <sect2 id="nasm-pseudop-resb">
+   <title><literal>RESB</literal> and friends: Declaring Uninitialized
+    Data</title>
+
+   <indexterm>
+    <primary>Uninitialized</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>RESB</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>RESW</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>RESD</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>RESQ</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>REST</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>?</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>critical expression</primary>
+   </indexterm>
+
+   <para><literal>RESB</literal>, <literal>RESW</literal>,
+    <literal>RESD</literal>, <literal>RESQ</literal> and
+    <literal>REST</literal> are designed to be used in the BSS section
+    of a module: they declare <emphasis>uninitialised</emphasis>
+    storage space. Each takes a single operand, which is the number of
+    bytes, words, doublewords or whatever to reserve.  NASM does not
+    support the MASM/TASM syntax of reserving uninitialised space by
+    writing <literal>DW ?</literal> or similar things: this is what it
+    does instead. The operand to a <literal>RESB</literal>-type
+    pseudo-instruction is a <firstterm>critical
+     expression</firstterm>: see <xref
+     linkend="nasm-crit">.</para>
+
+   <para>For example:</para>
+
+   <programlisting>buffer:         resb    64      ; reserve 64 bytes
+wordvar:        resw    1       ; reserve a word
+realarray       resq    10      ; array of ten reals</programlisting>
+  </sect2>
+
+  <sect2 id="nasm-pseudop-incbin">
+   <title><literal>INCBIN</literal>: Including External Binary
+    Files</title>
+
+   <indexterm>
+    <primary><literal>INCBIN</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Binary Files</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>graphics</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>sound</primary>
+   </indexterm>
+
+   <para><literal>INCBIN</literal> includes a binary file verbatim
+    into the output file.  This can be handy for (for example)
+    including graphics and sound data directly into a game executable
+    file.  However, it is recommended to use this for only
+    <emphasis>small</emphasis> pieces of data.  It can be called in
+    one of these three ways:</para>
+
+   <programlisting>        incbin "file.dat"        ; include the whole file
+        incbin "file.dat",1024   ; skip the first 1024 bytes
+        incbin "file.dat",1024,512 ; skip the first 1024, and
+                                 ; actually include at most 512</programlisting>
+  </sect2>
+
+  <sect2 id="nasm-pseudop-equ">
+   <title><literal>EQU</literal>: Defining Constants</title>
+
+   <indexterm>
+    <primary><literal>EQU</literal></primary>
+   </indexterm>
+
+   <para><literal>EQU</literal> defines a symbol to a given constant
+    value: when <literal>EQU</literal> is used, the source line must
+    contain a label. The action of <literal>EQU</literal> is to define
+    the given label name to the value of its (only) operand. This
+    definition is absolute, and cannot change later. So, for
+    example,</para>
+
+   <programlisting>message db 'hello, world'
+msglen  equ $-message</programlisting>
+
+   <indexterm>
+    <primary>preprocessor</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>critical expression</primary>
+   </indexterm>
+
+   <para>defines <literal>msglen</literal> to be the constant 12.
+    <literal>msglen</literal> may not then be redefined later. This is
+    not a preprocessor definition either: the value of
+    <literal>msglen</literal> is evaluated <emphasis>once</emphasis>,
+    using the value of <literal>$</literal> (see <xref
+     linkend="nasm-expr"> for
+    an explanation of <literal>$</literal>) at the point of
+    definition, rather than being evaluated wherever it is referenced
+    and using the value of <literal>$</literal> at the point of
+    reference. Note that the operand to an <literal>EQU</literal> is
+    also a critical expression (<xref linkend="nasm-crit">).</para>
+  </sect2>
+
+  <sect2 id="nasm-pseudop-times">
+   <title><literal>TIMES</literal>: Repeating Instructions or
+    Data</title>
+
+   <indexterm>
+    <primary><literal>TIMES</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Repeating</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DUP</literal></primary>
+   </indexterm>
+
+   <para>The <literal>TIMES</literal> prefix causes the instruction to
+    be assembled multiple times.  This is partly present as NASM's
+    equivalent of the <literal>DUP</literal> syntax supported by
+    MASM-compatible assemblers, in that you can code</para>
+
+   <programlisting>zerobuf:        times 64 db 0</programlisting>
+
+   <para>or similar things; but <literal>TIMES</literal> is more
+    versatile than that. The argument to <literal>TIMES</literal> is
+    not just a numeric constant, but a numeric
+    <emphasis>expression</emphasis>, so you can do things like</para>
+
+   <programlisting>buffer: db 'hello, world'
+        times 64-$+buffer db ' '</programlisting>
+
+   <indexterm>
+    <primary>unrolled loops</primary>
+   </indexterm>
+
+   <para>which will store exactly enough spaces to make the total
+    length of <literal>buffer</literal> up to 64. Finally,
+    <literal>TIMES</literal> can be applied to ordinary instructions,
+    so you can code trivial unrolled loops in it:</para>
+
+   <programlisting>        times 100 movsb</programlisting>
+
+   <para>Note that there is no effective difference between
+    <literal>times 100 resb 1</literal> and <literal>resb
+     100</literal>, except that the latter will be assembled about 100
+    times faster due to the internal structure of the
+    assembler.</para>
+
+   <para>The operand to <literal>TIMES</literal>, like that of
+    <literal>EQU</literal> and those of <literal>RESB</literal> and
+    friends, is a critical expression (<xref
+     linkend="nasm-crit">).</para>
+
+   <indexterm>
+    <primary>%rep</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>macros</primary>
+   </indexterm>
+
+   <para>Note also that <literal>TIMES</literal> can't be applied to
+    macros: the reason for this is that <literal>TIMES</literal> is
+    processed after the macro phase, which allows the argument to
+    <literal>TIMES</literal> to contain expressions such as
+    <literal>64-$+buffer</literal> as above. To repeat more than one
+    line of code, or a complex macro, use the preprocessor
+    <literal>%rep</literal> directive.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="nasm-effaddr">
+  <title>Effective Addresses</title>
+
+  <indexterm>
+   <primary>effective address</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>memory reference</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>square brackets</primary>
+  </indexterm>
+
+  <para>An effective address is any operand to an instruction which
+   references memory. Effective addresses, in NASM, have a very simple
+   syntax: they consist of an expression evaluating to the desired
+   address, enclosed in square brackets. For example:</para>
+
+  <programlisting>wordvar dw 123
+        mov ax,[wordvar]
+        mov ax,[wordvar+1]
+        mov ax,[es:wordvar+bx]</programlisting>
+
+  <para>Anything not conforming to this simple system is not a valid
+   memory reference in NASM, for example
+   <literal>es:wordvar[&reg.bx;]</literal>.</para>
+
+  <para>More complicated effective addresses, such as those involving
+   more than one register, work in exactly the same way:</para>
+
+  <programlisting>        mov eax,[ebx*2+ecx+offset]
+        mov ax,[bp+di+8]</programlisting>
+
+  <indexterm>
+   <primary>algebra</primary>
+  </indexterm>
+
+  <para>NASM is capable of doing algebra on these effective addresses,
+   so that things which don't necessarily <emphasis>look</emphasis>
+   legal are perfectly all right:</para>
+
+  <programlisting>        mov eax,[ebx*5]         ; assembles as [ebx*4+ebx]
+        mov eax,[label1*2-label2] ; ie [label1+(label1-label2)]</programlisting>
+
+  <para>Some forms of effective address have more than one assembled
+   form; in most such cases NASM will generate the smallest form it
+   can. For example, there are distinct assembled forms for the 32-bit
+   effective addresses <literal>[&reg.eax;*2+0]</literal> and
+   <literal>[&reg.eax;+&reg.eax;]</literal>, and NASM will generally
+   generate the latter on the grounds that the former requires four
+   bytes to store a zero offset.</para>
+
+  <para>NASM has a hinting mechanism which will cause
+   <literal>[&reg.eax;+&reg.ebx;]</literal> and
+   <literal>[&reg.ebx;+&reg.eax;]</literal> to generate different
+   opcodes; this is occasionally useful because
+   <literal>[&reg.esi;+&reg.ebp;]</literal> and
+   <literal>[&reg.ebp;+&reg.esi;]</literal> have different default
+   segment registers.</para>
+
+  <indexterm>
+   <primary><literal>NOSPLIT</literal></primary>
+  </indexterm>
+
+  <para>However, you can force NASM to generate an effective address
+   in a particular form by the use of the keywords
+   <literal>BYTE</literal>, <literal>WORD</literal>,
+   <literal>DWORD</literal> and <literal>NOSPLIT</literal>. If you
+   need <literal>[&reg.eax;+3]</literal> to be assembled using a
+   double-word offset field instead of the one byte NASM will normally
+   generate, you can code <literal>[dword &reg.eax;+3]</literal>.
+   Similarly, you can force NASM to use a byte offset for a small
+   value which it hasn't seen on the first pass (see <xref
+    linkend="nasm-crit"> for an example of such a code fragment) by
+   using <literal>[byte &reg.eax;+offset]</literal>. As special cases,
+   <literal>[byte &reg.eax;]</literal> will code
+   <literal>[&reg.eax;+0]</literal> with a byte offset of zero, and
+   <literal>[dword &reg.eax;]</literal> will code it with a
+   double-word offset of zero. The normal form,
+   <literal>[&reg.eax;]</literal>, will be coded with no offset
+   field.</para>
+
+  <para>Similarly, NASM will split <literal>[&reg.eax;*2]</literal>
+   into <literal>[&reg.eax;+&reg.eax;]</literal> because that allows
+   the offset field to be absent and space to be saved; in fact, it
+   will also split <literal>[&reg.eax;*2+offset]</literal> into
+   <literal>[&reg.eax;+&reg.eax;+offset]</literal>. You can combat
+   this behaviour by the use of the <literal>NOSPLIT</literal>
+   keyword: <literal>[nosplit &reg.eax;*2]</literal> will force
+   <literal>[&reg.eax;*2+0]</literal> to be generated
+   literally.</para>
+ </sect1>
+
+ <sect1 id="nasm-const">
+  <title>Constants</title>
+
+  <indexterm>
+   <primary>Constants</primary>
+  </indexterm>
+
+  <para>NASM understands four different types of constant: numeric,
+   character, string and floating-point.</para>
+
+  <sect2 id="nasm-const-num">
+   <title>Numeric Constants</title>
+
+   <indexterm>
+    <primary>Numeric Constants</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>hex</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>octal</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>binary</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>$</literal> prefix</primary>
+   </indexterm>
+
+   <para>A numeric constant is simply a number. NASM allows you to
+    specify numbers in a variety of number bases, in a variety of
+    ways: you can suffix <literal>H</literal>, <literal>Q</literal>
+    and <literal>B</literal> for hex, octal and binary, or you can
+    prefix <literal>0x</literal> for hex in the style of C, or you can
+    prefix <literal>$</literal> for hex in the style of Borland
+    Pascal. Note, though, that the <literal>$</literal> prefix does
+    double duty as a prefix on identifiers (see <xref
+     linkend="nasm-syntax">), so a hex number
+    prefixed with a <literal>$</literal> sign must have a digit after
+    the <literal>$</literal> rather than a letter.</para>
+
+   <para>Some examples:</para>
+
+   <programlisting>        mov ax,100              ; decimal
+        mov ax,0a2h             ; hex
+        mov ax,$0a2             ; hex again: the 0 is required
+        mov ax,0xa2             ; hex yet again
+        mov ax,777q             ; octal
+        mov ax,10010011b        ; binary</programlisting>
+  </sect2>
+
+  <sect2 id="nasm-const-char">
+   <title>Character Constants</title>
+
+   <indexterm>
+    <primary>Character Constants</primary>
+   </indexterm>
+
+   <para>A character constant consists of up to four characters
+    enclosed in either single or double quotes. The type of quote
+    makes no difference to NASM, except of course that surrounding the
+    constant with single quotes allows double quotes to appear within
+    it and vice versa.</para>
+
+   <indexterm>
+    <primary>little-endian</primary>
+   </indexterm>
+
+   <para>A character constant with more than one character will be
+    arranged with little-endian order in mind: if you code</para>
+
+   <programlisting>        mov eax,'abcd'</programlisting>
+
+   <indexterm>
+    <primary><literal>CPUID</literal></primary>
+   </indexterm>
+
+   <para>then the constant generated is not
+    <literal>0x61626364</literal>, but <literal>0x64636261</literal>,
+    so that if you were then to store the value into memory, it would
+    read <literal>abcd</literal> rather than <literal>dcba</literal>.
+    This is also the sense of character constants understood by the
+    Pentium's <literal>CPUID</literal> instruction (see <xref
+     linkend="inst-ref-cpuid">).</para>
+  </sect2>
+
+  <sect2 id="nasm-const-string">
+   <title>String Constants</title>
+
+   <indexterm>
+    <primary>String Constants</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DB</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DW</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DD</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DQ</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DT</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>INCBIN</literal></primary>
+   </indexterm>
+
+   <para>String constants are only acceptable to some
+    pseudo-instructions, namely the <literal>DB</literal> family and
+    <literal>INCBIN</literal>.</para>
+
+   <para>A string constant looks like a character constant, only
+    longer. It is treated as a concatenation of maximum-size character
+    constants for the conditions. So the following are
+    equivalent:</para>
+
+   <programlisting>        db 'hello'              ; string constant
+        db 'h','e','l','l','o'  ; equivalent character constants</programlisting>
+
+   <para>And the following are also equivalent:</para>
+
+   <programlisting>        dd 'ninechars'          ; doubleword string constant
+        dd 'nine','char','s'    ; becomes three doublewords
+        db 'ninechars',0,0,0    ; and really looks like this</programlisting>
+
+   <para>Note that when used as an operand to <literal>db</literal>, a
+    constant like <literal>'ab'</literal> is treated as a string
+    constant despite being short enough to be a character constant,
+    because otherwise <literal>db 'ab'</literal> would have the same
+    effect as <literal>db 'a'</literal>, which would be silly.
+    Similarly, three-character or four-character constants are treated
+    as strings when they are operands to <literal>dw</literal>.</para>
+  </sect2>
+
+  <sect2 id="nasm-const-float">
+   <title>Floating-Point Constants</title>
+
+   <indexterm>
+    <primary>floating-point</primary>
+    <secondary>constants</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DD</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DQ</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>DT</literal></primary>
+   </indexterm>
+
+   <para>Floating-point constants are acceptable only as arguments to
+    <literal>DD</literal>, <literal>DQ</literal> and
+    <literal>DT</literal>. They are expressed in the traditional form:
+    digits, then a period, then optionally more digits, then
+    optionally an <literal>E</literal> followed by an exponent. The
+    period is mandatory, so that NASM can distinguish between
+    <literal>dd 1</literal>, which declares an integer constant, and
+    <literal>dd 1.0</literal> which declares a floating-point
+    constant.</para>
+
+   <para>Some examples:</para>
+
+   <programlisting>        dd 1.2                  ; an easy one
+        dq 1.e10                ; 10,000,000,000
+        dq 1.e+10               ; synonymous with 1.e10
+        dq 1.e-10               ; 0.000 000 000 1
+        dt 3.141592653589793238462 ; pi</programlisting>
+
+   <indexterm>
+    <primary>Intel number formats</primary>
+   </indexterm>
+
+   <para>NASM cannot do compile-time arithmetic on floating-point
+    constants. This is because NASM is designed to be portable -
+    although it always generates code to run on x86 processors, the
+    assembler itself can run on any system with an ANSI C compiler.
+    Therefore, the assembler cannot guarantee the presence of a
+    floating-point unit capable of handling the Intel number formats,
+    and so for NASM to be able to do floating arithmetic it would have
+    to include its own complete set of floating-point routines, which
+    would significantly increase the size of the assembler for very
+    little benefit.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="nasm-expr">
+  <title>Expressions</title>
+
+  <indexterm>
+   <primary>Expressions</primary>
+  </indexterm>
+
+  <para>Expressions in NASM are similar in syntax to those in
+   C.</para>
+
+  <indexterm>
+   <primary>integer overflow</primary>
+  </indexterm>
+
+  <para>NASM does not guarantee the size of the integers used to
+   evaluate expressions at compile time: since NASM can compile and
+   run on 64-bit systems quite happily, don't assume that expressions
+   are evaluated in 32-bit registers and so try to make deliberate use
+   of integer overflow. It might not always work. The only thing NASM
+   will guarantee is what's guaranteed by ANSI C: you always have
+   <emphasis>at least</emphasis> 32 bits to work in.</para>
+
+  <indexterm>
+   <primary><literal>$</literal> Here token</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>$$</literal> token</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>infinite loop</primary>
+  </indexterm>
+
+  <para>NASM supports two special tokens in expressions, allowing
+   calculations to involve the current assembly position: the
+   <literal>$</literal> and <literal>$$</literal> tokens.
+   <literal>$</literal> evaluates to the assembly position at the
+   beginning of the line containing the expression; so you can code an
+   infinite loop using <literal>JMP $</literal>. <literal>$$</literal>
+   evaluates to the beginning of the current section; so you can tell
+   how far into the section you are by using
+   <literal>($-$$)</literal>.</para>
+
+  <indexterm>
+   <primary>operators</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>precedence</primary>
+  </indexterm>
+
+  <para>The arithmetic operators provided by NASM are listed here, in
+   increasing order of precedence.</para>
+
+  <sect2 id="nasm-expr-or">
+   <title><literal>|</literal>: Bitwise OR Operator</title>
+
+   <indexterm>
+    <primary><literal>|</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>Bitwise OR</literal></primary>
+   </indexterm>
+
+   <para>The <literal>|</literal> operator gives a bitwise OR, exactly
+    as performed by the <literal>OR</literal> machine instruction.
+    Bitwise OR is the lowest-priority arithmetic operator supported by
+    NASM.</para>
+  </sect2>
+
+  <sect2 id="nasm-expr-xor">
+   <title><literal>^</literal>: Bitwise XOR Operator</title>
+
+   <indexterm>
+    <primary><literal>^</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Bitwise XOR</primary>
+   </indexterm>
+
+   <para><literal>^</literal> provides the bitwise XOR
+    operation.</para>
+  </sect2>
+
+  <sect2 id="nasm-expr-and">
+   <title><literal>&</literal>: Bitwise AND Operator</title>
+
+   <indexterm>
+    <primary><literal>&</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Bitwise AND</primary>
+   </indexterm>
+
+   <para><literal>&</literal> provides the bitwise AND
+    operation.</para>
+  </sect2>
+
+  <sect2 id="nasm-expr-shift">
+   <title><literal>&lt;&lt;</literal> and <literal>&gt;&gt;</literal>:
+    Bit Shift Operators</title>
+
+   <indexterm>
+    <primary><literal>&lt;&lt;</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>&gt;&gt;</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Bit Shift</primary>
+   </indexterm>
+
+   <para><literal>&lt;&lt;</literal> gives a bit-shift to the left,
+    just as it does in C. So <literal>5&lt;&lt;3</literal> evaluates
+    to 5 times 8, or 40. <literal>&gt;&gt;</literal> gives a bit-shift
+    to the right; in NASM, such a shift is <emphasis>always</emphasis>
+    unsigned, so that the bits shifted in from the left-hand end are
+    filled with zero rather than a sign-extension of the previous
+    highest bit.</para>
+  </sect2>
+
+  <sect2 id="nasm-expr-plusminus">
+   <title><literal>+</literal> and <literal>-</literal>: Addition and
+    Subtraction Operators</title>
+
+   <indexterm>
+    <primary><literal>+</literal> operator</primary>
+    <secondary>binary</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>-</literal> operator</primary>
+    <secondary>binary</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Addition</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Subtraction</primary>
+   </indexterm>
+
+   <para>The <literal>+</literal> and <literal>-</literal> operators
+    do perfectly ordinary addition and subtraction.</para>
+  </sect2>
+
+  <sect2 id="nasm-expr-mul">
+   <title><literal>*</literal>, <literal>/</literal>,
+    <literal>//</literal>, <literal>%</literal> and
+    <literal>%%</literal>: Multiplication and Division</title>
+
+   <indexterm>
+    <primary><literal>*</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>/</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>//</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>%</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>%%</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Multiplication</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Division</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>unsigned division</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>signed division</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>unsigned modulo</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>signed modulo</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>modulo operators</primary>
+   </indexterm>
+
+   <para><literal>*</literal> is the multiplication operator.
+    <literal>/</literal> and <literal>//</literal> are both division
+    operators: <literal>/</literal> is unsigned division and
+    <literal>//</literal> is signed division. Similarly,
+    <literal>%</literal> and <literal>%%</literal> provide unsigned
+    and signed modulo operators respectively.</para>
+
+   <para>NASM, like ANSI C, provides no guarantees about the sensible
+    operation of the signed modulo operator.</para>
+
+   <para>Since the <literal>%</literal> character is used extensively
+    by the macro preprocessor, you should ensure that both the signed
+    and unsigned modulo operators are followed by white space wherever
+    they appear.</para>
+  </sect2>
+
+  <sect2 id="nasm-expr-unary">
+   <title>Unary Operators: <literal>+</literal>, <literal>-</literal>,
+    <literal>~</literal> and <literal>SEG</literal></title>
+
+   <indexterm>
+    <primary>Unary Operators</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>+</literal> operator</primary>
+    <secondary>unary</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>-</literal> operator</primary>
+    <secondary>unary</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>~</literal> operator</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>SEG</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>one's complement</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>segment address</primary>
+   </indexterm>
+
+   <para>The highest-priority operators in NASM's expression grammar
+    are those which only apply to one argument. <literal>-</literal>
+    negates its operand, <literal>+</literal> does nothing (it's
+    provided for symmetry with <literal>-</literal>),
+    <literal>~</literal> computes the one's complement of its operand,
+    and <literal>SEG</literal> provides the segment address of its
+    operand (explained in more detail in <xref
+     linkend="nasm-segwrt">).</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="nasm-segwrt">
+  <title><literal>SEG</literal> and <literal>WRT</literal></title>
+
+  <indexterm>
+   <primary><literal>SEG</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>WRT</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>segments</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>segment address</primary>
+  </indexterm>
+
+  <para>When writing large 16-bit programs, which must be split into
+   multiple segments, it is often necessary to be able to refer to the
+   segment part of the address of a symbol. NASM supports the
+   <literal>SEG</literal> operator to perform this function.</para>
+
+  <indexterm>
+   <primary>preferred</primary>
+  </indexterm>
+
+  <para>The <literal>SEG</literal> operator returns the
+   <emphasis>preferred</emphasis> segment base of a symbol, defined as
+   the segment base relative to which the offset of the symbol makes
+   sense. So the code</para>
+
+  <programlisting>        mov ax, seg symbol
+        mov es, ax
+        mov bx, symbol</programlisting>
+
+  <para>will load <literal>&reg.es;:&reg.bx;</literal> with a valid
+   pointer to the symbol <literal>symbol</literal>.</para>
+
+  <indexterm>
+   <primary>groups</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>overlapping segments</primary>
+  </indexterm>
+
+  <para>Things can be more complex than this: since 16-bit segments
+   and groups may overlap, you might occasionally want to refer to
+   some symbol using a different segment base from the preferred one.
+   NASM lets you do this, by the use of the <literal>WRT</literal>
+   (With Reference To) keyword. So you can do things like</para>
+
+  <programlisting>        mov ax, weird_seg       ; weird_seg is a segment base
+        mov es, ax
+        mov bx, symbol wrt weird_seg</programlisting>
+
+  <para>to load <literal>&reg.es;:&reg.bx;</literal> with a different,
+   but functionally equivalent, pointer to the symbol
+   <literal>symbol</literal>.</para>
+
+  <para>NASM supports far (inter-segment) calls and jumps by means of
+   the syntax <literal>call segment:offset</literal>, where
+   <literal>segment</literal> and <literal>offset</literal> both
+   represent immediate values. So to call a far procedure, you could
+   code either of</para>
+
+  <programlisting>        call (seg procedure):procedure
+        call weird_seg:(procedure wrt weird_seg)</programlisting>
+
+  <para>(The parentheses are included for clarity, to show the
+   intended parsing of the above instructions. They are not necessary
+   in practice.)</para>
+
+  <indexterm>
+   <primary><literal>CALL FAR</literal></primary>
+  </indexterm>
+
+  <para>NASM supports the syntax <literal>call far procedure</literal>
+   as a synonym for the first of the above usages.
+   <literal>JMP</literal> works identically to <literal>CALL</literal>
+   in these examples.</para>
+
+  <indexterm>
+   <primary>far pointer</primary>
+  </indexterm>
+
+  <para>To declare a far pointer to a data item in a data segment, you
+   must code</para>
+
+  <programlisting>        dw symbol, seg symbol</programlisting>
+
+  <para>NASM supports no convenient synonym for this, though you can
+   always invent one using the macro processor.</para>
+ </sect1>
+
+ <sect1 id="nasm-crit">
+  <title>Critical Expressions</title>
+
+  <indexterm>
+   <primary>Critical Expressions</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>two-pass assembler</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>passes</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>assembly passes</primary>
+  </indexterm>
+
+  <para>A limitation of NASM is that it is a two-pass assembler;
+   unlike TASM and others, it will always do exactly two assembly
+   passes. Therefore it is unable to cope with source files that are
+   complex enough to require three or more passes.</para>
+
+  <para>The first pass is used to determine the size of all the
+   assembled code and data, so that the second pass, when generating
+   all the code, knows all the symbol addresses the code refers to. So
+   one thing NASM can't handle is code whose size depends on the value
+   of a symbol declared after the code in question. For
+   example,</para>
+
+  <programlisting>        times (label-$) db 0
+label:  db 'Where am I?'</programlisting>
+
+  <indexterm>
+   <primary><literal>TIMES</literal></primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>paradox</primary>
+  </indexterm>
+
+  <para>The argument to <literal>TIMES</literal> in this case could
+   equally legally evaluate to anything at all; NASM will reject this
+   example because it cannot tell the size of the
+   <literal>TIMES</literal> line when it first sees it. It will just
+   as firmly reject the slightly paradoxical code</para>
+
+  <programlisting>        times (label-$+1) db 0
+label:  db 'NOW where am I?'</programlisting>
+
+  <para>in which <emphasis>any</emphasis> value for the
+   <literal>TIMES</literal> argument is by definition wrong!</para>
+
+  <indexterm>
+   <primary><literal>RESB</literal></primary>
+  </indexterm>
+
+  <para>NASM rejects these examples by means of a concept called a
+   <emphasis>critical expression</emphasis>, which is defined to be an
+   expression whose value is required to be computable in the first
+   pass, and which must therefore depend only on symbols defined
+   before it. The argument to the <literal>TIMES</literal> prefix is a
+   critical expression; for the same reason, the arguments to the
+   <literal>RESB</literal> family of pseudo-instructions are also
+   critical expressions.</para>
+
+  <para>Critical expressions can crop up in other contexts as well:
+   consider the following code.</para>
+
+  <programlisting>        mov ax, symbol1
+symbol1 equ symbol2
+symbol2:</programlisting>
+
+  <indexterm>
+   <primary><literal>EQU</literal></primary>
+  </indexterm>
+  <para>On the first pass, NASM cannot determine the value of
+   <literal>symbol1</literal>, because <literal>symbol1</literal> is
+   defined to be equal to <literal>symbol2</literal> which NASM hasn't
+   seen yet. On the second pass, therefore, when it encounters the
+   line <literal>mov ax,symbol1</literal>, it is unable to generate
+   the code for it because it still doesn't know the value of
+   <literal>symbol1</literal>. On the next line, it would see the
+   <literal>EQU</literal> again and be able to determine the value of
+   <literal>symbol1</literal>, but by then it would be too
+   late.</para>
+
+  <para>NASM avoids this problem by defining the right-hand side of an
+   <literal>EQU</literal> statement to be a critical expression, so
+   the definition of <literal>symbol1</literal> would be rejected in
+   the first pass.</para>
+
+  <indexterm>
+   <primary>forward references</primary>
+  </indexterm>
+
+  <para>There is a related issue involving forward references:
+   consider this code fragment.</para>
+
+  <programlisting>        mov eax, [ebx+offset]
+offset  equ 10</programlisting>
+
+  <indexterm>
+   <primary>effective-address</primary>
+  </indexterm>
+
+  <para>NASM, on pass one, must calculate the size of the instruction
+   <literal>mov eax,[ebx+offset]</literal> without knowing the value
+   of <literal>offset</literal>. It has no way of knowing that
+   <literal>offset</literal> is small enough to fit into a one-byte
+   offset field and that it could therefore get away with generating a
+   shorter form of the effective-address encoding; for all it knows,
+   in pass one, <literal>offset</literal> could be a symbol in the
+   code segment, and it might need the full four-byte form. So it is
+   forced to compute the size of the instruction to accommodate a
+   four-byte address part. In pass two, having made this decision, it
+   is now forced to honour it and keep the instruction large, so the
+   code generated in this case is not as small as it could have been.
+   This problem can be solved by defining <literal>offset</literal>
+   before using it, or by forcing byte size in the effective address
+   by coding <literal>[byte ebx+offset]</literal>.</para>
+ </sect1>
+
+ <sect1 id="nasm-locallab">
+  <title>Local Labels</title>
+
+  <indexterm>
+   <primary>Local Labels</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>period</primary>
+  </indexterm>
+
+  <para>NASM gives special treatment to symbols beginning with a
+   period. A label beginning with a single period is treated as a
+   <emphasis>local</emphasis> label, which means that it is associated
+   with the previous non-local label. So, for example:</para>
+
+  <programlisting>label1  ; some code
+.loop   ; some more code
+        jne .loop
+        ret
+label2  ; some code
+.loop   ; some more code
+        jne .loop
+        ret</programlisting>
+
+  <para>In the above code fragment, each <literal>JNE</literal>
+   instruction jumps to the line immediately before it, because the
+   two definitions of <literal>.loop</literal> are kept separate by
+   virtue of each being associated with the previous non-local
+   label.</para>
+
+  <para>NASM goes one step further, in allowing access to local labels
+   from other parts of the code. This is achieved by means of
+   <emphasis>defining</emphasis> a local label in terms of the
+   previous non-local label: the first definition of
+   <literal>.loop</literal> above is really defining a symbol called
+   <literal>label1.loop</literal>, and the second defines a symbol
+   called <literal>label2.loop</literal>. So, if you really needed to,
+   you could write</para>
+
+  <programlisting>label3  ; some more code
+        ; and some more
+        jmp label1.loop</programlisting>
+
+  <indexterm>
+   <primary>label prefix</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>..@</literal> symbol prefix</primary>
+  </indexterm>
+
+  <para>Sometimes it is useful - in a macro, for instance - to be able
+   to define a label which can be referenced from anywhere but which
+   doesn't interfere with the normal local-label mechanism. Such a
+   label can't be non-local because it would interfere with subsequent
+   definitions of, and references to, local labels; and it can't be
+   local because the macro that defined it wouldn't know the label's
+   full name. NASM therefore introduces a third type of label, which
+   is probably only useful in macro definitions: if a label begins
+   with the special prefix <literal>..@</literal>, then it does
+   nothing to the local label mechanism. So you could code</para>
+
+  <programlisting>label1: ; a non-local label
+.local: ; this is really label1.local
+..@foo: ; this is a special symbol
+label2: ; another non-local label
+.local: ; this is really label2.local
+        jmp ..@foo              ; this will jump three lines up</programlisting>
+
+  <para>NASM has the capacity to define other special symbols
+   beginning with a double period: for example,
+   <literal>..start</literal> is used to specify the entry point in
+   the <literal>obj</literal> output format.</para>
+ </sect1>
+
+ <sect1 id="nasm-stdmac">
+  <title>Standard Macros</title>
+
+  <indexterm>
+   <primary>Standard Macros</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary><literal>%clear</literal></primary>
+  </indexterm>
+
+  <para>NASM defines a set of standard macros, which are already
+   defined when it starts to process any source file. If you really
+   need a program to be assembled with no pre-defined macros, you can
+   use the <literal>%clear</literal> directive to empty the
+   preprocessor of everything.</para>
+
+  <indexterm>
+   <primary>user-level assembler directives</primary>
+  </indexterm>
+
+  <para>Most user-level assembler directives (see <xref
+    linkend="nasm-directive">) are implemented as macros which invoke
+   primitive directives; these are described in <xref
+    linkend="nasm-directive">. The rest of the standard macro set is
+   described here.</para>
+
+  <sect2 id="nasm-stdmac-version">
+   <title><literal>__NASM_MAJOR__</literal> and
+    <literal>__NASM_MINOR__</literal>: NASM Version</title>
+
+   <indexterm>
+    <primary><literal>__NASM_MAJOR__</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>__NASM_MINOR__</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>NASM Version</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>version number of NASM</primary>
+   </indexterm>
+
+   <para>The single-line macros <literal>__NASM_MAJOR__</literal> and
+    <literal>__NASM_MINOR__</literal> expand to the major and minor
+    parts of the version number of NASM being used. So, under NASM
+    0.96 for example, <literal>__NASM_MAJOR__</literal> would be
+    defined to be 0 and <literal>__NASM_MINOR__</literal> would be
+    defined as 96.</para>
+  </sect2>
+
+  <sect2 id="nasm-stdmac-fileline">
+   <title><literal>__FILE__</literal> and <literal>__LINE__</literal>:
+    File Name and Line Number</title>
+
+   <indexterm>
+    <primary><literal>__FILE__</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>__LINE__</literal></primary>
+   </indexterm>
+
+   <para>Like the C preprocessor, NASM allows the user to find out the
+    file name and line number containing the current instruction. The
+    macro <literal>__FILE__</literal> expands to a string constant
+    giving the name of the current input file (which may change
+    through the course of assembly if <literal>%include</literal>
+    directives are used), and <literal>__LINE__</literal> expands to a
+    numeric constant giving the current line number in the input
+    file.</para>
+
+   <para>These macros could be used, for example, to communicate
+    debugging information to a macro, since invoking
+    <literal>__LINE__</literal> inside a macro definition (either
+    single-line or multi-line) will return the line number of the
+    macro <emphasis>call</emphasis>, rather than
+    <emphasis>definition</emphasis>. So to determine where in a piece
+    of code a crash is occurring, for example, one could write a
+    routine <literal>stillhere</literal>, which is passed a line
+    number in <literal>EAX</literal> and outputs something like
+    <quote>line 155: still here</quote>. You could then write a
+    macro</para>
+
+   <programlisting>%macro notdeadyet 0
+        push    eax
+        mov     eax, __LINE__
+        call    stillhere
+        pop     eax
+%endmacro</programlisting>
+
+   <para>and then pepper your code with calls to
+    <literal>notdeadyet</literal> until you find the crash
+    point.</para>
+  </sect2>
+
+  <sect2 id="nasm-stdmac-struc">
+   <title><literal>STRUC</literal> and <literal>ENDSTRUC</literal>:
+    Declaring Structure Data Types</title>
+
+   <indexterm>
+    <primary><literal>STRUC</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>ENDSTRUC</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Declaring Structure</primary>
+   </indexterm>
+
+   <para>The core of NASM contains no intrinsic means of defining data
+    structures; instead, the preprocessor is sufficiently powerful
+    that data structures can be implemented as a set of macros. The
+    macros <literal>STRUC</literal> and <literal>ENDSTRUC</literal>
+    are used to define a structure data type.</para>
+
+   <para><literal>STRUC</literal> takes one parameter, which is the
+    name of the data type. This name is defined as a symbol with the
+    value zero, and also has the suffix <literal>_size</literal>
+    appended to it and is then defined as an <literal>EQU</literal>
+    giving the size of the structure. Once <literal>STRUC</literal>
+    has been issued, you are defining the structure, and should define
+    fields using the <literal>RESB</literal> family of
+    pseudo-instructions, and then invoke <literal>ENDSTRUC</literal>
+    to finish the definition.</para>
+
+   <para>For example, to define a structure called
+    <literal>mytype</literal> containing a longword, a word, a byte
+    and a string of bytes, you might code</para>
+
+   <programlisting>        struc   mytype
+mt_long:        resd 1
+mt_word:        resw 1
+mt_byte:        resb 1
+mt_str:         resb 32
+        endstruc</programlisting>
+
+   <para>The above code defines six symbols:
+    <literal>mt_long</literal> as 0 (the offset from the beginning of
+    a <literal>mytype</literal> structure to the longword field),
+    <literal>mt_word</literal> as 4, <literal>mt_byte</literal> as 6,
+    <literal>mt_str</literal> as 7, <literal>mytype_size</literal> as
+    39, and <literal>mytype</literal> itself as zero.</para>
+
+   <para>The reason why the structure type name is defined at zero is
+    a side effect of allowing structures to work with the local label
+    mechanism: if your structure members tend to have the same names
+    in more than one structure, you can define the above structure
+    like this:</para>
+
+   <programlisting>        struc   mytype
+.long:  resd 1
+.word:  resw 1
+.byte:  resb 1
+.str:   resb 32
+        endstruc</programlisting>
+
+   <para>This defines the offsets to the structure fields as
+    <literal>mytype.long</literal>, <literal>mytype.word</literal>,
+    <literal>mytype.byte</literal> and
+    <literal>mytype.str</literal>.</para>
+
+   <para>NASM, since it has no <emphasis>intrinsic</emphasis>
+    structure support, does not support any form of period notation to
+    refer to the elements of a structure once you have one (except the
+    above local-label notation), so code such as <literal>mov
+     ax,[mystruc.mt_word]</literal> is not valid.
+    <literal>mt_word</literal> is a constant just like any other
+    constant, so the correct syntax is <literal>mov
+     ax,[mystruc+mt_word]</literal> or <literal>mov
+     ax,[mystruc+mytype.word]</literal>.</para>
+  </sect2>
+
+  <sect2 id="nasm-stdmac-istruc">
+   <title><literal>ISTRUC</literal>, <literal>AT</literal> and
+    <literal>IEND</literal>: Declaring Instances of Structures</title>
+
+   <indexterm>
+    <primary><literal>ISTRUC</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>AT</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>IEND</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Instances of Structures</primary>
+   </indexterm>
+
+   <para>Having defined a structure type, the next thing you typically
+    want to do is to declare instances of that structure in your data
+    segment. NASM provides an easy way to do this in the
+    <literal>ISTRUC</literal> mechanism. To declare a structure of
+    type <literal>mytype</literal> in a program, you code something
+    like this:</para>
+
+   <programlisting>mystruc:        istruc  mytype
+        at mt_long, dd 123456
+        at mt_word, dw 1024
+        at mt_byte, db 'x'
+        at mt_str,  db 'hello, world', 13, 10, 0
+                iend</programlisting>
+
+   <para>The function of the <literal>AT</literal> macro is to make
+    use of the <literal>TIMES</literal> prefix to advance the assembly
+    position to the correct point for the specified structure field,
+    and then to declare the specified data. Therefore the structure
+    fields must be declared in the same order as they were specified
+    in the structure definition.</para>
+
+   <para>If the data to go in a structure field requires more than one
+    source line to specify, the remaining source lines can easily come
+    after the <literal>AT</literal> line. For example:</para>
+
+   <programlisting>        at mt_str, db 123,134,145,156,167,178,189
+        db 190,100,0</programlisting>
+
+   <para>Depending on personal taste, you can also omit the code part
+    of the <literal>AT</literal> line completely, and start the
+    structure field on the next line:</para>
+
+   <programlisting>        at mt_str
+        db 'hello, world'
+        db 13,10,0</programlisting>
+  </sect2>
+
+  <sect2 id="nasm-stdmac-align">
+   <title><literal>ALIGN</literal> and <literal>ALIGNB</literal>: Data
+    Alignment</title>
+
+   <indexterm>
+    <primary><literal>ALIGN</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>ALIGNB</literal></primary>
+   </indexterm>
+
+   <para>The <literal>ALIGN</literal> and <literal>ALIGNB</literal>
+    macros provides a convenient way to align code or data on a word,
+    longword, paragraph or other boundary.  The syntax of the
+    <literal>ALIGN</literal> and <literal>ALIGNB</literal> macros
+    is</para>
+
+   <programlisting>        align 4                 ; align on 4-byte boundary
+        align 16                ; align on 16-byte boundary
+        align 8,db 0            ; pad with 0s rather than NOPs
+        align 4,resb 1          ; align to 4 in the BSS
+        alignb 4                ; equivalent to previous line</programlisting>
+
+   <para>Both macros require their first argument to be a power of
+    two; they both compute the number of additional bytes required to
+    bring the length of the current section up to a multiple of that
+    power of two, and then apply the <literal>TIMES</literal> prefix
+    to their second argument to perform the alignment.</para>
+
+   <para>If the second argument is not specified, the default for
+    <literal>ALIGN</literal> is <literal>NOP</literal>, and the
+    default for <literal>ALIGNB</literal> is <literal>RESB
+     1</literal>. So if the second argument is specified, the two
+    macros are equivalent. Normally, you can just use
+    <literal>ALIGN</literal> in code and data sections and
+    <literal>ALIGNB</literal> in BSS sections, and never need the
+    second argument except for special purposes.</para>
+
+   <para><literal>ALIGN</literal> and <literal>ALIGNB</literal>, being
+    simple macros, perform no error checking: they cannot warn you if
+    their first argument fails to be a power of two, or if their
+    second argument generates more than one byte of code. In each of
+    these cases they will silently do the wrong thing.</para>
+
+   <para><literal>ALIGNB</literal> (or <literal>ALIGN</literal> with a
+    second argument of <literal>RESB 1</literal>) can be used within
+    structure definitions:</para>
+
+   <programlisting>        struc   mytype2
+mt_byte:        resb 1
+                alignb 2
+mt_word:        resw 1
+                alignb 4
+mt_long:        resd 1
+mt_str:         resb 32
+        endstruc</programlisting>
+
+   <para>This will ensure that the structure members are sensibly
+    aligned relative to the base of the structure.</para>
+
+   <para>A final caveat: <literal>ALIGN</literal> and
+    <literal>ALIGNB</literal> work relative to the beginning of the
+    <emphasis>section</emphasis>, not the beginning of the address
+    space in the final executable. Aligning to a 16-byte boundary when
+    the section you're in is only guaranteed to be aligned to a 4-byte
+    boundary, for example, is a waste of effort. Again, NASM does not
+    check that the section's alignment characteristics are sensible
+    for the use of <literal>ALIGN</literal> or
+    <literal>ALIGNB</literal>.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="nasm-directive">
+  <title>Assembler Directives</title>
+
+  <indexterm>
+   <primary>Assembler Directives</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>user-level directives</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>primitive directives</primary>
+  </indexterm>
+
+  <para>NASM's directives come in two types:
+   <emphasis>user-level</emphasis> directives and
+   <emphasis>primitive</emphasis> directives. Typically, each
+   directive has a user-level form and a primitive form. In almost all
+   cases, we recommend that users use the user-level forms of the
+   directives, which are implemented as macros which call the
+   primitive forms.</para>
+
+  <para>Primitive directives are enclosed in square brackets;
+   user-level directives are not.</para>
+
+  <indexterm>
+   <primary>format-specific directives</primary>
+  </indexterm>
+
+  <para>In addition to the universal directives described in this
+   chapter, each object file format can optionally supply extra
+   directives in order to control particular features of that file
+   format. These <emphasis>format-specific</emphasis> directives are
+   documented along with the formats that implement them, in the NASM
+   Manual.</para>
+
+  <sect2 id="nasm-directive-bits">
+   <title><literal>BITS</literal>: Specifying Target Processor
+    Mode</title>
+
+   <indexterm>
+    <primary><literal>BITS</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Processor Mode</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>16-bit mode</primary>
+    <secondary>versus 32-bit mode</secondary>
+   </indexterm>
+
+   <para>The <literal>BITS</literal> directive specifies whether NASM
+    should generate code designed to run on a processor operating in
+    16-bit mode, or code designed to run on a processor operating in
+    32-bit mode. The syntax is <literal>BITS 16</literal> or
+    <literal>BITS 32</literal>.</para>
+
+   <para>In most cases, you should not need to use
+    <literal>BITS</literal> explicitly. The <literal>aout</literal>,
+    <literal>coff</literal>, <literal>elf</literal> and
+    <literal>win32</literal> object formats, which are designed for
+    use in 32-bit operating systems, all cause NASM to select 32-bit
+    mode by default. The <literal>obj</literal> object format allows
+    you to specify each segment you define as either
+    <literal>USE16</literal> or <literal>USE32</literal>, and NASM
+    will set its operating mode accordingly, so the use of the
+    <literal>BITS</literal> directive is once again
+    unnecessary.</para>
+
+   <para>The most likely reason for using the <literal>BITS</literal>
+    directive is to write 32-bit code in a flat binary file; this is
+    because the <literal>bin</literal> output format defaults to
+    16-bit mode in anticipation of it being used most frequently to
+    write DOS <literal>.COM</literal> programs, DOS
+    <literal>.SYS</literal> device drivers and boot loader
+    software.</para>
+
+   <para>You do <emphasis>not</emphasis> need to specify <literal>BITS
+     32</literal> merely in order to use 32-bit instructions in a
+    16-bit DOS program; if you do, the assembler will generate
+    incorrect code because it will be writing code targeted at a
+    32-bit platform, to be run on a 16-bit one.</para>
+
+   <para>When NASM is in <literal>BITS 16</literal> state,
+    instructions which use 32-bit data are prefixed with an 0x66 byte,
+    and those referring to 32-bit addresses have an 0x67 prefix. In
+    <literal>BITS 32</literal> state, the reverse is true: 32-bit
+    instructions require no prefixes, whereas instructions using
+    16-bit data need an 0x66 and those working in 16-bit addresses
+    need an 0x67.</para>
+
+   <para>The <literal>BITS</literal> directive has an exactly
+    equivalent primitive form, <literal>[BITS 16]</literal> and
+    <literal>[BITS 32]</literal>. The user-level form is a macro which
+    has no function other than to call the primitive form.</para>
+  </sect2>
+
+  <sect2 id="nasm-directive-section">
+   <title><literal>SECTION</literal> or <literal>SEGMENT</literal>:
+    Changing and Defining Sections</title>
+
+   <indexterm>
+    <primary><literal>SECTION</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>SEGMENT</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Defining Sections</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>changing sections</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>switching between sections</primary>
+   </indexterm>
+
+   <para>The <literal>SECTION</literal> directive
+    (<literal>SEGMENT</literal> is an exactly equivalent synonym)
+    changes which section of the output file the code you write will
+    be assembled into. In some object file formats, the number and
+    names of sections are fixed; in others, the user may make up as
+    many as they wish. Hence <literal>SECTION</literal> may sometimes
+    give an error message, or may define a new section, if you try to
+    switch to a section that does not (yet) exist.</para>
+
+   <indexterm>
+    <primary>standardized section names</primary>
+   </indexterm>
+
+   <para>The Unix object formats, and the <literal>bin</literal>
+    object format, all support the standardised section names
+    <literal>.text</literal>, <literal>.data</literal> and
+    <literal>.bss</literal> for the code, data and uninitialised-data
+    sections. The <literal>obj</literal> format, by contrast, does not
+    recognise these section names as being special, and indeed will
+    strip off the leading period of any section name that has
+    one.</para>
+
+   <sect3 id="nasm-directive-section-macro">
+    <title>The <literal>__SECT__</literal> Macro</title>
+
+    <indexterm>
+     <primary><literal>__SECT__</literal></primary>
+    </indexterm>
+
+    <para>The <literal>SECTION</literal> directive is unusual in that
+     its user-level form functions differently from its primitive
+     form. The primitive form, <literal>[SECTION xyz]</literal>,
+     simply switches the current target section to the one given. The
+     user-level form, <literal>SECTION xyz</literal>, however, first
+     defines the single-line macro <literal>__SECT__</literal> to be
+     the primitive <literal>[SECTION]</literal> directive which it is
+     about to issue, and then issues it. So the user-level
+     directive</para>
+
+    <programlisting>        SECTION .text</programlisting>
+
+    <para>expands to the two lines</para>
+
+    <programlisting>%define __SECT__ [SECTION .text]
+        [SECTION .text]</programlisting>
+
+    <para>Users may find it useful to make use of this in their own
+     macros. For example, the <literal>writefile</literal> macro
+     defined in the NASM Manual can be usefully rewritten in the
+     following more sophisticated form:</para>
+
+    <programlisting>%macro writefile 2+
+        [section .data]
+%%str:  db %2
+%%endstr:
+        __SECT__
+        mov dx,%%str
+        mov cx,%%endstr-%%str
+        mov bx,%1
+        mov ah,0x40
+        int 0x21
+%endmacro</programlisting>
+
+    <para>This form of the macro, once passed a string to output,
+     first switches temporarily to the data section of the file, using
+     the primitive form of the <literal>SECTION</literal> directive so
+     as not to modify <literal>__SECT__</literal>. It then declares
+     its string in the data section, and then invokes
+     <literal>__SECT__</literal> to switch back to
+     <emphasis>whichever</emphasis> section the user was previously
+     working in. It thus avoids the need, in the previous version of
+     the macro, to include a <literal>JMP</literal> instruction to
+     jump over the data, and also does not fail if, in a complicated
+     <literal>OBJ</literal> format module, the user could potentially
+     be assembling the code in any of several separate code
+     sections.</para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="nasm-directive-absolute">
+   <title><literal>ABSOLUTE</literal>: Defining Absolute
+    Labels</title>
+
+   <indexterm>
+    <primary><literal>ABSOLUTE</literal></primary>
+   </indexterm>
+
+   <para>The <literal>ABSOLUTE</literal> directive can be thought of
+    as an alternative form of <literal>SECTION</literal>: it causes
+    the subsequent code to be directed at no physical section, but at
+    the hypothetical section starting at the given absolute address.
+    The only instructions you can use in this mode are the
+    <literal>RESB</literal> family.</para>
+
+   <para><literal>ABSOLUTE</literal> is used as follows:</para>
+
+   <programlisting>        ABSOLUTE 0x1A
+kbuf_chr        resw 1
+kbuf_free       resw 1
+kbuf            resw 16</programlisting>
+
+   <para>This example describes a section of the PC BIOS data area, at
+    segment address 0x40: the above code defines
+    <literal>kbuf_chr</literal> to be 0x1A,
+    <literal>kbuf_free</literal> to be 0x1C, and
+    <literal>kbuf</literal> to be 0x1E.</para>
+
+   <indexterm>
+    <primary><literal>__SECT__</literal></primary>
+   </indexterm>
+
+   <para>The user-level form of <literal>ABSOLUTE</literal>, like that
+    of <literal>SECTION</literal>, redefines the
+    <literal>__SECT__</literal> macro when it is invoked.</para>
+
+   <indexterm>
+    <primary><literal>STRUC</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>ENDSTRUC</literal></primary>
+   </indexterm>
+
+   <para><literal>STRUC</literal> and <literal>ENDSTRUC</literal> are
+    defined as macros which use <literal>ABSOLUTE</literal> (and also
+    <literal>__SECT__</literal>).</para>
+
+   <indexterm>
+    <primary>critical expression</primary>
+   </indexterm>
+
+   <para><literal>ABSOLUTE</literal> doesn't have to take an absolute
+    constant as an argument: it can take an expression (actually, a
+    critical expression: see <xref linkend="nasm-crit">) and it can be
+    a value in a segment. For example, a TSR can re-use its setup code
+    as run-time BSS like this:</para>
+
+   <programlisting>        org 100h                ; it's a .COM program
+        jmp setup               ; setup code comes last
+        ; the resident part of the TSR goes here
+setup:  ; now write the code that installs the TSR here
+        absolute setup
+runtimevar1 resw 1
+runtimevar2 resd 20
+tsr_end:</programlisting>
+
+   <para>This defines some variables <quote>on top of</quote> the
+    setup code, so that after the setup has finished running, the
+    space it took up can be re-used as data storage for the running
+    TSR. The symbol <quote>tsr_end</quote> can be used to calculate
+    the total size of the part of the TSR that needs to be made
+    resident.</para>
+  </sect2>
+
+  <sect2 id="nasm-directive-extern">
+   <title><literal>EXTERN</literal>: Importing Symbols from Other
+    Modules</title>
+
+   <indexterm>
+    <primary><literal>EXTERN</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Importing Symbols</primary>
+   </indexterm>
+
+   <para><literal>EXTERN</literal> is similar to the MASM directive
+    <literal>EXTRN</literal> and the C keyword
+    <literal>extern</literal>: it is used to declare a symbol which is
+    not defined anywhere in the module being assembled, but is assumed
+    to be defined in some other module and needs to be referred to by
+    this one. Not every object-file format can support external
+    variables: the <literal>bin</literal> format cannot.</para>
+
+   <para>The <literal>EXTERN</literal> directive takes as many
+    arguments as you like. Each argument is the name of a
+    symbol:</para>
+
+   <programlisting>        extern _printf
+        extern _sscanf, _fscanf</programlisting>
+
+   <para>Some object-file formats provide extra features to the
+    <literal>EXTERN</literal> directive. In all cases, the extra
+    features are used by suffixing a colon to the symbol name followed
+    by object-format specific text. For example, the
+    <literal>obj</literal> format allows you to declare that the
+    default segment base of an external should be the group
+    <literal>dgroup</literal> by means of the directive</para>
+
+   <programlisting>        extern _variable:wrt dgroup</programlisting>
+
+   <para>The primitive form of <literal>EXTERN</literal> differs from
+    the user-level form only in that it can take only one argument at
+    a time: the support for multiple arguments is implemented at the
+    preprocessor level.</para>
+
+   <para>You can declare the same variable as
+    <literal>EXTERN</literal> more than once: NASM will quietly ignore
+    the second and later redeclarations. You can't declare a variable
+    as <literal>EXTERN</literal> as well as something else,
+    though.</para>
+  </sect2>
+
+  <sect2 id="nasm-directive-global">
+   <title><literal>GLOBAL</literal>: Exporting Symbols to Other
+    Modules</title>
+
+   <indexterm>
+    <primary><literal>GLOBAL</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Exporting Symbols</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>PUBLIC</literal></primary>
+   </indexterm>
+
+   <para><literal>GLOBAL</literal> is the other end of
+    <literal>EXTERN</literal>: if one module declares a symbol as
+    <literal>EXTERN</literal> and refers to it, then in order to
+    prevent linker errors, some other module must actually
+    <emphasis>define</emphasis> the symbol and declare it as
+    <literal>GLOBAL</literal>. Some assemblers use the name
+    <literal>PUBLIC</literal> for this purpose.</para>
+
+   <para>The <literal>GLOBAL</literal> directive applying to a symbol
+    must appear <emphasis>before</emphasis> the definition of the
+    symbol.</para>
+
+   <para><literal>GLOBAL</literal> uses the same syntax as
+    <literal>EXTERN</literal>, except that it must refer to symbols
+    which <emphasis>are</emphasis> defined in the same module as the
+    <literal>GLOBAL</literal> directive. For example:</para>
+
+   <programlisting>        global _main
+_main:  ; some code</programlisting>
+
+   <para><literal>GLOBAL</literal>, like <literal>EXTERN</literal>,
+    allows object formats to define private extensions by means of a
+    colon. The <literal>elf</literal> object format, for example, lets
+    you specify whether global data items are functions or
+    data:</para>
+
+   <programlisting>        global hashlookup:function, hashtable:data</programlisting>
+
+   <para>Like <literal>EXTERN</literal>, the primitive form of
+    <literal>GLOBAL</literal> differs from the user-level form only in
+    that it can take only one argument at a time.</para>
+  </sect2>
+
+  <sect2 id="nasm-directive-common">
+   <title><literal>COMMON</literal>: Defining Common Data
+    Areas</title>
+
+   <indexterm>
+    <primary><literal>COMMON</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>common variables</primary>
+   </indexterm>
+
+   <para>The <literal>COMMON</literal> directive is used to declare
+    <emphasis>common variables</emphasis>. A common variable is much
+    like a global variable declared in the uninitialised data section,
+    so that</para>
+
+   <programlisting>        common intvar 4</programlisting>
+
+   <para>is similar in function to</para>
+
+   <programlisting>        global intvar
+        section .bss
+intvar  resd 1</programlisting>
+
+   <para>The difference is that if more than one module defines the
+    same common variable, then at link time those variables will be
+    <emphasis>merged</emphasis>, and references to
+    <literal>intvar</literal> in all modules will point at the same
+    piece of memory.</para>
+
+   <para>Like <literal>GLOBAL</literal> and <literal>EXTERN</literal>,
+    <literal>COMMON</literal> supports object-format specific
+    extensions. For example, the <literal>obj</literal> format allows
+    common variables to be NEAR or FAR, and the <literal>elf</literal>
+    format allows you to specify the alignment requirements of a
+    common variable:</para>
+
+   <programlisting>        common commvar 4:near   ; works in OBJ
+        common intarray 100:4   ; works in ELF: 4 byte aligned</programlisting>
+
+   <para>Once again, like <literal>EXTERN</literal> and
+    <literal>GLOBAL</literal>, the primitive form of
+    <literal>COMMON</literal> differs from the user-level form only in
+    that it can take only one argument at a time.</para>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
