@@ -50,18 +50,26 @@
 _IMAGES_PNG= ${IMAGES:M*.png}
 _IMAGES_EPS= ${IMAGES:M*.eps}
 _IMAGES_SCR= ${IMAGES:M*.scr}
+_IMAGES_DIA= ${IMAGES:M*.dia}
+_IMAGES_TEX= ${IMAGES:M*.tex}
 
 IMAGES_GEN_PNG= ${_IMAGES_EPS:S/.eps$/.png/}
+IMAGES_GEN_PNG+= ${_IMAGES_DIA:S/.dia$/.png/}
+IMAGES_GEN_PNG_TEX= ${_IMAGES_TEX:S/.tex$/.png/}
+IMAGES_GEN_PNG+= ${IMAGES_GEN_PNG_TEX}
 IMAGES_GEN_EPS= ${_IMAGES_PNG:S/.png$/.eps/}
 IMAGES_GEN_PDF= ${_IMAGES_EPS:S/.eps$/.pdf/}
+IMAGES_GEN_PDF+= ${_IMAGES_DIA:S/.dia$/.pdf/}
 IMAGES_SCR_PNG= ${_IMAGES_SCR:S/.scr$/.png/}
 IMAGES_SCR_EPS= ${_IMAGES_SCR:S/.scr$/.eps/}
+IMAGES_DIA_EPS= ${_IMAGES_DIA:S/.dia$/.eps/}
 
 CLEANFILES+= ${IMAGES_GEN_PNG} ${IMAGES_GEN_EPS} ${IMAGES_GEN_PDF}
-CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS}
+CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS} ${IMAGES_DIA_EPS}
 
 IMAGES_PNG= ${_IMAGES_PNG} ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
 IMAGES_EPS= ${_IMAGES_EPS} ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS}
+IMAGES_EPS+= ${IMAGES_DIA_EPS}
 
 .if ${.OBJDIR} != ${.CURDIR}
 LOCAL_IMAGES= ${IMAGES:S|^|${.OBJDIR}/|}
@@ -82,7 +90,7 @@ LOCAL_IMAGES_EPS= ${_IMAGES_EPS}
 .endif
 
 LOCAL_IMAGES_PNG+= ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
-LOCAL_IMAGES_EPS+= ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS}
+LOCAL_IMAGES_EPS+= ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS} ${IMAGES_DIA_EPS}
 
 # The default resolution eps2png (82) assumes a 640x480 monitor, and is too
 # low for the typical monitor in use today. The resolution of 100 looks
@@ -97,8 +105,8 @@ IMAGES_PDF=${IMAGES_GEN_PDF}
 
 SCR2PNG?=	${PREFIX}/bin/scr2png
 SCR2PNGOPTS?=	${SCR2PNGFLAGS}
-EPS2PNG?=	${PREFIX}/bin/peps
-EPS2PNGOPTS?=	-p -r ${EPS2PNG_RES} ${EPS2PNGFLAGS}
+EPS2PNG?=	${DOC_PREFIX}/share/tools/eps2png
+EPS2PNGOPTS?=	-res ${EPS2PNG_RES} ${EPS2PNGFLAGS}
 PNGTOPNM?=	${PREFIX}/bin/pngtopnm
 PNGTOPNMOPTS?=	${PNGTOPNMFLAGS}
 PNMTOPS?=	${PREFIX}/bin/pnmtops
@@ -107,7 +115,7 @@ EPSTOPDF?=	${PREFIX}/bin/epstopdf
 EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
 
 # Use suffix rules to convert .scr files to .png files
-.SUFFIXES:	.scr .png .eps
+.SUFFIXES:	.dia .scr .png .eps
 
 .scr.png:
 	${SCR2PNG} ${SCR2PNGOPTS} < ${.IMPSRC} > ${.TARGET}
@@ -115,6 +123,9 @@ EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
 	${SCR2PNG} ${SCR2PNGOPTS} < ${.ALLSRC} | \
 		${PNGTOPNM} ${PNGTOPNMOPTS} | \
 		${PNMTOPS} ${PNMTOPSOPTS} > ${.TARGET}
+
+.dia.eps:
+	dia --nosplash --export=${.TARGET} ${.IMPSRC}
 
 # We can't use suffix rules to generate the rules to convert EPS to PNG and
 # PNG to EPS.  This is because a .png file can depend on a .eps file, and
@@ -124,6 +135,22 @@ EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
 .for _curimage in ${IMAGES_GEN_PNG}
 ${_curimage}: ${_curimage:S/.png$/.eps/}
 	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} ${.ALLSRC}
+.endfor
+
+.for _curimage in ${IMAGES_GEN_PNG_TEX}
+${_curimage:S/.png$/-img.tex/}: ${_curimage:S/.png$/.tex/}
+	echo \\documentclass[12pt]{article} >${.TARGET}
+	echo \\begin{document} >>${.TARGET}
+	echo \\pagestyle{empty} >>${.TARGET}
+	cat ${.ALLSRC} >>${.TARGET}
+	echo \\end{document} >>${.TARGET}
+
+${_curimage:S/.png$/-img.dvi/}: ${_curimage:S/.png$/-img.tex/}
+	latex ${.ALLSRC}
+	mv *-img.dvi ${.TARGET}
+
+${_curimage:S/.png$/.eps/}: ${_curimage:S/.png$/-img.dvi/}
+	dvips -q -E -o ${.TARGET} ${.ALLSRC}
 .endfor
 
 .for _curimage in ${IMAGES_GEN_EPS}
