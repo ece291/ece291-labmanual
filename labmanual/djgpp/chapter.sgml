@@ -8,10 +8,10 @@
  <title>DJGPP Development Environment</title>
 
  <para>The development environment used for this tutorial and for the
-  protected mode MPs in ECE 291 is different from all of the other
-  MPs.  For this tutorial (and in the protected mode MPs and probably
-  your final project), you will be using the DJGPP compiler system.
-  The entire environment is installed under <filename
+  protected mode MPs in ECE 291 is different from the one used for all
+  of the other MPs.  For this tutorial (and in the protected mode MPs
+  and probably your final project), you will be using the DJGPP
+  compiler system. The entire environment is installed under <filename
    class=directory>V:\ece291\djgpp\</filename>.  It's also available
   for download at <ulink
    url="http://courses.ece.uiuc.edu/ece291/resources/djgpp.zip"></ulink> 
