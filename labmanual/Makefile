@@ -8,7 +8,7 @@ MAINTAINER=pete@bilogic.org
 
 DOC?= book
 
-FORMATS?= html-split pdf
+FORMATS?= html-split pdf ps
 
 #BOOK_OUTPUT= 1
 HAS_INDEX= true
