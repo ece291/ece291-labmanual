@@ -60,7 +60,7 @@
 
   <subtitle>Computer Engineering II</subtitle>
 
-  <title>Summer 2002 Laboratory Notes</title>
+  <title>Fall 2002 Laboratory Notes</title>
 
   <authorgroup>
    <corpauthor>The ECE 291 Documentation Project</corpauthor>
@@ -145,6 +145,14 @@
     <authorinitials>PLBJ</authorinitials>
     <revremark>Updated instruction reference and NASM
      chapter.</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>8</revnumber>
+    <date>2002</date>
+    <authorinitials>PLBJ</authorinitials>
+    <revremark>Corrections for errata found by Professor Loui and
+     others.</revremark>
    </revision>
   </revhistory>
 
