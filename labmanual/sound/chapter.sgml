@@ -16,10 +16,10 @@
   playing.</para>
 
  <para>Fortunately, there's some free sample code available in the
-   <filename>testsb16.asm</filename> file in the <filename
-    class="directory">examples</filename> directory in <filename
-    class="directory">V:\classes\ece291\pmodelib</filename> that plays
-   a short sound in the foreground.</para>
+  <filename>testsb16.asm</filename> file in the <filename
+   class="directory">examples</filename> directory in <filename
+   class="directory">V:\ece291\pmodelib</filename> that plays a short
+  sound in the foreground.</para>
 
  <sect1 id="sound-long">
   <title>How to Play Long Sounds</title>
