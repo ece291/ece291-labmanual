@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.16 2001/08/13 06:45:29 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.17 2001/08/13 07:10:50 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -139,6 +139,9 @@
 
 	(define %default-quadding%
 	  'justify)
+
+	(define %head-after-factor%
+	  .4)
 
 	(define %hyphenation%
 	  #t)
@@ -385,6 +388,19 @@
 
       (define %titlepage-in-info-order%
 	#t)
+
+      (define (book-titlepage-verso-elements)
+	(list (normalize "title") 
+	      (normalize "corpauthor") 
+	      (normalize "authorgroup") 
+	      (normalize "author") 
+	      (normalize "editor")
+	      (normalize "edition") 
+	      (normalize "pubdate") 
+	      (normalize "copyright")
+	      (normalize "legalnotice") 
+	      (normalize "revhistory")))
+
 
       (define %section-autolabel%
         #t)
