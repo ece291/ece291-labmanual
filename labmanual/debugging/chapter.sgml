@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.2 2001/08/13 21:24:29 pete Exp $
+     $Id: chapter.sgml,v 1.3 2001/08/15 01:52:46 pete Exp $
 -->
 
 <chapter id="debugging">
@@ -46,11 +46,39 @@
   the lab. So don t be tentative about <quote>looking inside</quote>
   the computer while executing your program; it is not so complicated
   as you might think. If you have never used a debugger before, it
-  will be useful to go through a program with you while using the
-  debugger. In this way, you will get a better feel for how the
-  debugger works.</para>
+  will be useful to go through a simple program using the debugger
+  before tackling larger programs.  The first machine problem in ECE
+  291, MP0, will help you learn how to use the debugger.</para>
 
- <!-- TODO: example program -->
+ <para>There are four basic steps in debugging:</para>
+
+ <orderedlist>
+  <listitem>
+   <para><emphasis>Discovering the Bug</emphasis>.  Is there one?  It
+    is not always obvious that you have a bug.  (Why?)</para>
+  </listitem>
+
+  <listitem>
+   <para><emphasis>Isolating the Bug</emphasis>.  Where is it?  Locate
+    the part(s) of the code that is causing the bug.</para>
+  </listitem>
+
+  <listitem>
+   <para><emphasis>Finding the Bug</emphasis>.  What exactly is wrong
+    with the buggy code fragment?</para>
+  </listitem>
+
+  <listitem>
+   <para><emphasis>Fixing the Bug</emphasis>.  How should the buggy
+    fragment be rewritten?</para>
+  </listitem>
+ </orderedlist>
+
+ <para>The debugger gives you the tools to help in all these steps.
+  E.g., you can run the code in a step-by-step fashion or until some
+  <firstterm>breakpoint</firstterm> you set in the code.  In between
+  these execution steps, you can examine memory and CPU state
+  (variables, registers, flags, and stack).</para>
 
  <sect1 id="debugging-td">
   <title>Turbo Debugger (TD)</title>
@@ -64,10 +92,392 @@
    <arg><replaceable>progname<optional>.exe</optional></replaceable></arg>
   </cmdsynopsis>
 
-  <!-- TODO: TD -->
- </sect1>
+  <sect2 id="debugging-td-mechanics">
+   <title>Mechanics of Using TD</title>
 
- <!-- TODO: tutorial -->
+   <sect3 id="debugging-td-mechanics-overview">
+    <title>Overview</title>
+
+    <para>The main TD window shows a standard (pull-down) menu bar at
+     the top. The menu bar lists the following menus:
+     <guimenu>File</guimenu>, <guimenu>Edit</guimenu>,
+     <guimenu>View</guimenu>, <guimenu>Run</guimenu>,
+     <guimenu>Breakpoints</guimenu>, <guimenu>Data</guimenu>,
+     <guimenu>Options</guimenu>, <guimenu>Windows</guimenu>,
+     <guimenu>Help</guimenu>. The status bar at the bottom of the TD
+     window contains helpful information about the current context.
+     For instance, you often see a list of all the functions
+     associated with the function keys <keycap>F1</keycap> to
+     <keycap>F10</keycap>. For instance, <keycap>F9</keycap> is the
+     <quote>Run</quote> command. That means these functions are
+     available in the current context.</para>
+   </sect3>
+
+   <sect3 id="debugging-td-mechanics-windows">
+    <title>Windows</title>
+
+    <para>Within the Main TD window we can have a variety of
+     (sub)windows. At any moment, several of these windows may be
+     active. Each active windows is numbered (1,2,3, etc.) and this
+     number is displayed on the upper right hand corner of window.
+     Below, we will go into some of these windows and discuss how to
+     manage them. Among the active windows, one of them is the current
+     top window. The top window has a little green rectangle at its
+     upper left corner. You can close this window by clicking on this
+     little green rectangle.  The function key <keycap>F6</keycap>
+     (called <quote>Next</quote>) steps through the active windows,
+     allowing each of them to be <quote>top window</quote> in
+     turn.</para>
+   </sect3>
+
+   <sect3 id="debugging-td-mechanics-help">
+    <title>Online Help</title>
+
+    <para>We already mentioned the Help (pulldown) menu. But there are
+     more <quote>immediate</quote> or context-sensitive help
+     available:</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Status Bar</term>
+
+      <listitem>
+       <para>We noted that status bar usually shows the list of
+	functions associated with the 10 function keys. But if you
+	hold down the <keycap>Alt</keycap> key, the status bar will
+	show the functions associated with
+	<keycap>Alt</keycap>+Function Keys.</para>
+
+       <para>E.g., <keycombo>
+	 <keycap>ALT</keycap>
+	 <keycap>F5</keycap>
+       </keycombo> is the <quote>User Screen</quote> Function. Try
+	this! This is useful if you need to see any output from your
+	executed code. To get back from the User Screen, press any
+	key.</para>
+
+       <para>If you hold down the <keycap>Ctrl</keycap> key, you will
+	see the <keycap>Ctrl</keycap>+key functions.</para>
+
+       <para>E.g., <keycombo>
+	 <keycap>CTRL</keycap>
+	 <keycap>I</keycap>
+       </keycombo> allows you to inspect the variable that the cursor
+	is currently pointed at.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><keycap>F1</keycap> key</term>
+
+      <listitem>
+       <para>This key opens a help window containing information about
+	the current top window, with further subtopics to choose
+	from.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>SpeedMenu</term>
+
+      <listitem>
+       <para>This can be invoked with a
+	<mousebutton>right</mousebutton> mouse click at any time. In
+	most windows, it will display a list of options suitable for
+	that window.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="debugging-td-menus">
+   <title>Some Pulldown Menus</title>
+
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>View</guimenu></term>
+
+     <listitem>
+      <para>The types of windows available are listed under the
+       <guimenu>View</guimenu> menu.  See <xref
+	linkend="debugging-td-windows"> for descriptions of the
+       various types of windows available.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><guimenu>Window</guimenu></term>
+
+     <listitem>
+      <para>The <guimenu>Window</guimenu> menu helps you manage the
+       various windows.  This menu is divided into two halves
+       (separated by a horizontal line): the top half contains
+       commands such as <menuchoice>
+	<shortcut>
+	 <keycap>F5</keycap>
+	</shortcut>
+	<guimenuitem>Zoom</guimenuitem>
+       </menuchoice>, <menuchoice>
+	<shortcut>
+	 <keycap>F6</keycap>
+	</shortcut>
+	<guimenuitem>Next</guimenuitem>
+       </menuchoice>, <menuchoice>
+	<shortcut>
+	 <keycap>Tab</keycap>
+	</shortcut>
+	<guimenuitem>Next Pane</guimenuitem>
+       </menuchoice>, etc. The bottom half is a list of the currently
+       active windows.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><guimenu>Run</guimenu></term>
+
+     <listitem>
+      <para>Windows are for watching. But for action, you need to
+       execute your code. For this, the <guimenu>Run</guimenu> menu
+       provides several modes of execution:</para>
+
+      <itemizedlist spacing="compact">
+       <listitem>
+	<para><menuchoice>
+	  <shortcut>
+	   <keycap>F9</keycap>
+	  </shortcut>
+	  <guimenuitem>Run</guimenuitem>
+	 </menuchoice>, i.e., until program terminates (or until the
+	 next breakpoint, see <xref
+	  linkend="debugging-td-breakpoints">).</para>
+       </listitem>
+
+       <listitem>
+	<para><menuchoice>
+	  <shortcut>
+	   <keycap>F7</keycap>
+	  </shortcut>
+	  <guimenuitem>Trace Into</guimenuitem>
+	 </menuchoice>, i.e., single stepping, one instruction at a
+	 time.  What constitutes a single step depends on which the
+	 current <quote>top window</quote>. If the top window is the
+	 <guilabel>Module</guilabel> window or if you use
+	 <keycap>F7</keycap>, then a single line of source code is
+	 executed.  If the top window is the <guilabel>CPU</guilabel>
+	 window or if you use <keycombo>
+	  <keycap>ALT</keycap>
+	  <keycap>F7</keycap>
+	 </keycombo>, then a single machine instruction is executed.
+	 If the current source line contains a function call, TD
+	 traces into the function (assuming it was compiled with debug
+	 information). Some machine instructions, however, cause
+	 multiple instructions to be executed include:
+	 <instruction>CALL</instruction>,
+	 <instruction>INT</instruction>,
+	 <instruction>LOOP</instruction>, etc.</para>
+       </listitem>
+
+       <listitem>
+	<para><menuchoice>
+	  <shortcut>
+	   <keycap>F8</keycap>
+	  </shortcut>
+	  <guimenuitem>Step Over</guimenuitem>
+	 </menuchoice>.  This is like <quote>Trace Into</quote> except
+	 that when the instruction pointer is at a function call, then
+	 the entire function is executed and you are next placed at
+	 the statement following the function call.</para>
+       </listitem>
+
+       <listitem>
+	<para><guimenuitem>Animate</guimenuitem>.  Similar to run
+	 until terminate, except it pauses between machine
+	 instructions to allow you to catch what is happening.</para>
+       </listitem>
+
+       <listitem>
+	<para><guimenuitem>Restart</guimenuitem>.  Moves the
+	 instruction pointer back to the first instruction.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="debugging-td-windows">
+   <title>TD Windows</title>
+
+   <sect3>
+    <title>The <guilabel>Regs</guilabel> Window</title>
+
+    <para>The <guilabel>Regs</guilabel> window displays the contents
+     of all the processor registers as well as the CPU flags.  It is
+     possible to view either the 16-bit registers or the 32-bit
+     registers.  Various options can be accessed by using the
+     SpeedMenu (see <xref linkend="debugging-td-mechanics-help">). As
+     the program is being stepped through, register and flag changes
+     are highlighted in the window.</para>
+   </sect3>
+
+   <sect3>
+    <title>The <guilabel>Dump</guilabel> Window</title>
+
+    <para>This is a hex display of an area in memory. The leftmost
+     path of each line shows the starting address of the line (e.g.,
+     <literal>&reg.ds;:0000</literal>). In the default display format
+     (byte format), you see 8 bytes per line, and to the right of
+     these 8 bytes are their representation in the IBM extended
+     character set (which is an extension of the ASCII set). You can
+     use the <guimenuitem>Goto</guimenuitem> command in the SpeedMenu
+     to examine variables (e.g., <guimenuitem>Goto</guimenuitem>
+     <literal>Input</literal>, assuming you have defined the variable
+     <quote>Input</quote>).</para>
+   </sect3>
+
+   <sect3>
+    <title>The <guilabel>Module</guilabel> Window</title>
+
+    <para>The <guilabel>Module</guilabel> window displays the program
+     source code if debugging information is available.  The
+     <keycap>F8</keycap> key steps through each line of code.  The
+     <keycap>F7</keycap> key also steps through each line of code, but
+     unlike <keycap>F8</keycap>, it also <firstterm>traces</firstterm>
+     into procedure calls.  <keycap>F2</keycap> sets a
+     <firstterm>breakpoint</firstterm> in the code at the line where
+     the cursor is at (see <xref linkend="debugging-td-menus"> for
+     more information on stepping through the program and
+     <xref linkend="debugging-td-breakpoints"> for more information on
+     breakpoints).</para>
+   </sect3>
+
+   <sect3>
+    <title>The <guilabel>CPU</guilabel> Window</title>
+
+    <para>The <guilabel>CPU</guilabel> window combines the
+     <guilabel>Module</guilabel>, <guilabel>Dump</guilabel>, and
+     <guilabel>Regs</guilabel> windows into a single window.  It's
+     also less powerful and harder to use than the three separate
+     windows, so it's almost always better to use the specific windows
+     rather than the combined <guilabel>CPU</guilabel> window.</para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="debugging-td-breakpoints">
+   <title>Breakpoints</title>
+
+   <indexterm>
+    <primary>Breakpoints</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>Setting a breakpoint</primary>
+   </indexterm>
+
+   <para>Breakpoints are a device to cause the computer to take
+    specific actions at specific points in its execution. The user can
+    define a breakpoint by specifying three pieces of
+    information:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>The <emphasis>location</emphasis> where the breakpoint is
+      set.</para>
+    </listitem>
+
+    <listitem>
+     <para>The <emphasis>condition</emphasis> which allows the
+      breakpoint to activate.</para>
+    </listitem>
+
+    <listitem>
+     <para>The <emphasis>action</emphasis> that takes place when the
+      breakpoint is activated.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>The simplest kind of breakpoint is one that (a) is associated
+    with a specific instruction in the program, which (b) is always
+    activated (condition is <quote>always true</quote>) and (c) pauses
+    the program execution (action is <quote>break</quote>). These are
+    called simple breakpoints. It is the default assumed by TD, and it
+    should suffice for our purposes. Using this, you run the program
+    at full speed until specific instructions, at which points you can
+    examine the state of the memory and CPU.</para>
+
+   <para>How do you set simple breakpoints? Well, you only need to
+    specify an instruction in the program. The simplest is to do this
+    from within the <guilabel>Module</guilabel> window, or from the
+    Code pane in the <guilabel>CPU</guilabel> window:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>First place the cursor at an executable line of code where
+      a breakpoint is desired. (How do you tell if a line is
+      executable?) You then <keycombo action="click">
+       <mousebutton>left</mousebutton>
+      </keycombo> the 2 leftmost columns of line. Instead of
+      <keycombo action="click">
+       <mousebutton>left</mousebutton>
+      </keycombo>, you can also use <keycap>F2</keycap> (see the
+      status line).</para>
+
+     <note>
+      <para>If the line already has a breakpoint, then this action
+       removes that breakpoint. Hence this is also called the
+       <firstterm>toggle</firstterm> action.</para>
+     </note>
+    </listitem>
+
+    <listitem>
+     <para>If you use the <menuchoice>
+       <guimenu>Breakpoint</guimenu>
+       <guimenuitem>At</guimenuitem>
+      </menuchoice> menu option, you can also place a simple
+      breakpoint at the current cursor position. However, since this
+      has a pop-up Breakpoint option dialog box, you can also specify
+      more complex types of breakpoints.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>Breakpoint <emphasis>addresses</emphasis> must be entered
+    when you use the keyboard to enter breakpoints. (You can see this
+    in the Breakpoint option dialog box).  These are the kinds of
+    addresses you can specify:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>#<replaceable>number</replaceable> &mdash; for instance,
+      #68 specifies a breakpoint in line 68 of your source
+      code.</para>
+
+     <note>
+      <para>If you have several program modules, you need to preface
+       the line number with the module name. E.g. #mp0#68 refers to
+       line 68 in the mp0.asm module.</para>
+     </note>
+    </listitem>
+
+    <listitem>
+     <para>Symbolic names&mdash;for instance, labels can be specified.
+      If you have have a label called <quote>repeat</quote>, you can
+      use that as an address.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>How do you see all the current breakpoints? In the
+    <guilabel>Breakpoints</guilabel> window, which can be activated
+    using the <menuchoice>
+     <guimenu>View</guimenu>
+     <guimenuitem>Breakpoints</guimenuitem>
+    </menuchoice> menu option. This window has two panes: the left
+    pane lists all the current breakpoints, the right pane gives
+    details about the breakpoint that is currently highlighted. The
+    SpeedMenu from the left pane has options to add or delete
+    breakpoints, etc.</para>
+  </sect2>
+ </sect1>
 
  <sect1 id="debugging-speckled-bug">
   <sect1info>
