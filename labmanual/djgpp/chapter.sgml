@@ -1,0 +1,110 @@
+<!--
+     ECE 291 Protected Mode Tutorial
+
+     $Id: chapter.sgml,v 1.1 2001/08/01 20:00:25 pete Exp $
+-->
+
+<chapter id="dev-env">
+ <title>Development Environment</title>
+
+ <para>The development environment used for this tutorial and for the
+  protected mode MPs in ECE 291 is different from all of the other
+  MPs.  For this tutorial (and the protected mode MPs), you will be
+  using the DJGPP compiler system.  The entire environment is
+  installed under <filename
+   class=directory>V:\ece291\djgpp\</filename>.  Our <quote>players at
+   home</quote> can download and unzip <ulink
+   url="http://courses.ece.uiuc.edu/ece291/class-resources/djgpp.zip">djgpp.zip</ulink>.</para>
+
+ <sect1 id="dev-env-djgpp">
+  <title>About DJGPP</title>
+
+  <para><ulink url="http://www.delorie.com/djgpp/">DJGPP</ulink> is a
+   complete 32-bit C/C++ development system for Intel 80386 (and
+   higher) PCs running DOS (or Win95/98/NT/2000/ME). It includes ports
+   of many standard GNU development utilities (gcc, g++, gdb, etc).
+   The development tools require a 80386 or newer computer to run, as
+   do the programs they produce.  In almost all cases, the programs it
+   produces can be sold commercially without license or
+   royalties.</para>
+ </sect1>
+
+ <sect1 id="dev-env-dpmi">
+  <title>About DPMI</title>
+
+  <para><firstterm>DPMI</firstterm> is the DOS Protected Mode
+   Interface used by DJGPP.  The programs produced by DJGPP run in
+   32-bit protected mode.  The transition from real-mode to
+   protected-mode is provided by the DJGPP real-mode stub, which calls
+   DPMI.  DPMI is also used by DJGPP programs to allocate memory, set
+   interrupt vectors, and perform protected-mode to real-mode (and
+   vice-versa) interrupt call translations.</para>
+
+  <para>Why is DPMI necessary?  Multitasking operating systems such as
+   Windows 2000 run DOS programs within a <quote>virtual 8086</quote>
+   environment, provided by 80386 and higher processors, that isolates
+   the operating system from program errors.  However, this processor
+   mode also restricts access to certain features of the processor,
+   such as the ability to switch between real and protected mode.
+   DPMI is a standardized interface that provides interrupt-level
+   functions for things such as switching between real and protected
+   mode, allocating memory, and setting interrupt vectors.</para>
+
+  <para>If we were writing programs under a non-multitasking operating
+   system such as DOS, our programs would have complete control of the
+   machine &ndash; we wouldn't be limited by the virtual 8086 mode.
+   However, DPMI isn't available; we'd have to implement all of its
+   functionality by manipulating control registers on the processor
+   and building various data structures by hand.  While this would be
+   an interesting (yet difficult) exercise, fortunately Charles
+   Sandmann has already done it for us by writing the CWSDPMI utility,
+   a full DPMI provider that runs on DOS.</para>
+
+  <para>As we'll assume DPMI is the lowest level protected mode
+   interface available for our programs' use, we will learn about
+   protected mode by first using these functions directly.  Later,
+   we'll combine these low-level functions into higher-level,
+   easier-to-use library functions.</para>
+ </sect1>
+
+ <sect1 id="dev-env-setting-up">
+  <title>Setting Up</title>
+
+  <para>Normally setting up DJGPP requires the downloading of numerous
+   (20+) ZIP files and some minor configuration.  However, a fully
+   installed and configured version of DJGPP is available on the lab
+   machines.  It should already be set up and ready to use for this
+   tutorial.</para>
+
+  <para>If you want to develop at home, everything you need is in
+   <ulink
+    url="http://courses.ece.uiuc.edu/ece291/class-resources/djgpp.zip">djgpp.zip</ulink>. 
+   There are some environment variables that need to be set properly
+   in order for the tools to work correctly:</para>
+
+  <screen>SET PATH=C:\djgpp\bin;%PATH
+SET TMP=C:\temp
+SET TEMP=C:\temp
+SET DJGPP=C:\djgpp\djgpp.env</screen>
+
+  <para>A batch file, <command>djgpp.bat</command> is included in
+   <filename>djgpp.zip</filename> that sets these environment
+   variables.  It is necessary to edit this file (to change the
+   directory locations if necessary) and run it in every DOS box you
+   intend to use the DJGPP tools in.  If this gets tiring, you might
+   try setting these variables in the Environment Settings dialog box,
+   accessed from the System Control Panel, Advanced tab.</para>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

@@ -1,0 +1,149 @@
+<!--
+     ECE 291 Protected Mode Tutorial
+
+     $Id: chapter.sgml,v 1.1 2001/08/01 20:00:25 pete Exp $
+-->
+
+<chapter id="introduction">
+ <title>Introduction</title>
+
+ <sect1 id="introduction-dontprint">
+  <title>Don't Print This</title>
+
+  <itemizedlist>
+   <listitem>
+    <para>Tutorial may change.</para>
+   </listitem>
+
+   <listitem>
+    <para>Links don't do anything when you click a piece of paper.</para>
+   </listitem>
+
+   <listitem>
+    <para>Copy/Paste is harder on paper.</para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+
+ <sect1 id="introduction-howto">
+  <title>How to Do this Tutorial</title>
+
+  <para>We could have a huge reference section, and then a huge code
+   description section, but we decided to do a little bit at a time in
+   a tutorial format.  <quote>Here's how this works.  Now here's how
+    you write the code.  Now write the code.</quote>  It's probably
+   not worth reading over the whole thing before you start.  Just sit
+   down at a computer and go through it step by step.  It's going to
+   some time to go through this, but you're going to learn everything
+   the right way with no <quote>black boxes</quote> or mysterious
+   files given to you by the TAs.  If a file does seem mysterious,
+   type it in instead of blindly pasting it in.  Look at the
+   references.  Ask the guy (or gal) next to you.  Hopefully you'll
+   learn not only 32-bit protected mode, but a little about how
+   assemblers, compilers, and linkers work, learn a little about
+   Makefiles, and learn a little about graphics. So let's begin where
+   every good tutorial should begin &ndash; at the end.</para>
+ </sect1>
+
+ <sect1 id="introduction-goal">
+  <title>The Goal</title>
+
+  <para>The Goal is to learn the basics of protected mode to prepare
+   you for later MPs in ECE 291, where you'll be using the tools and
+   concepts you learn in this tutorial.</para>
+ </sect1>
+
+ <sect1 id="introduction-finalproject">
+  <title>Protected Mode and Your Final Project</title>
+
+  <para>Advantages:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>Better memory management</para>
+
+    <itemizedlist>
+     <listitem>
+      <para>Can allocate huge (multimegabyte) buffers for huge
+       pictures.</para>
+     </listitem>
+
+     <listitem>
+      <para>Don't have to deal with 64K segment limitations.</para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+
+   <listitem>
+    <para>Better instructions</para>
+
+    <itemizedlist>
+     <listitem>
+      <para>Take full advantage of advanced instructions.</para>
+     </listitem>
+
+     <listitem>
+      <para>Reference memory with <emphasis>any</emphasis> register or
+       some combinations of registers.</para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+
+   <listitem>
+    <para>High color, high resolution graphics</para>
+
+    <itemizedlist>
+     <listitem>
+      <para>Your final projects will look <emphasis>much</emphasis>
+       nicer.</para>
+     </listitem>
+
+     <listitem>
+      <para>No need to manage or match palettes of only 16-256
+       colors.</para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+
+   <listitem>
+    <para>The Library</para>
+
+    <itemizedlist>
+     <listitem>
+      <para>We give you a big library <emphasis>with</emphasis> source
+       code for some cool stuff.</para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+  </itemizedlist>
+
+  <para>Disadvantages:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>You're not as used to its beauty.</para>
+   </listitem>
+
+   <listitem>
+    <para>Doing hardware stuff will be slightly more difficult.</para>
+   </listitem>
+
+   <listitem>
+    <para>Debugging will be <emphasis>much</emphasis> more
+     difficult.</para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
