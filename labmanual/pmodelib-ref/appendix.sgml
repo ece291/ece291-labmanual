@@ -3414,6 +3414,181 @@ ENDSTRUC</programlisting>
      </varlistentry>
     </variablelist>
    </sect3>
+
+   <sect3 id="pmodelib-ref-sockets-constant-protocol">
+    <title>Protocols</title>
+
+    <variablelist>
+     <varlistentry id="pmodelib-ref-sockets-constant-protocol-ipproto-tcp" xreflabel="IPPROTO_TCP">
+      <term><literal>IPPROTO_TCP</literal></term>
+
+      <listitem>
+       <para>TCP protocol/layer.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-protocol-sol-socket" xreflabel="SOL_SOCKET">
+      <term><literal>SOL_SOCKET</literal></term>
+
+      <listitem>
+       <para>Specifies Sockets layer for <link
+	 linkend="pmodelib-ref-socket-getsockopt"><function>Socket_getsockopt()</function></link> 
+	and <link
+	 linkend="pmodelib-ref-socket-setsockopt"><function>Socket_setsockopt()</function></link> 
+	(not really a protocol).</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="pmodelib-ref-sockets-constant-option">
+    <title>Socket Options</title>
+
+    <para>Socket options may be set using the <link
+      linkend="pmodelib-ref-socket-getsockopt"><function>Socket_getsockopt()</function></link> 
+     and <link
+      linkend="pmodelib-ref-socket-setsockopt"><function>Socket_setsockopt()</function></link> 
+     functions.  Some options may be read-only in some cases (e.g.
+     changes may be ignored or have no effect when trying to set them
+     with <link
+      linkend="pmodelib-ref-socket-setsockopt"><function>Socket_setsockopt()</function></link>).</para>
+
+    <variablelist>
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-acceptconn" xreflabel="SOCKOPT_ACCEPTCONN">
+      <term><literal>SOCKOPT_ACCEPTCONN</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if the socket is in the listen state.
+	False (0) unless a <link
+	 linkend="pmodelib-ref-socket-listen"><function>Socket_listen()</function></link> 
+	has been performed.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-broadcast" xreflabel="SOCKOPT_BROADCAST">
+      <term><literal>SOCKOPT_BROADCAST</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if the socket is configured for the
+	transmission of broadcast messages.  Defaults to false
+	(0).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-debug" xreflabel="SOCKOPT_DEBUG">
+      <term><literal>SOCKOPT_DEBUG</literal></term>
+
+      <listitem>
+       <para>Read-only boolean indicating if debugging is enabled for
+	the socket.  Defaults to false (0).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-dontlinger" xreflabel="SOCKOPT_DONTLINGER">
+      <term><literal>SOCKOPT_DONTLINGER</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if the <xref
+	 linkend="pmodelib-ref-sockets-constant-option-sockopt-linger"> 
+	option is disabled.  Defaults to true (1).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-dontroute" xreflabel="SOCKOPT_DONTROUTE">
+      <term><literal>SOCKOPT_DONTROUTE</literal></term>
+
+      <listitem>
+       <para>Read-only boolean indicating if routing is disabled for
+	the socket.  Defaults to false (0).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-error" xreflabel="SOCKOPT_ERROR">
+      <term><literal>SOCKOPT_ERROR</literal></term>
+
+      <listitem>
+       <para>Integer error status for the socket.  When read, cleared
+	to 0.  Default value is 0.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-keepalive" xreflabel="SOCKOPT_KEEPALIVE">
+      <term><literal>SOCKOPT_KEEPALIVE</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if keepalives are being sent for the
+	socket.  Defaults to false (0).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-linger" xreflabel="SOCKOPT_LINGER">
+      <term><literal>SOCKOPT_LINGER</literal></term>
+
+      <listitem>
+       <para>The current linger options.  Not available in current
+	implementation.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-oobinline" xreflabel="SOCKOPT_OOBINLINE">
+      <term><literal>SOCKOPT_OOBINLINE</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if out-of-band data is being received
+	in the normal data stream.  Defaults to false (0).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-rcvbuf" xreflabel="SOCKOPT_RCVBUF">
+      <term><literal>SOCKOPT_RCVBUF</literal></term>
+
+      <listitem>
+       <para>Read-only integer buffer size for receives on the
+	socket.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-reuseaddr" xreflabel="SOCKOPT_REUSEADDR">
+      <term><literal>SOCKOPT_REUSEADDR</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if the address to which the socket is
+	bound can be used by other sockets.  Defaults to false
+	(0).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-sndbuf" xreflabel="SOCKOPT_SNDBUF">
+      <term><literal>SOCKOPT_SNDBUF</literal></term>
+
+      <listitem>
+       <para>Read-only integer buffer size for sends on the
+	socket.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-sockopt-type" xreflabel="SOCKOPT_TYPE">
+      <term><literal>SOCKOPT_TYPE</literal></term>
+
+      <listitem>
+       <para>Integer indicating the type of the socket (e.g. <xref
+	 linkend="pmodelib-ref-sockets-constant-type-sock-stream">).
+	Defaults to the type specified when the socket was created
+	(via <link
+	 linkend="pmodelib-ref-socket-create"><function>Socket_create()</function></link>).</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-option-tcp-nodelay" xreflabel="TCP_NODELAY">
+      <term><literal>TCP_NODELAY</literal></term>
+
+      <listitem>
+       <para>Boolean indicating if the Nagle algorithm for send
+	coalescing is disabled.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
   </sect2>
 
   <sect2 id="pmodelib-ref-initsocket" xreflabel="_InitSocket">
@@ -4013,6 +4188,74 @@ ENDSTRUC</programlisting>
        <xref
 	 linkend="pmodelib-ref-sockets-data-sockaddr"> structure
        pointed to by <parameter>Name</parameter>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-getsockopt" xreflabel="_Socket_getsockopt">
+   <title><function>Socket_getsockopt()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool
+	 <function>Socket_getsockopt</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>int <parameter>Level</parameter></paramdef>
+	<paramdef>int <parameter>OptName</parameter></paramdef>
+	<paramdef>char *<parameter>OptVal</parameter></paramdef>
+	<paramdef>int *<parameter>OptLen</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Retrieves a socket option.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a socket.</para>
+
+      <para><parameter>Level</parameter>, the level at which the
+       option is defined.  Supported levels are <xref
+	linkend="pmodelib-ref-sockets-constant-protocol-sol-socket">
+       (socket level) and <xref
+	linkend="pmodelib-ref-sockets-constant-protocol-ipproto-tcp">
+       (TCP level).</para>
+
+      <para><parameter>OptName</parameter>, the option for which the
+       value is to be retrieved.  See <xref
+	linkend="pmodelib-ref-sockets-constant-option"> for a complete
+       list of options.</para>
+
+      <para><parameter>OptVal</parameter>, the buffer in which the
+       value for the requested option is to be returned.</para>
+
+      <para><parameter>OptLen</parameter>, (pointer to) the size of
+       the buffer pointed to by <parameter>OptVal</parameter>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, otherwise returns 0 and fills the
+       buffer pointed to by <parameter>OptVal</parameter>.</para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -4645,6 +4888,73 @@ ENDSTRUC</programlisting>
      <listitem>
       <para>Returns the number of bytes actually transmitted, or -1 on
        error.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-setsockopt" xreflabel="_Socket_setsockopt">
+   <title><function>Socket_setsockopt()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool
+	 <function>Socket_setsockopt</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>int <parameter>Level</parameter></paramdef>
+	<paramdef>int <parameter>OptName</parameter></paramdef>
+	<paramdef>char *<parameter>OptVal</parameter></paramdef>
+	<paramdef>int <parameter>OptLen</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets a socket option.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a socket.</para>
+
+      <para><parameter>Level</parameter>, the level at which the
+       option is defined.  Supported levels are <xref
+	linkend="pmodelib-ref-sockets-constant-protocol-sol-socket">
+       (socket level) and <xref
+	linkend="pmodelib-ref-sockets-constant-protocol-ipproto-tcp">
+       (TCP level).</para>
+
+      <para><parameter>OptName</parameter>, the option for which the
+       value is to be set.  See <xref
+	linkend="pmodelib-ref-sockets-constant-option"> for a complete
+       list of options.</para>
+
+      <para><parameter>OptVal</parameter>, the buffer in which the
+       value for the requested option is supplied.</para>
+
+      <para><parameter>OptLen</parameter>, the size of the buffer
+       pointed to by <parameter>OptVal</parameter>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, otherwise returns 0.</para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -5305,6 +5615,7 @@ ENDSTRUC</programlisting>
       <funcsynopsis>
        <funcprototype>
 	<funcdef>bool <function>SB16_GetChannel</function></funcdef>
+	<void>
        </funcprototype>
       </funcsynopsis>
      </listitem>
