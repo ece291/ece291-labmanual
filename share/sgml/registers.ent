@@ -66,6 +66,17 @@
 <!ENTITY reg.mm6               "<register role=mmx>MM6</register>">
 <!ENTITY reg.mm7               "<register role=mmx>MM7</register>">
 
+<!-- SSE/SSE2 -->
+<!ENTITY reg.xmm               "<register role=xmm>XMM</register>">
+<!ENTITY reg.xmm0              "<register role=xmm>XMM0</register>">
+<!ENTITY reg.xmm1              "<register role=xmm>XMM1</register>">
+<!ENTITY reg.xmm2              "<register role=xmm>XMM2</register>">
+<!ENTITY reg.xmm3              "<register role=xmm>XMM3</register>">
+<!ENTITY reg.xmm4              "<register role=xmm>XMM4</register>">
+<!ENTITY reg.xmm5              "<register role=xmm>XMM5</register>">
+<!ENTITY reg.xmm6              "<register role=xmm>XMM6</register>">
+<!ENTITY reg.xmm7              "<register role=xmm>XMM7</register>">
+
 <!-- control -->
 <!ENTITY reg.cr0               "<register role=control>CR0</register>">
 <!ENTITY reg.cr2               "<register role=control>CR2</register>">
