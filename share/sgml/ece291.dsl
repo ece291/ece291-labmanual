@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.43 2001/07/27 21:16:55 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.7 2001/08/02 01:49:24 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.8 2001/08/02 01:53:50 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -338,7 +338,7 @@
         "    ")
 
       <!-- Slightly deeper customisations -->
-
+<!--
       (element chapterinfo 
         (process-children))
       (element sect1info 
@@ -371,7 +371,7 @@
         (make sequence
           (process-children)
           (literal " by ")))
-
+-->
       <!-- John Fieber's 'instant' translation specification had 
            '<command>' rendered in a mono-space font, and '<application>'
            rendered in bold. 
