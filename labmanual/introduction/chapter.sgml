@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.3 2001/08/12 21:36:29 pete Exp $
+     $Id: chapter.sgml,v 1.4 2001/08/12 22:27:39 pete Exp $
 -->
 
 <chapter id="introduction">
@@ -178,6 +178,14 @@
     steps, from the initial ideas to the finished executable.  The
     following flow chart illustrates the development of an
     assembly-language program.</para>
+
+   <informalfigure>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="introduction/bigpicture" format="eps">
+     </imageobject>
+    </mediaobject>
+   </informalfigure>
   </sect2>
  </sect1>
 

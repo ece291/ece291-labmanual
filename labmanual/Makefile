@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.16 2001/08/08 07:06:34 pete Exp $
+# $Id: Makefile,v 1.17 2001/08/12 22:27:39 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -45,7 +45,8 @@ SRCS+= glossary.sgml
 SRCS+= chapters.ent
 
 # Images
-IMAGES=  assembly/flags.dia
+IMAGES=  introduction/bigpicture.dia
+IMAGES+= assembly/flags.dia
 IMAGES+= c-prog/enterstack-value.dia
 IMAGES+= c-prog/enterstack-ref.dia
 IMAGES+= data-structures/lineararray.tex
