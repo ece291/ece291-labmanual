@@ -1,6 +1,6 @@
 #
 # $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.41 2001/07/21 03:44:27 murray Exp $
-# $Id: doc.docbook.mk,v 1.3 2001/07/25 03:14:55 pete Exp $
+# $Id: doc.docbook.mk,v 1.4 2001/07/28 18:44:18 pete Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -62,13 +62,21 @@ DOCBOOKSUFFIX?= sgml
 
 MASTERDOC?=	${.CURDIR}/${DOC}.${DOCBOOKSUFFIX}
 
-.if ${MACHINE_ARCH} == "alpha"
+.if ${MACHINE_ARCH} == "alpha" || ${OS} == "Windows_NT"
 OPENJADE=	yes
+.endif
+
+.if ${OS} == "Windows_NT"
+TIDYFLAGS?=     --show-warnings false --quiet true
 .endif
 
 .if defined(OPENJADE)
 JADE?=		${PREFIX}/bin/openjade
+.if ${OS} == "Windows_NT"
+JADECATALOG?=   ${PREFIX}/lib/sgml/dtd/dsssl/catalog
+.else
 JADECATALOG?=	${PREFIX}/share/sgml/openjade/catalog
+.endif
 NSGMLS?=	${PREFIX}/bin/onsgmls
 JADEFLAGS+=	-V openjade
 .else
@@ -81,8 +89,13 @@ DSLHTML?=	${DOC_PREFIX}/share/sgml/default.dsl
 DSLPRINT?=	${DOC_PREFIX}/share/sgml/default.dsl
 ECE291CATALOG=	${DOC_PREFIX}/share/sgml/catalog
 
+.if ${OS} == "Windows_NT"
+DOCBOOKCATALOG= ${PREFIX}/lib/sgml/dtd/docbook41/docbook.cat
+DSSSLCATALOG=   ${PREFIX}/lib/sgml/stylesheets/docbook-dsssl-1.70/catalog
+.else
 DOCBOOKCATALOG=	${PREFIX}/share/sgml/docbook/catalog
 DSSSLCATALOG=	${PREFIX}/share/sgml/docbook/dsssl/modular/catalog
+.endif
 
 IMAGES_LIB?=
 
