@@ -1,0 +1,751 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/08/08 07:06:34 pete Exp $
+-->
+
+<chapter id="text-editors">
+ <title>Text Editors</title>
+
+ <para>Text editors are specialized programs which allow you to create
+  or edit a file by typing in the contents using the keyboard (and
+  sometimes the mouse).  Most text editors have many special features
+  which allow text to be created more easily and quickly using
+  functions such as copying, deleting, and moving blocks of text in
+  the file.  There are numerous text editors available on the lab
+  machines&mdash;of which two of the most frequently used are
+  described in the following sections.</para>
+
+ <sect1 id="text-editors-vim">
+  <title>VIM</title>
+
+  <para>The VIM text editor on the PCs is an improved version of the
+   editor <quote>vi</quote>, one of the standard text editors on UNIX
+   systems.  VIM has many of the features that you should expect a
+   programmer's editor to have: Unlimited undo, syntax coloring, split
+   windows, visual selection, a graphical user interface (with menus,
+   mouse control, scrollbars, text selection, and the like), and much
+   more.  To edit a file using the GUI version of VIM, type:</para>
+
+  <cmdsynopsis>
+   <command>gvim</command>
+   <arg rep="repeat"><replaceable>file</replaceable></arg>
+  </cmdsynopsis>
+
+  <sect2 id="text-editors-vim-text">
+   <title>Entering Commands and Text</title>
+
+   <para>VIM is a mode-oriented editor.  Initially, when VIM starts,
+    it is in <firstterm>command</firstterm> mode.  In command mode,
+    every key typed is interpreted as a command, such as a command to
+    delete a character or to move the cursor.</para>
+
+   <para>From command mode, pressing <keycap>i</keycap> (or
+    <keycap>a</keycap>, or another insert command) puts VIM into
+    <firstterm>insert mode</firstterm>.  In insert mode, each
+    character typed is inserted into the file.  Pressing the backspace
+    key deletes the previous character.  From insert mode, pressing
+    the <keycap>ESC</keycap> key puts VIM back into command mode. It's
+    also possible to use the cursor keys to move the cursor around in
+    insert mode. If you do not know which mode VIM is in, simply press
+    the <keycap>ESC</keycap> key to make sure VIM enters the command
+    mode. To exit VIM (and save the current file), type
+    <userinput>:wq</userinput>.</para>
+  </sect2>
+
+  <sect2 id="text-editors-vim-commands">
+   <title>Summary of Commands</title>
+
+   <para>Following is a summary of the commands VIM accepts while in
+    command mode.</para>
+
+   <sect3 id="text-editors-vim-commands-movement">
+    <title>Moving Around the File</title>
+
+    <para>Pressing one of the arrow keys moves the cursor one position
+     in the direction of the arrow.  Pressing the
+     <keycap>PgUp</keycap> key moves backward in the file by a full
+     screen; pressing the <keycap>PgDn</keycap> key moves forward in
+     the file by a full screen.</para>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>h</userinput></entry>
+	<entry>&mdash; Move cursor LEFT</entry>
+       </row>
+
+       <row>
+	<entry><userinput>j</userinput></entry>
+	<entry>&mdash; Move cursor DOWN</entry>
+       </row>
+
+       <row>
+	<entry><userinput>k</userinput></entry>
+	<entry>&mdash; Move cursor UP</entry>
+       </row>
+
+       <row>
+	<entry><userinput>l</userinput></entry>
+	<entry>&mdash; Move cursor RIGHT</entry>
+       </row>
+
+       <row>
+	<entry></entry>
+	<entry></entry>
+       </row>
+
+       <row>
+	<entry><userinput>b</userinput></entry>
+	<entry>&mdash; Move cursor back one word</entry>
+       </row>
+
+       <row>
+	<entry><userinput>w</userinput></entry>
+	<entry>&mdash; Move cursor forward one word</entry>
+       </row>
+
+       <row>
+	<entry><userinput>0</userinput></entry>
+	<entry>&mdash; Move cursor to beginning of current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>$</userinput></entry>
+	<entry>&mdash; Move cursor to end of current line</entry>
+       </row>
+
+       <row>
+	<entry><keycap>Enter</keycap></entry>
+	<entry>&mdash; Move cursor to beginning of next line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>^</userinput></entry>
+	<entry>&mdash; Move cursor to beginning of current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>H</userinput></entry>
+	<entry>&mdash; Move cursor to top line of screen</entry>
+       </row>
+
+       <row>
+	<entry><userinput>M</userinput></entry>
+	<entry>&mdash; Move cursor to middle line of screen</entry>
+       </row>
+
+       <row>
+	<entry><userinput>L</userinput></entry>
+	<entry>&mdash; Move cursor to last line of screen</entry>
+       </row>
+
+       <row>
+	<entry></entry>
+	<entry></entry>
+       </row>
+
+       <row>
+	<entry><keycombo>
+	  <keycap>CTRL</keycap>
+	  <keycap>d</keycap>
+	 </keycombo></entry>
+	<entry>&mdash; Move down (forward) half a screen</entry>
+       </row>
+
+       <row>
+	<entry><keycombo>
+	  <keycap>CTRL</keycap>
+	  <keycap>u</keycap>
+	 </keycombo></entry>
+	<entry>&mdash; Move up (backward) half a screen</entry>
+       </row>
+
+       <row>
+	<entry><keycombo>
+	  <keycap>CTRL</keycap>
+	  <keycap>f</keycap>
+	 </keycombo></entry>
+	<entry>&mdash; Move forward a full screen</entry>
+       </row>
+
+       <row>
+	<entry><keycombo>
+	  <keycap>CTRL</keycap>
+	  <keycap>b</keycap>
+	 </keycombo></entry>
+	<entry>&mdash; Move backward a full screen</entry>
+       </row>
+
+       <row>
+	<entry><userinput>{</userinput></entry>
+	<entry>&mdash; Move to previous paragraph</entry>
+       </row>
+
+       <row>
+	<entry><userinput>}</userinput></entry>
+	<entry>&mdash; Move to next paragraph</entry>
+       </row>
+
+       <row>
+	<entry><userinput>1G</userinput></entry>
+	<entry>&mdash; Move to beginning of file</entry>
+       </row>
+
+       <row>
+	<entry><userinput>G</userinput></entry>
+	<entry>&mdash; Move to end of file</entry>
+       </row>
+
+       <row>
+	<entry><userinput><replaceable>xx</replaceable>G</userinput></entry>
+	<entry>&mdash; Go to the <replaceable>xx</replaceable>th line
+	 of the file</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-vim-commands-inserting">
+    <title>Inserting Text</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>i</userinput></entry>
+	<entry>&mdash; Enter insert mode to insert text before
+	 cursor</entry>
+       </row>
+
+       <row>
+	<entry><userinput>I</userinput></entry>
+	<entry>&mdash; Enter insert mode to insert text at beginning
+	 of line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>a</userinput></entry>
+	<entry>&mdash; Enter insert mode to append text after the
+	 cursor</entry>
+       </row>
+
+       <row>
+	<entry><userinput>A</userinput></entry>
+	<entry>&mdash; Enter insert mode to append text at end of
+	 line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>o</userinput></entry>
+	<entry>&mdash; Open a line below the current line, and enter
+	 insert mode</entry>
+       </row>
+
+       <row>
+	<entry><userinput>O</userinput></entry>
+	<entry>&mdash; Open a line above the current line, and enter
+	 insert mode</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-vim-commands-changing">
+    <title>Changing Text</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>J</userinput></entry>
+	<entry>&mdash; Join next line to current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>r</userinput></entry>
+	<entry>&mdash; Replace one character with a single
+	 character</entry>
+       </row>
+
+       <row>
+	<entry><userinput>R</userinput></entry>
+	<entry>&mdash; Replace string of text (overstrike)</entry>
+       </row>
+
+       <row>
+	<entry><userinput>x</userinput></entry>
+	<entry>&mdash; Delete one character</entry>
+       </row>
+
+       <row>
+	<entry><userinput>dw</userinput></entry>
+	<entry>&mdash; Delete one word forward</entry>
+       </row>
+
+       <row>
+	<entry><userinput>db</userinput></entry>
+	<entry>&mdash; Delete one word backward</entry>
+       </row>
+
+       <row>
+	<entry><userinput>dd</userinput></entry>
+	<entry>&mdash; Delete current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>12dd</userinput></entry>
+	<entry>&mdash; Delete 12 lines</entry>
+       </row>
+
+       <row>
+	<entry><userinput>D</userinput></entry>
+	<entry>&mdash; Delete from cursor to end of line</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-vim-commands-copying">
+    <title>Copying Text</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>yy</userinput></entry>
+	<entry>&mdash; Yank the current line to a buffer (does not
+	 delete the line)</entry>
+       </row>
+
+       <row>
+	<entry><userinput>12yy</userinput></entry>
+	<entry>&mdash; Yank 12 lines (including current line) to the
+	 buffer</entry>
+       </row>
+
+       <row>
+	<entry><userinput>p</userinput></entry>
+	<entry>&mdash; Put lines from buffer below current
+	 line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>P</userinput></entry>
+	<entry>&mdash; Put lines from buffer above current
+	 line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>:r
+	  <replaceable>filename</replaceable></userinput></entry>
+	<entry>&mdash; Read lines from file
+	 <replaceable>filename</replaceable> and insert at cursor
+	 position</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-vim-commands-searching">
+    <title>Searching for (and Replacing) Text</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>/ABC</userinput></entry>
+	<entry>&mdash; Search for next occurrence of
+	 <quote>ABC</quote></entry>
+       </row>
+
+       <row>
+	<entry><userinput>?ABC</userinput></entry>
+	<entry>&mdash; Search for previous occurrence of
+	 <quote>ABC</quote></entry>
+       </row>
+
+       <row>
+	<entry><userinput>n</userinput></entry>
+	<entry>&mdash; Repeat last search</entry>
+       </row>
+
+       <row>
+	<entry><userinput>:%s/<replaceable>regexp</replaceable>/ABC/g</userinput></entry>
+	<entry>&mdash; Replace all text matching the regular
+	 expression <replaceable>regexp</replaceable> with ABC</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-vim-commands-undoing">
+    <title>Undoing (and Redoing) Commands</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>u</userinput></entry>
+	<entry>&mdash; Undo last command</entry>
+       </row>
+
+       <row>
+	<entry><keycombo>
+	  <keycap>CTRL</keycap>
+	  <keycap>r</keycap>
+	 </keycombo></entry>
+	<entry>&mdash; Redo last command</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-vim-commands-saving">
+    <title>Saving Files and Exiting VIM</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>:w</userinput></entry>
+	<entry>&mdash; Save the current file without leaving (do this
+	 periodically)</entry>
+       </row>
+
+       <row>
+	<entry><userinput>:wq</userinput></entry>
+	<entry>&mdash; Replace old file and exit VIM</entry>
+       </row>
+
+       <row>
+	<entry><userinput>ZZ</userinput></entry>
+	<entry>&mdash; Shorthand for
+	 <userinput>:wq</userinput></entry>
+       </row>
+
+       <row>
+	<entry><userinput>:q</userinput></entry>
+	<entry>&mdash; Exit VIM.  If the file has been modified and
+	 not subsequently saved, VIM will prompt to save the
+	 file.</entry>
+       </row>
+
+       <row>
+	<entry><userinput>:q!</userinput></entry>
+	<entry>&mdash; Exit VIM without replacing the old file</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="text-editors-emacs">
+  <title>Emacs</title>
+
+  <para>No discussion of VI or VIM is complete without also mentioning
+   Emacs.  VI and Emacs are the two most popular editors on the UNIX
+   platform, and many heated debates have been held over which one is
+   <quote>best</quote>.  Choose whichever one you feel most
+   comfortable with, as being comfortable with the editor you use will
+   help you code more efficiently.</para>
+
+  <para>Emacs is a text editor and more.  At its core is a Lisp
+   derivative with extensions to support text editing, called elisp.
+   Just like VIM, it has syntax coloring, split windows, visual
+   selection, a graphical user interface (with menus, mouse control,
+   scrollbars, text selection, and the like), and much more.  There
+   are also a large number of extensions which add other functionality
+   (most of which aren't installed on the lab machines).  To edit a
+   file with Emacs, type:</para>
+
+  <cmdsynopsis>
+   <command>emacs</command>
+   <arg rep="repeat"><replaceable>file</replaceable></arg>
+  </cmdsynopsis>
+
+  <sect2 id="text-editors-emacs-text">
+   <title>Entering Commands and Text</title>
+
+   <para>Unlike VIM, Emacs is not a mode-oriented editor.  Insert mode
+    is always active, and commands are triggered only by combinations
+    of modifier keys (such as <keycap>CTRL</keycap> and
+    <keycap>ALT</keycap>) and other keys.  Sometimes a series of key
+    combinations need to be entered to perform an action: for example,
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>x</keycap>
+    </keycombo> followed by <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>c</keycap>
+    </keycombo> exits the editor (and prompts for modified files to be
+    saved).</para>
+  </sect2>
+
+  <sect2 id="text-editors-emacs-commands">
+   <title>Summary of Commands</title>
+
+   <para>Following is a summary of the commands Emacs accepts.  To
+    conserve space in this summary, <keycap>CTRL</keycap> is
+    designated by <quote>C</quote>, <keycap>ALT</keycap> is designated
+    by <quote>A</quote>, and <keycap>META</keycap> is designated by
+    <quote>M</quote>.</para>
+
+   <sect3 id="text-editors-emacs-commands-movement">
+    <title>Moving Around the File</title>
+
+    <para>Pressing one of the arrow keys moves the cursor one position
+     in the direction of the arrow.  Pressing the
+     <keycap>PgUp</keycap> key moves backward in the file by a full
+     screen; pressing the <keycap>PgDn</keycap> key moves forward in
+     the file by a full screen.</para>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>M-b</userinput></entry>
+	<entry>&mdash; Move cursor back one word</entry>
+       </row>
+
+       <row>
+	<entry><userinput>M-f</userinput></entry>
+	<entry>&mdash; Move cursor forward one word</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-a</userinput></entry>
+	<entry>&mdash; Move cursor to beginning of current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-e</userinput></entry>
+	<entry>&mdash; Move cursor to end of current line</entry>
+       </row>
+
+       <row>
+	<entry></entry>
+	<entry></entry>
+       </row>
+
+       <row>
+	<entry><userinput>M-<</userinput></entry>
+	<entry>&mdash; Move to beginning of file</entry>
+       </row>
+
+       <row>
+	<entry><userinput>M-></userinput></entry>
+	<entry>&mdash; Move to end of file</entry>
+       </row>
+
+       <row>
+	<entry><userinput>M-x goto-line</userinput></entry>
+	<entry>&mdash; Prompt for a line number and move to it</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-emacs-commands-erasing">
+    <title>Erasing Text</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>J</userinput></entry>
+	<entry>&mdash; Join next line to current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>DEL</userinput></entry>
+	<entry>&mdash; Delete one character backward</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-d</userinput></entry>
+	<entry>&mdash; Delete one character forward</entry>
+       </row>
+
+       <row>
+	<entry><userinput>M-d</userinput></entry>
+	<entry>&mdash; Delete one word forward</entry>
+       </row>
+
+       <row>
+	<entry><userinput>M-DEL</userinput></entry>
+	<entry>&mdash; Delete one word backward</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-a C-k C-k</userinput></entry>
+	<entry>&mdash; Delete current line</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-k</userinput></entry>
+	<entry>&mdash; Delete from cursor to end of line</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-emacs-commands-searching">
+    <title>Searching for (and Replacing) Text</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>C-s ABC</userinput></entry>
+	<entry>&mdash; Search for next occurrence of
+	 <quote>ABC</quote></entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-r ABC</userinput></entry>
+	<entry>&mdash; Search for previous occurrence of
+	 <quote>ABC</quote></entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-M-% <replaceable>regexp</replaceable>
+	  ABC</userinput></entry>
+	<entry>&mdash; Replace all text matching the regular
+	 expression <replaceable>regexp</replaceable> with ABC</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-emacs-commands-undoing">
+    <title>Undoing Commands</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>C-x u</userinput></entry>
+	<entry>&mdash; Undo last command</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="text-editors-emacs-commands-saving">
+    <title>Saving Files and Exiting Emacs</title>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="keys" colwidth="1.5in">
+      <colspec colname="purpose">
+
+      <tbody>
+       <row>
+	<entry><userinput>C-x C-s</userinput></entry>
+	<entry>&mdash; Save the current file without leaving (do this
+	 periodically)</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-x C-s C-x C-c</userinput></entry>
+	<entry>&mdash; Replace old file and exit Emacs</entry>
+       </row>
+
+       <row>
+	<entry><userinput>C-x C-c</userinput></entry>
+	<entry>&mdash; Exit Emacs.  If the file has been modified and
+	 not subsequently saved, Emacs will prompt to save the
+	 file.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="text-editors-other">
+  <title>Other Editors</title>
+
+  <para>There are additional editors available for use on the PCs in
+   the lab.  However, none of them are quite as advanced or
+   full-featured as VIM or Emacs.  We recommend using either VIM or
+   Emacs for writing code.</para>
+
+  <sect2 id="text-editors-other-notepad">
+   <title>Notepad</title>
+
+   <para>Notepad is the text editor included with Windows.  It has
+    copy and paste and search functions, but no syntax highlighting or
+    other advanced features.</para>
+  </sect2>
+
+  <sect2 id="text-editors-other-visual-studio">
+   <title>Visual Studio Editor</title>
+
+   <para>The Visual Studio development suite has a built-in editor
+    that can be used to edit assembly language programs.  However,
+    although it does preform limited syntax highlighting, it's written
+    for MASM syntax, not the NASM syntax we use in ECE 291.</para>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

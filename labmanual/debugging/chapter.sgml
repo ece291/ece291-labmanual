@@ -1,0 +1,251 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/08/08 07:06:34 pete Exp $
+-->
+
+<chapter id="debugging">
+ <title>Debugging Tools</title>
+
+ <para>What does a debugging program do and how is it useful? These
+  questions are better explained by example, but to give a quick
+  answer, a <firstterm>debugging program</firstterm> allows you to
+  monitor control of a program during program execution. What does
+  that mean? Well, let s give a quick example. Using the debug program
+  (hereafter we will refer to it as the <quote>debugger</quote>) you
+  can tell the program to execute until a specific statement is
+  reached; upon reaching this statement the debugger allows you to
+  look at and change values of different variables in the program and
+  also the registers used by the PC (of course the debugger will allow
+  you to do much more than that).  The usefulness of this ability to
+  watch your program unfold in great detail will become apparent later
+  on.</para>
+
+ <para>Before showing how to use the debugger, a word of encouragement
+  should be offered. In our experience with assembly language and
+  programmers, we have found two types of programmers who use a
+  debugger: first of all, those who just naturally like this kind of
+  programming tool and pick it up easily, and second, those who have
+  done a considerable amount of programming and who have in the
+  process been forced to learn how to use a debugger, and much to
+  their surprise have found it to be extremely useful. We have tried
+  to write the following debugger <quote>tutorial</quote> to create a
+  third category of people who use the debugger&mdash;those who have
+  not had much experience programming but have had a good description
+  of how to use a debugger. We hope that you will take the time to
+  learn how to use it, in order to save time debugging your programs
+  later on. And one more word of encouragement: at first, like most
+  people, you may shy away from using the debugger. It may seem too
+  complicated and time-consuming to run part of the program and then
+  to go into memory to try to figure out what state the computer is in
+  (the values of the registers and variables), and whether it is in
+  the state you want it to be in. But trying to fix your program
+  without the debugger is much like trying to fix a car without being
+  able to look under the hood! It will take you a few minutes to learn
+  how the debugger works, but used properly, it will save you hours in
+  the lab. So don t be tentative about <quote>looking inside</quote>
+  the computer while executing your program; it is not so complicated
+  as you might think. If you have never used a debugger before, it
+  will be useful to go through a program with you while using the
+  debugger. In this way, you will get a better feel for how the
+  debugger works.</para>
+
+ <!-- TODO: example program -->
+
+ <sect1 id="debugging-td">
+  <title>Turbo Debugger (TD)</title>
+
+  <para>Turbo Debugger is a window-oriented mouse-driven debugging
+   tool.  To start Turbo Debugger (oftentimes referred to as simply
+   TD), type the following at the DOS prompt:</para>
+
+  <cmdsynopsis>
+   <command>td</command>
+   <arg><replaceable>progname<optional>.exe</optional></replaceable></arg>
+  </cmdsynopsis>
+
+  <!-- TODO: TD -->
+ </sect1>
+
+ <!-- TODO: tutorial -->
+
+ <sect1 id="debugging-speckled-bug">
+  <sect1info>
+   <author>
+    <firstname>Mike</firstname>
+    <surname>Haney</surname>
+    <affiliation>
+     <jobtitle>First ECE 291 TA</jobtitle>
+    </affiliation>
+   </author>
+  </sect1info>
+
+  <title>The Case of the Speckled Bug</title>
+
+  <para><quote>You know, my dear Watson,</quote> he said, pausing to
+   produce another billow of aromatic smoke, <quote>a computer program
+    can be debugged using the same methods that are applied to solving
+    a mystery.</quote></para>
+
+  <para><quote>You mean <emphasis>observation</emphasis> and
+    <emphasis>deduction</emphasis>, don't you Holmes?</quote></para>
+
+  <para><quote>Precisely, Watson.  When a program stops unexpectedly
+    or prints out unanticipated messages, the programmer can safely
+    assume that the program has met with foul play. In other words, it
+    has a bug.</quote></para>
+
+  <para><quote>But how does one debug a large program?  So many things
+    could go wrong.  The task of righting all of them seems
+    insurmountable.</quote></para>
+
+  <para>&ldquo;It would be impossible indeed if you tried to solve all
+   the problems at once.  No, my friend, one should attack the matter
+   bit by bit.  Try to identify the little problems and solve them. Do
+   not search for &lsquo;the magic solution&rsquo; that solves
+   everything.  Debugging means careful work.  We would do well to
+   remember the French philosopher Voltaire:</para>
+
+  <blockquote>
+   <para>&lsquo;Le programme ne le raccommode pas,&rsquo;</para>
+  </blockquote>
+
+  <para>which means, loosely, &lsquo;PROGRAMS DO NOT DEBUG
+   THEMSELVES.&rsquo;&rdquo;</para>
+
+  <para><quote>Did Voltaire really say that?</quote></para>
+
+  <para><quote>No, but he would have if he had thought of it.  But
+    nonetheless, when a program dies, the programmer has immediately
+    before him or her the single greatest clue to the problem:
+    <emphasis>the characters on the screen</emphasis>.  Sometimes the
+    program itself will print out messages of significance to alert
+    the programmer to errors.</quote></para>
+
+  <para><quote>But that requires the programmer to <emphasis>think
+     ahead</emphasis> and include some <emphasis>diagnostic messages
+     in the program</emphasis>, doesn't it Holmes?</quote></para>
+
+  <para><quote>Of course, Watson.  But when no such messages are
+    available, one can still learn quite a bit from the messages (or
+    lack of them) from DOS.</quote></para>
+
+  <para><quote>Is that all there is to debugging?</quote></para>
+
+  <para><quote>Most certainly not.  In some cases, the cause of the
+    error can be found by inspection, such as a typographical error or
+    the use of the wrong addressing mode.  But more often, one must
+    use a debugger to determine the circumstances that led to the
+    error in order to understand the problem.</quote></para>
+
+  <para><quote>The circumstances, Holmes?</quote></para>
+
+  <para><quote>Yes, Watson. In particular, the <emphasis>contents of
+     the registers</emphasis> tell a great deal about what the program
+    has been doing.  When subroutines or interrupts are used, one
+    register is extremely helpful.</quote></para>
+
+  <para><quote>You mean the <emphasis>stack
+     pointer</emphasis>.</quote></para>
+
+  <para>&ldquo;Exactly.  But it is not the contents of the stack
+   pointer itself that is of so great importance, but rather the
+   <emphasis>contents of the stack</emphasis> around the offset
+   specified by the stack pointer. There is an old Hungarian
+   saying:</para>
+
+  <blockquote>
+   <para>&lsquo;Kerek egy kis uveg konyakot,&rsquo;</para>
+  </blockquote>
+
+  <para>which means &lsquo;The stack contains a history of your
+   program,&rsquo; or &lsquo;Bring me a small flask of brandy;&rsquo;
+   I can never remember which. By examining the contents of the stack
+   it is possible to locate previous register contents (saved by
+   <literal>PUSH</literal>) and return offsets. These return offsets
+   form a path through the program that can be followed.&rdquo;</para>
+
+  <para><quote>There may not be many return offsets on the stack.  How
+    is one to follow the <quote>flow</quote> of the program up to the
+    error?</quote></para>
+
+  <para><quote>The BREAKPOINT and TRACE operations hold the key to
+    that problem.  The judicious choice of breakpoints permits the
+    programmer to isolate a region in which the error may be located.
+    When this suspicious region is isolated, it is possible to single
+    step through the code and carefully <emphasis>observe the changes
+     in the registers and memory variables</emphasis>.</quote></para>
+
+  <para><quote>Can you be more explicit?</quote> asked Watson, still
+   perplexed.</para>
+
+  <para><quote>There is no method that works all the time, but there
+    are several heuristics,</quote> replied Holmes.  &ldquo;In the
+   CONTRAST method, the programmer should compare what the
+   <emphasis>value should be</emphasis> with what the <emphasis>value
+    is</emphasis>.  Also, the INPUT/OUTPUT method can help.  Examine
+   the variables upon starting a block of code (the input), and
+   examine them again upon coming out of the block (the output).  The
+   programmer must then ask the following two questions:</para>
+
+  <orderedlist>
+   <listitem>
+    <para>Is the input correct?  If not, a problem lies before this
+     block.</para>
+   </listitem>
+
+   <listitem>
+    <para>Does the output correspond to the input?  If not, a problem
+     lies within this block.</para>
+   </listitem>
+  </orderedlist>
+
+  <para>If both are true, then the problem lies further on. Using the
+   debugger's memory window, the programmer can even force execution
+   of a block of code with specific values in memory variables.  There
+   is no mechanical process that will automatically solve every
+   problem.  The programmer must <emphasis>think</emphasis>.
+   Remember:</para>
+
+  <blockquote>
+   <para>&lsquo;Mind is like parachute: works best when
+    open.&rsquo;&rdquo;</para>
+  </blockquote>
+
+  <para><quote>Confucius?</quote></para>
+
+  <para><quote>No, Charlie Chan. But the point is that the programmer
+    must think about the program in order to debug it.</quote></para>
+
+  <para><quote>But after one has located the problem, it is so time
+    consuming to re-edit and re-assemble and re-link the program.
+    Surely there must be a better way to make small
+    changes.</quote></para>
+
+  <para><quote>There is, Watson.  With the debugger one can perform a
+    limited amount of editing of the machine code by assembling new
+    instructions in place.  One can even replace unwanted code with
+    <literal>NOP</literal>s (null operations).  After these small
+    changes, the programmer can continue to run the program in the
+    debugger.  Since these changes are not saved, however, the
+    programmer must still edit the source code to make the changes
+    permanent.</quote></para>
+
+  <para><quote>Won't this take a lot of time?</quote></para>
+
+  <para><quote>You will have all the time you need, if you
+    <emphasis>start early</emphasis>.</quote></para>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

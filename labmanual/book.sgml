@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.13 2001/08/03 03:54:10 pete Exp $
+     $Id: book.sgml,v 1.14 2001/08/08 07:06:34 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//ECE291//DTD DocBook V4.1-Based Extension//EN" [
@@ -20,6 +20,8 @@
 <!ENTITY % chap.preface "IGNORE">
 <!ENTITY % chap.introduction "IGNORE">
 <!ENTITY % chap.using-pc "IGNORE">
+<!ENTITY % chap.text-editors "IGNORE">
+<!ENTITY % chap.debugging "IGNORE">
 <!ENTITY % chap.assembly "IGNORE">
 <!ENTITY % chap.nasm "IGNORE">
 <!ENTITY % chap.c-prog "IGNORE">
@@ -120,6 +122,8 @@
  <![ %chap.preface;         [ &chap.preface;         ]]>
  <![ %chap.introduction;    [ &chap.introduction;    ]]>
  <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
+ <![ %chap.text-editors;    [ &chap.text-editors;    ]]>
+ <![ %chap.debugging;       [ &chap.debugging;       ]]>
  <![ %chap.assembly;        [ &chap.assembly;        ]]>
  <![ %chap.nasm;            [ &chap.nasm;            ]]>
  <![ %chap.c-prog;          [ &chap.c-prog;          ]]>
