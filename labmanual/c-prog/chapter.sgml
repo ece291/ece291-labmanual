@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.3 2001/07/26 09:26:33 pete Exp $
+     $Id: chapter.sgml,v 1.4 2001/08/14 19:03:04 pete Exp $
 -->
 
 <chapter id="c-prog">
@@ -25,12 +25,20 @@
    similarities between assembly and C, as well as demonstrating
    techniques of mixing the two languages together.</para>
 
+  <para>There are two forms of the C calling convention described in
+   this chapter: 16-bit and 32-bit.  As the only C compiler available
+   on the lab machines is the 32-bit GNU C Compiler, this chapter will
+   mainly focus on the 32-bit C calling convention.  However, <xref
+    linkend="c-prog-16bit"> contains a brief discussion of the 16-bit
+   C calling convention in comparison to the 32-bit calling convention
+   described in this chapter.</para>
+
   <sect2 id="c-prog-intro-gcc">
    <title>GNU C Compiler</title>
 
-   <para>The remaining discussion assumes the use of the GNU C
-    compiler version 2.95, which is similar to compilers offered from
-    other major sources, but does contain some unique features and
+   <para>Most of this discussion assumes the use of the GNU C compiler
+    version 2.95, which is similar to compilers offered from other
+    major sources, but does contain some unique features and
     syntaxes.</para>
 
    <para>Just as the NASM assembler generates machine code from
@@ -38,19 +46,25 @@
     from C statements.  To compile a program using GNU C, use the
     following command at the DOS prompt:</para>
 
-   <!-- TODO: GCC command line, useful options -->
+   <cmdsynopsis>
+    <command>gcc</command>
+    <arg choice="opt">-c</arg>
+    <arg choice="req"><replaceable>filename</replaceable></arg>
+   </cmdsynopsis>
 
-   <para>Compiling with the -c option creates an object file only,
-    which must be linked using the <command>ld</command> utility to
-    the appropriate libraries or other object files to create the
-    final executable. This will be necessary when creating
+   <para>Compiling with the <option>-c</option> option creates an
+    object file only, which must be linked using the
+    <command>gcc</command> utility without the <option>-c</option>
+    option to the appropriate libraries or other object files to
+    create the final executable.  This will be necessary when creating
     mixed-language programs such as those with both assembly and
     C.</para>
 
    <para>As the GNU C compiler generates 32-bit machine code, the
     assembly code linked with its object files needs to use 32-bit
     registers and instructions.  The final executable will be a 32-bit
-    program.</para>
+    protected mode program (see the protected mode tutorial for more
+    details on protected mode and how it's used in ECE 291).</para>
   </sect2>
  </sect1>
 
@@ -340,6 +354,43 @@ _main
     of the procedures involved in calling C functions, refer to
     another text on the subject.</para>
   </sect2>
+ </sect1>
+
+ <sect1 id="c-prog-16bit">
+  <title>16-bit C Programming</title>
+
+  <para>While the lab machines do not have a 16-bit C compiler, the
+   16-bit C calling convention is still very useful when writing
+   16-bit assembly programs for passing arguments via the stack. While
+   passing arguments in registers may appear to be significantly
+   easier at first glance, as the complexity and number of function
+   arguments increases, the stack is a much better choice for passing
+   arguments.  Using the stack also makes procedures easier to write
+   as more registers are free for general use.</para>
+
+  <para>Most of the above discussion on the 32-bit C calling
+   convention can be easily translated into 16-bits by using 16-bit
+   registers instead of 32-bit and adjusting offsets accordingly.  For
+   example, &reg.sp; and &reg.bp; should be used instead of &reg.esp;
+   and &reg.ebp; respectively in <xref
+    linkend="c-prog-mixing-using-asm-stack-setup"> and the first and
+   second argmenuts in <xref
+    linkend="c-prog-mixing-using-asm-c-param-pass"> are at
+   <literal>[&reg.bp;+4]</literal> and
+   <literal>[&reg.bp;+6]</literal>.</para>
+
+  <para>However, in a multi-segment 16-bit program, addresses and
+   references are still 32-bit: a 16-bit segment and a 16-bit offset.
+   When multiple code segments are used, <literal>FAR CALL</literal>
+   must be used instead of <literal>CALL</literal>, which offsets
+   stack parameters by an additional 2 bytes because of &reg.cs; being
+   pushed on the stack.</para>
+
+  <para>While 8-bit and 16-bit values are still returned in &reg.al;
+   and &reg.ax; in the 16-bit C calling convention, 32-bit values must
+   be split into two 16-bit chunks.  The high-order portion is
+   returned in &reg.dx; and the low-order portion is returned in
+   &reg.ax;.</para>
  </sect1>
 </chapter>
 
