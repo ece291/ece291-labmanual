@@ -8,3 +8,7 @@ book.tex-*
 book.out
 docbook.css
 HTML.manifest
+*.dia
+*.eps
+*.png
+*.pdf

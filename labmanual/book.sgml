@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.15 2001/08/08 07:07:49 pete Exp $
+     $Id: book.sgml,v 1.16 2001/08/13 07:12:28 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//ECE291//DTD DocBook V4.1-Based Extension//EN" [
@@ -39,9 +39,28 @@
 
 <book>
  <bookinfo>
-  <title>ECE 291 Lab Manual</title>
+  <mediaobject>
+   <imageobject>
+    <imagedata fileref="titlepage" format="eps">
+   </imageobject>
 
-  <corpauthor>The ECE 291 Documentation Project</corpauthor>
+   <textobject>
+    <phrase>ECE 291</phrase>
+   </textobject>
+  </mediaobject>
+
+  <subtitle>Computer Engineering II</subtitle>
+
+  <title>Laboratory Notes</title>
+
+  <authorgroup>
+   <corpauthor>The ECE 291 Documentation Project</corpauthor>
+
+   <corpauthor>Department of Electrical and Computer
+    Engineering</corpauthor>
+
+   <corpauthor>University of Illinois at Urbana-Champaign</corpauthor>
+  </authorgroup>
 
   <editor>
    <firstname>Peter</firstname>
