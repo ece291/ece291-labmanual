@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/08/08 07:06:34 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/08/13 21:24:29 pete Exp $
 -->
 
 <chapter id="debugging">
@@ -71,13 +71,16 @@
 
  <sect1 id="debugging-speckled-bug">
   <sect1info>
-   <author>
-    <firstname>Mike</firstname>
-    <surname>Haney</surname>
-    <affiliation>
-     <jobtitle>First ECE 291 TA</jobtitle>
-    </affiliation>
-   </author>
+   <authorgroup>
+    <author>
+     <firstname>Mike</firstname>
+     <surname>Haney</surname>
+     <affiliation>
+      <jobtitle>First ECE 291 TA</jobtitle>
+     </affiliation>
+     <contrib>By </contrib>
+    </author>
+   </authorgroup>
   </sect1info>
 
   <title>The Case of the Speckled Bug</title>
