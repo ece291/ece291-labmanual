@@ -1,0 +1,729 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+-->
+
+<chapter id="serial-comm">
+ <title>Serial Communication</title>
+
+ <sect1 id="serial-comm-datacomm">
+  <title>Serial Data Communication</title>
+
+  <para>Within a processor character data are generally transferred,
+   stored, or processed as bytes, i.e., as 8 bits in parallel.
+   Parallel transmission of character data to a peripheral device
+   requires a bundle of lines that includes one line for each bit of
+   the character, a strobe or clock line, and possibly some other
+   control and status signals.  For long distances, parallel
+   transmission becomes unattractive due to the increased cost of the
+   multiple wires as well as the increased difficulty of avoiding
+   crosstalk and skew between the bundled signals.  The alternative,
+   serial transmission, requires only one line over which the bits
+   that represent a character are sent one after the other.  Serial
+   transmission is also used for data communication via the commercial
+   voice-grade telephone network, where the serial bit stream is used
+   to modulate an analog tone frequency signal appropriate for
+   transmission over the telephone network.</para>
+
+  <para>Data communication is usually
+   <firstterm>bidirectional</firstterm>, alternately in either
+   direction (<firstterm>half-duplex</firstterm>) or simultaneously in
+   both directions (<firstterm>full-duplex</firstterm>).  Half-duplex
+   operation permits the use of the same line (and of the same
+   telephone line signals) for transmission as well as reception;  the
+   special character EOT (End-of-Transmission) is used to trigger the
+   turn-around. Full-duplex operations requires separate transmit and
+   receive lines (and two distinct sets of telephone line
+   signals).</para>
+
+  <figure id="serial-comm-fig-typconn">
+   <title>Typical Connection between and another Device via the
+    Telephone Network</title>
+
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="serial-comm/typconn" format=eps>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para><xref linkend="serial-comm-fig-typconn"> shows one side of a
+   full-duplex connection between a CPU and another device via the
+   telephone network.  The Asynchronous Communication Adapter, located
+   on a card that plugs into an I/O slot of the PC, performs the
+   parallel-to-serial conversion of transmitted data and the
+   serial-to-parallel conversion of received data; the
+   <quote>Modem</quote> (Modulator/Demodulator), also called
+   <quote>Data Set,</quote> performs the conversion between discrete
+   voltage levels and analog tone signal representations, and vice
+   versa.  The interface between the Asynchronous Communications
+   Adapter and the modem should follow the standards set by the
+   Electronic Industries Association (EIA), e.g., EIA RS-232C, or the
+   similar international standards set by the Comite Consultatif
+   International Telephonique et Telegraphique (CCITT), e.g., CCITT
+   V.24.</para>
+ </sect1>
+
+ <sect1 id="serial-comm-modems">
+  <title>Modems, Bauds, and Bits per Second</title>
+
+  <para>A voice-grade telephone line has a useful frequency range of
+   300-3000 Hz but modems typically use tones restricted to the range
+   300-2400 Hz, primarily to avoid a 2600 Hz signalling tone that
+   causes call disconnect.  Various modulation schemes are used to
+   convert the representation of information from the RS-232C discrete
+   voltage levels to amplitude, phase, or frequency shift keyed analog
+   signals, and vice versa for demodulation; each analog  symbol  may
+   represent one or more bits.  The number of symbols per second sent
+   over a communication line called BAUD (after J.M.E. Baudot,
+   1845-1903, a French inventor who studied telegraph codes.)</para>
+
+  <para>Simple modulation techniques carry one bit per symbol.  For
+   example, in a <quote>type 103</quote> 300 baud modem each bit is
+   translated to one of two tone frequencies using FSK (Frequency
+   Shift Keying). Two sets of frequencies are used to provide
+   full-duplex operation; each set is used for either transmit or
+   receive, depending on whether the modem originated or answered the
+   call.  Details are given in <xref
+    linkend="serial-comm-fig-baudfreq">.</para>
+
+  <figure id="serial-comm-fig-baudfreq">
+   <title>300 Baud Asynchronous Full-Duplex U.S. Frequency
+    Assignments</title>
+
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="serial-comm/baudfreq">
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>Complex modulation schemes such as CCITT V.22bis carry 4 bits
+   per symbol, using a combination of amplitude and phase shift
+   keying, to achieve a data transfer rate of 2400 bits/sec.  This
+   rate is usually called <quote>2400 baud</quote> in reference to the
+   2400 levels/sec on the RS-232C line; the symbol rate on the
+   telephone line is 600 baud.</para>
+ </sect1>
+
+ <sect1 id="serial-comm-standards">
+  <title>Interface Standards</title>
+
+  <para>One of the earliest standards for interfacing digital devices
+   and modems is the EIA RS-232 standard, called <quote>Interface
+    between Data Terminal Equipment and Data Circuit- Terminating
+    Equipment Employing Serial Binary Interface.</quote>  RS-232C is
+   the latest version (CCITT V.24 is virtually identical).  It lists
+   the electrical and mechanical interface characteristics, describes
+   the function of signals, and lists subsets of signals for specific
+   interface types.  A computer, printer, etc., is Data Terminal
+   Equipment (DTE), a modem or data set is Data Circuit-Terminating
+   (or Communication) Equipment (DCE).  As its name indicates the
+   standard is intended for DTE-DCE connections.</para>
+
+  <!-- TODO: Fix table reference -->
+
+  <para>Table I below show the most commonly used RS-232C signals and
+   their pin numbers on the standard 25-pin D-shell connector, as well
+   as the RS-232C electrical specifications.  Signal names are given
+   with DTE as reference.  A male D-shell connector is used on DTE, a
+   female one on DCE;  a straight female-male cable connects DTE to
+   DCE.  The standard defines a total of 21 signals, including
+   secondary  signals and signals that allow data rate selection.
+   Most applications use a subset of these signals;  some use a 9-pin
+   D-shell connector instead of the 25-pin connector.</para>
+
+  <para>The voltage levels specified for the RS-232C driver outputs
+   provide zero crossing and better noise immunity than the levels
+   used in standard TTL or MOS technologies but require either power
+   supply voltages (usually +12v/-12v) that are not available, or
+   needed, in the rest of the DTE circuitry, or the use of chips that
+   derive a negative supply voltage on-chip from the standard +5v
+   supply, e.g., the MAXIM MAX232, a 3 driver/3 receiver chip.</para>
+
+  <!-- Insert Table I here -->
+
+  <para>Neither the 50' maximum cable length nor the maximum data rate
+   of the RS-232C standard should be a serious limitation in the
+   DTE-DCE application for which the standard is written   the DTE and
+   the modem are usually located near each other, and reliable
+   communication over the switched telephone network at more than
+   about 2400 bit/sec is very difficult at present.  Surprisingly, the
+   RS-232C specifications do not recognize the usefulness of such a
+   standard in applications other than local DTE-DCE connections, nor
+   do they specify any distance vs. rate tradeoffs;  in practice,
+   twisted pair cable can be used successfully up to 3000' at rates up
+   to 1200 bits/sec, and up to 250' at up to 9600 bits/sec.</para>
+
+  <para>The major difficulty with using RS-232C over long distances is
+   that the Signal Ground is usually connected to earth at both ends
+   so that ground current through the cable causes offsets in the
+   voltages sensed.  Newer standards for single-ended systems, e.g.
+   EIA RS-423A, specify a common return path for all signals and
+   ground the return path only at the transmitter; this standard also
+   relates maximum data rate and maximum distance:  100 kbit/sec at
+   30', 10 kbit/sec at 300', or 1 kbit/sec at 4000'.  Even higher data
+   rates over longer distances are possible with systems using
+   differential signal transmission: e.g., EIA RS-422A specifies 10
+   Mbit/sec at 40', 1 Mbit/sec at 400', or 100 kbit/sec at
+   4000'.</para>
+ </sect1>
+
+ <sect1 id="serial-comm-connections">
+  <title>Connections, Compatibility, and Null Modems</title>
+
+  <para>RS-232C interfaces are frequently used in applications for
+   which the standard was not originally intended, specifically
+   DTE-DTE connections.  Computers, terminals, printers, plotters, and
+   other DTEs often have serial interfaces labelled <quote>RS-232C
+   compatible.</quote>  Generally this means that the signals that are
+   implemented do not violate the standard but that not all of the
+   standard's signals are implemented, that the device will therefore
+   not interface properly with a modem, and is in fact designed for
+   direct DTE-DTE connection.  E.g., data can be sent from a computer
+   to a serial printer using only the Transmitted Data and Signal
+   Ground lines, if the software takes care of the delays needed to
+   let the printer perform carriage return, form feed, etc.;  if the
+   printer uses the XON/XOFF protocol the Received Data line is also
+   needed so that the printer can send the XON/XOFF characters back to
+   the computer, and if it uses a busy/wait protocol a handshaking
+   line (typically Data Set Ready) is needed instead.  In any case,
+   the Transmitted Data line from the computer (pin 2 of its DTE
+   connector) must be wired to the Received Data line of the printer
+   (pin 3 of its DTE connector), and other lines may have to be
+   similarly crossed to imitate the use of modems. Examples of such
+   <quote>null-modem</quote> cables are shown in <xref
+    linkend="serial-comm-fig-nullmodem">; the typical null-modem cable
+   has female connectors at each end.</para>
+
+  <figure id="serial-comm-fig-nullmodem">
+   <title>Typical Null-Modem Cables: (a) without handshaking; (b)
+    Dummy handshaking; (c) Full handshaking</title>
+
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="serial-comm/nullmodem">
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>The printer of other DTE device may deviate from the standard
+   even further by usinga female D-shell connector wired in such a way
+   that a straight-through extension cable rather than a null-modem
+   cable is used for the DTE-DTE connection.  Also, a 9-pin connector
+   may be used instead of the standard 25-pin connector.  Furthermore,
+   exactly which signals are used for handshaking depends on the
+   device as well as the software used to drive it.  Thus, the direct
+   connection of two <quote>RS-232C compatible</quote> DTE devices may
+   require some experimentation and preparation of a cable specific to
+   that application.  An arsenal of <quote>breakout boxes</quote>
+   (preferably with bicolor LEDs showing which lines are active),
+   null-modem boxes, 25-to-9 pin converters, and male-male and
+   female-female <quote>gender changers</quote> may make this task
+   easier.</para>
+
+  <para>Deviations from the standard may also occur with respect to
+   signal levels.  TTL inverters are sometimes used rather than
+   RS-232C line drivers or receivers which may require a negative
+   voltage supply.  There are several potential problems with this
+   approach:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>The 0v output of a TTL driver may not be recognized by an
+     RS-232C linereceiver as a valid input.  Line receivers generally
+     use hysteresis to improve noise immunity, i.e., as long as the
+     input level stays between the lower and upper thresholds the
+     output will maintain the previous value;  these thresholds
+     usually are adjustable via a control pin.  E.g., the SN75154
+     Quadruple Line Receiver may operate in either the
+     <quote>normal</quote> mode (control pin connected to +5v) with a
+     -1.1v to +2.2v hysteresis, or the <quote>fail-safe</quote> mode
+     (control pin open) with a +1.4v to 2.2v hysteresis.  Thus, a
+     grounded or open input is valid in the fail-safe mode, but not in
+     the normal mode. (75154s are used in the IBM Asynchronous
+     Communication Adapter, set for normal mode.)</para>
+   </listitem>
+
+   <listitem>
+    <para>TTL circuits used as drivers may not tolerate line-to-line
+     shorts which RS-232C drivers are designed to withstand.</para>
+   </listitem>
+
+   <listitem>
+    <para>TTL circuits used as receivers may not tolerate the
+     &plusmn;25v input voltage range which RS-232C receivers are
+     designed to withstand.</para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+
+ <sect1 id="serial-comm-conversion">
+  <title>Parallel/Serial Conversion</title>
+
+  <para>The serial data communication scheme used here is called
+   asynchronous  because the time between transmitted characters is
+   not fixed, and the transmitting and receiving devices are not
+   synchronized to the same clock, although the individual bits of
+   each character are transmitted at a known baud rate.  The line is
+   held at the MARK level when idle; for each character, the receiver
+   must recognize when the character starts and synchronize itself to
+   the transmitter to read the individual bits of the character. This
+   is accomplished by sending each character in a <quote>frame</quote>
+   consisting of a START BIT (a SPACE for one bit period), the bits of
+   the character (least significant bit first), and a least one STOP
+   BIT (a MARK for a least one bit period).</para>
+
+  <para>Characters are represented by from 5 to 8 information bits,
+   with 8 bits most common. The 8 bits may represent the
+   extended-ASCII codes, or the standard ASCII codes followed by a
+   parity bit to allow the detection of single-bit errors.  The STOP
+   bit is essentially an enforced IDLE before the next START bit; it
+   gives the receiver time to complete processing of the received
+   character (e.g., compute and check the parity of the received
+   character) and allows for slight differences between the transmit
+   and receive clocks.</para>
+
+  <para>Common buad rates for 8-bit (or 7-bit and parity) characters
+   with 1 start and 1 stop bit are 300, 1200, 2400, 4800, 9600, and
+   19200 baud, corresponding to 30, 120, etc. characters per second
+   (since the start and stop bits must be included in the bit count);
+   old-fashioned mechanical teletypes ran at 75 baud using characters
+   with 1 start, 5 (Baudot code) data, and 1.5 stop bits, or at 110
+   baud using characters with 1 start, 8 data, and 2 stop bits, i.e.,
+   at 10 characters/sec.</para>
+
+  <para>Receivers typically use an internal clock that is 16 times the
+   baud rate.  Reception of a character starts when the receiver
+   detects a 1-to-0 (IDLE-to-START) transition.  The receiver then
+   waits for 8 block periods (.5 bit period) and tests the line again:
+   if the signal is now 1 this is considered a false start and the
+   receiver goes back to looking for another 1-to-0 transition; if the
+   signal is still 0 it was a valid start and the remaining bits will
+   be sensed every 16 block periods (1 bit period) thereafter.  This
+   approach synchronizes the receiver to the transmitter to within
+   1/16 of a bit period at the beginning of each character, and tends
+   to place the times at which the signal is sampled at the middle of
+   each bit period, thus maximizing the tolerance for differences
+   between the receiver's and transmitter's internal clocks.  The
+   receiver will indicate a <quote>framing error</quote> if the signal
+   is not at the 1 level at the middle of the stop bit period. The
+   next START transition may occur immediately thereafter.</para>
+ </sect1>
+
+ <sect1 id="serial-comm-bios">
+  <title>Serial Data Communication using BIOS calls</title>
+
+  <para>The PC supports up to four Communications Adapters, COM1-COM4,
+   identified by &reg.dx;=0, 1, 2, or 3 respectively.  BIOS interrupt
+   14h calls with &reg.dx;=0, 1, 2, or 3 and &reg.ah;=0, 1, 2, or 3
+   may be used to initialize the adapter to the character format and
+   the baud rate given in &reg.al;, to transmit the character in
+   &reg.al;, to put the received character into &reg.al;, or to read
+   the modem status into &reg.al;.  In all cases, the port status is
+   returned in &reg.ah;.  BIOS interrupt 14h calls with &reg.ah;=4 or
+   5 provide extended initialization and modem port control.</para>
+
+  <para>BIOS call 14h with &reg.ah;=0 is used to select standard
+   character formats and baud rates by setting &reg.al; to BBBPPSLL,
+   where:</para>
+
+  <itemizedlist mark="None">
+   <listitem>
+    <para>BBB = 000, 001, 010, 011, 100, 101, 110, 111 for 110, 150,
+     300, 600, 1200, 2400, 4800, 9600 baud</para>
+   </listitem>
+
+   <listitem>
+    <para>PP = x0 for no parity, 01 for odd parity, and 11 for even
+     parity</para>
+   </listitem>
+
+   <listitem>
+    <para>S = 0 for 1 stop bit, 1 for 2 (1.5 if 5 info. bits) stop
+     bits</para>
+   </listitem>
+
+   <listitem>
+    <para>LL = 00 for 5, 01 for 6, 10 for 7, 11 for 8 info.
+     bits</para>
+   </listitem>
+  </itemizedlist>
+
+  <!-- TODO: Fix table reference -->
+  <para>In addition, all interrupts from the Adapter are disabled, the
+   port status is returned in &reg.ah; and the modem status in
+   &reg.al;, according to Tables II and III below.</para>
+
+  <!-- TODO: Fix table reference -->
+  <para>BIOS call 14h with &reg.ah;=1 waits for Transmit Holding
+   Register Empty (THRE) and transmits the character in &reg.al;; it
+   returns with the port status (Table II) in &reg.ah;, with bit 7 set
+   if a timeout occurred.</para>
+
+  <!-- TODO: Fix table reference -->
+  <para>BIOS call 14h with &reg.ah;=2 waits for Received Data
+   Available (RDA) and returns with the received character in &reg.al;
+   and the port status (Table II) in &reg.ah;, with bit 7 set if a
+   timeout occurred.</para>
+
+  <!-- TODO: Fix table reference -->
+  <para>BIOS call 14h with &reg.ah;=3 returns the port status (Table
+   II) in &reg.ah; and the modemstatus (Table III) in &reg.al;.</para>
+
+  <para>BIOS call 14h with &reg.ah;=4 can be used as an alternative to
+   &reg.ah;=0 to select higher baud rates or more specific serial port
+   parity.  Various settings are in &reg.bh;, &reg.bl;, &reg.ch;, and
+   &reg.cl;.</para>
+
+  <itemizedlist mark="None">
+   <listitem>
+    <para>&reg.bh; = 0 for no parity, 1 for odd parity, 2 for even
+     parity, 3 for <quote>stick</quote> odd parity, and 4 for
+     <quote>stick</quote> even parity</para>
+   </listitem>
+
+   <listitem>
+    <para>&reg.bl; = 0 for 1 stop bit, 1 for 2 (1.5 if 5 info. bits)
+     stop bits</para>
+   </listitem>
+
+   <listitem>
+    <para>&reg.ch; = 0 for 5, 1 for 6, 2 for 7, 3 for 8 info.
+     bits</para>
+   </listitem>
+
+   <listitem>
+    <para>&reg.cl; = 00h to 08h for 110, 150, 300, 600, 1200, 2400,
+     4800, 9600, and 19200 baud if ComShare is not installed.  If
+     ComShare is installed, 00h to 0Bh map to 19200, 38400, 300,
+     14400, 1200, 2400, 28800, 9600, 19200, 38400, 57600, and 115200
+     baud.</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>Note that the BIOS calls with &reg.ah;=1 or 2 are not fast
+   enough for sustained operation at 1200 baud or more.  Note also
+   that BIOS calls cannot be used to control or sense the modem
+   control/device handshaking signals, or to use interrupts.</para>
+
+  <!-- Add Tables II and III here -->
+ </sect1>
+
+ <sect1 id="serial-comm-portio">
+  <title>Serial Data Communication using IN and OUT</title>
+
+  <para>A more detailed knowledge of the Asynchronous Communication
+   Adapter is needed touse it directly via OUT and IN instructions.  A
+   simplified logic diagram of the Adapter is shown in <xref
+    linkend="serial-comm-fig-adapter">.</para>
+
+  <para>The National Semiconductor INS8250 chip is an Asynchronous
+   Communication Element (ACE), also called a Universal Asynchronous
+   Receiver-Transmitter (UART), a <quote>smart peripheral</quote> chip
+   that can be programmed to perform full-duplex conversion of
+   character data between parallel and serial formats at various baud
+   rates, for different character formats, including the insertion and
+   removal of start, stop, and parity bits, control of modem
+   functions, and monitoring of modem status signals.  Machines today
+   use a different UART chip than the INS8250, but it is compatible
+   with the 8250, so the following discussions are still valid.</para>
+
+  <para>In the PC, I/O ports 3F8h to 3FEh and interrupt request line
+   IRQ4 are assigned to the primary (COM1) adapter, I/O ports 2F8h to
+   2FEh and interrupt request line IRQ3 to the secondary (COM2)
+   adapter; a jumper on the Adapter card is used to configure it as
+   COM1 or COM2.  COM3 and COM4 share IRQ4 and IRQ3 with COM1 and
+   COM2, but use different I/O ports.</para>
+
+  <!-- TODO: Fix table reference -->
+  <para>The internal registers of the 8250 ACE that are accessible via
+   I/O port addresses are shown in Table IV below.  All registers are
+   8 bits wide.  The TRANSMIT HOLDING and RECEIVE BUFFER Registers are
+   padded with 0s on the left for characters with fewer than 8
+   information bits.</para>
+
+
+  <figure id="serial-comm-fig-adapter">
+   <title>Simplified logic diagram of the Asynchronous Communications
+    Adapter</title>
+
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="serial-comm/adapter">
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <!--<table id="serial-comm-fig-8250regs">
+   <title>Accessible registers in the IN8250 ACE</title>
+  </table> -->
+
+  <sect2 id="serial-comm-portio-init">
+   <title>Selecting Baud Rate and Character Format</title>
+
+   <!-- TODO: Fix table reference -->
+   <para>Before the 8250 ACE can be used, it must be programmed with
+    baud rate, character format, and interrupt source selections.  For
+    standard baud rates and character formats and polled operation the
+    BIOS initialization function described in a previous section is
+    preferable.  Otherwise, the 8250 ACE must be programmed by setting
+    the control registers shown in Table V below.</para>
+
+   <para>The baud rate is selected by writing a two-byte divisor value
+    into the DIVISOR LATCHES.  An internal clock signal equal to 16
+    times the baud rate is obtained by dividing this divisor into the
+    oscillator frequency.  Several divisor values are shown below for
+    an oscillator frequency of 1.8432 MHz:</para>
+<!--
+   <informaltable>
+    <tgroup cols=3>
+     <thead>
+      <row>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+-->
+   <para>The Divisor Latches are accessed by first setting DLAB, the
+    Divisor Latch Access Bit (bit 7 of the Line Control Register);
+    after the divisor bytes are loaded, DLAB must be cleared for
+    normal register addressing.  E.g., to select 50 baud, write 80h to
+    the Line Control Register to set DLAB, write 09h to the high-byte
+    Divisor Latch, and 00h to the low-byte Divisor Latch.  If the
+    character format is programmed next, DLAB can be cleared
+    then.</para>
+
+   <para>The character format is selected by programming the LINE
+    CONTROL Register.  E.g., to specify character having 7 information
+    bits, a parity bit forced to 0, and 1 stop bit, write 00111010 to
+    the Line Control Register.</para>
+  </sect2>
+
+  <sect2 id="serial-comm-portio-modem">
+   <title>Modem Control and Device Handshaking</title>
+
+   <para>The RS-232C interface signals Data Terminal Ready (DTR) and
+    Request to Send (RTS) may be controlled via bits 0 and 1 of the
+    MODEM CONTROL Register; Clear to Send (CTS), Data Set Ready (DSR),
+    Ring Indicator (RI), and Received Line Signal Detect (RLSD)
+    &ndash; also Carrier Detect (CD) &ndash; may be sensed as bits 4,
+    5, 6, and 7 of the MODEM STATUS register, and changes in CTS, DSR,
+    RI, and RLSD since the last time the Modem Status Register was
+    read as bits 0, 1, 2, and 3.</para>
+  </sect2>
+
+  <sect2 id="serial-comm-portio-datatransfer">
+   <title>Transmit and Receive in the 8250 ACE</title>
+
+   <para>The 8250's transmitter uses a Transmit Shift Register (TSR),
+    not accessible to the programmer, together with the Transmit
+    Holding Register (THR) for double-buffered operation: a new
+    character may be written into the THR while the previous character
+    is being shifted out of the TSR on the Serial Out (SOUT) line. The
+    character in THR (and the computed parity bit, if used) is
+    automatically moved to TSR as soon as TSR is empty and serial
+    transmission of the information bits preceded by a start bit and
+    followed by the selected number of stop bits is started.  The THR
+    Empty (THRE) Flag indicates when THR can be loaded again; the TSR
+    Empty (TSRE) Flag indicates similarly that TSR is empty (and that
+    a character sent to THR would be immediately moved to TSR, so that
+    a second character may be sent to THR without checking for THRE).
+    The THRE and TSRE flags are found in the LINE STATUS Register;
+    they are set initially by Master Reset.  THRE is cleared when a
+    character is loaded into THR.</para>
+
+   <para>The 8250's receiver similarly uses a Receive Shift Register
+    (RSR), not accessible to the programmer, together with the Receive
+    Buffer Register (RBR) for double-buffered operation: a character
+    is held in RBR while the bits of the next character frame are
+    being shifted into RSR on the Serial In (SIN) line.  When the
+    complete frame has been received, the start and stop bits are
+    deleted, the parity check, if used, is computed, the character is
+    automatically moved from RSR to RBR, and the Received Data
+    Available (RDA) Flag is set.  Also the Parity Error Flag is set if
+    the parity check was used but failed, the Framing Error Flag is
+    set if the line was not at the MARK level when the first stop bit
+    was expected, and the Overrun Error Flag is set if the previous
+    character in RBR had not been removed and was overwritten when the
+    new character was moved into RBR from RSR.  In addion, the Break
+    Detected Flag is set if the line was in the SPACE condition for
+    more than a character frame time (<quote>long space</quote>).
+    These five flags are found in the LINE STATUS Register; they are
+    cleared initially by Master Reset.  RDA is also cleared whenever a
+    character is read from RBR.</para>
+  </sect2>
+
+  <sect2 id="serial-comm-portio-noint">
+   <title>Input/Output without Interrupts</title>
+
+   <para>If no interrupts are used the INTERRUPT ENABLE Register
+    should be cleared (initialization via BIOS does that) and OUT2
+    (bit 3 of the MODEM CONTROL Register) should be cleared.  The
+    polling routine should check THRE (bit 5 of the Line Status
+    Register) and RDA (bit 0 of the Line Status Register); a new
+    character can be sent to the Transmit Holding Register when THRE =
+    1; a new character can be read from the Receive Buffer Register
+    when RDA = 1.</para>
+  </sect2>
+
+  <!-- TODO: control and status register tables -->
+
+  <sect2 id="serial-comm-portio-intdriven">
+   <title>Interrupt-Driven Input/Output</title>
+
+   <para>The following steps are necessary to allow interrupt-driven
+    operation of the 8250 ACE (the discussion assumes the use of
+    COM1):</para>
+
+   <procedure>
+    <step>
+     <para>Select the 8250 ACE interrupt sources by programming the
+      INTERRUPT ENABLE Register</para>
+    </step>
+
+    <step>
+     <para>Set OUT2 in the MODEM CONTROL Register so that the
+      interrupt signal from the 8250 ACE is passed to the IRQ4
+      Interrupt Request Line</para>
+    </step>
+
+    <step>
+     <para>Unmask IRQ4 at the 8259 Programmable Interrupt Controller
+      by clearing bit 4 of the 8259's Mask Register (at port address
+      21h)</para>
+    </step>
+
+    <step>
+     <para>Enable interrupts in the CPU, 8250 ACE interrupts will
+      cause an interrupt 0Ch in the CPU.</para>
+    </step>
+   </procedure>
+
+   <para>The interrupt 0Ch service routine can determine the source of
+    the interrupt by examining the INTERRUPT ID Register and take the
+    appropriate action.  The interrupt condition in the 8250 ACE is
+    typically reset automatically, as indicated in the description of
+    the Interrupt ID Register.  However, the 8259 Interrupt Controller
+    must also be reset, by sending an End-of-Interrupt command byte
+    (20h) to port 20h before returning form the interrupt service
+    routine.</para>
+
+   <para>Unfortunately, the behaviour of some versions of the UART is
+    less than ideal.  The following anomalies were described in an
+    obscure application note:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>In the 8250-B, used in many 8088-based PCs:</para>
+
+     <itemizedlist>
+      <listitem>
+       <para>Enabling THRE interrupts by writing a <quote>1</quote> to
+	bit 1 of the Interrupt Enable Register triggers a THRE
+	interrupt even when the Transmit Holding Register (THR) is not
+	empty. Thus, any character that happens to be waiting in THR
+	will be lost.  The recommended software fix for this anomaly
+	is to enable THRE interrupts only when THR is empty, i.e.,
+	only when the THRE flag is true.</para>
+      </listitem>
+
+      <listitem>
+       <para>A random character may occasionally be transmitted at
+	power-on.  The recommended fix for the receiver is to discard
+	any character that may be waiting in the Receive Buffer
+	Register at initialization.</para>
+      </listitem>
+
+      <listitem>
+       <para>If the UART is never disabled, the Modem Status and Line
+	Status Registers are never updated, the current error status
+	indications cannot be read, and the character in THR will be
+	transmitted repeatedly.</para>
+      </listitem>
+
+      <listitem>
+       <para>There are miscellaneous timing problems.</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+
+    <listitem>
+     <para>In the 8250A (for 8086 CPUs) and the 16450 (for 80286 and
+      later CPUs), the anomalies listed above have been eliminated,
+      but a new anomaly has appeared:</para>
+
+     <itemizedlist>
+      <listitem>
+       <para>A pending THRE interrupt may be lost if a high-priority
+	(RDA, or Receive Line Status) interrupt occurs before the THRE
+	interrupt is serviced.  The following software fix is
+	suggested: Before leaving the interrupt service routine for
+	the high-priority interrupt, either disable and then re-enable
+	THRE interrupts, or check the THRE flag and, if true, service
+	the THRE condition immediately.</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="serial-comm-nullmodem">
+  <title>Creating a Null-Modem</title>
+
+  <para>Often during testing of software which utilizes the serial
+   port, it is useful to have yourmachine <quote>talk to
+    itself.</quote>  In other words, the receive and send lines on the
+   serial port are in some fashion connected to one another.  This
+   means that whatever your computer sends out will be immediately
+   received again &ndash; although for all intents and purposes, your
+   computer does not know that the received data originated from
+   itself. One quick way to accomplish this task is to use a so-called
+   turnaround plug on the serial port (the shop often carries these
+   under the part # DE 9S).  When viewed from the front, the plug's
+   pins will look like the following:</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="serial-comm/plug9pins">
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>Also shown are the numbers assigned to each of the nine pins.
+   Pins 2 and 3 must be connected together (a little solder and a
+   short piece of wire will do the trick) as follows:</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="serial-comm/plug9pins-null">
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>This is the most rudimentary form of a null-modem.  It may not
+   operate correctly for some applications which utilize more of the
+   pins, but will work for any course MP's assigned.</para>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

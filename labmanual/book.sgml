@@ -1,0 +1,154 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: book.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+-->
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % registers SYSTEM "registers.ent"> %registers;
+<!ENTITY % chapters SYSTEM "chapters.ent"> %chapters;
+<!ENTITY preface SYSTEM "preface.sgml">
+<!ENTITY glossary SYSTEM "glossary.sgml">
+]>
+
+<book>
+ <bookinfo>
+  <title>ECE 291 Lab Manual</title>
+
+  <authorgroup>
+   <editor>
+    <firstname>Peter</firstname>
+    <othername>L. B.</othername>
+    <surname>Johnson</surname>
+    <affiliation>
+     <address><email>johnsonp@bilogic.org</email></address>
+    </affiliation>
+   </editor>
+  </authorgroup>
+
+  <pubdate>2001</pubdate>
+
+  <copyright>
+   <year>1992</year>
+   <year>1994</year>
+   <year>1995</year>
+   <year>1997</year>
+   <year>2001</year>
+   <holder></holder>
+  </copyright>
+
+  <revhistory>
+   <revision>
+    <revnumber>1</revnumber>
+    <date>1992</date>
+    <authorinitials>TM</authorinitials>
+    <revremark>Manual reconstructed</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>2</revnumber>
+    <date>1994</date>
+    <revremark>Complete revision of manual format and
+     content</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>3</revnumber>
+    <date>1995</date>
+    <revremark>Additional material added: instruction summary, string
+     instructions, Mode 13h VGA, ethernet, C programming, PCX
+     files</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>4</revnumber>
+    <date>1997</date>
+    <revremark>Revised for new lab computers, software,
+     resources</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>5</revnumber>
+    <date>2001</date>
+    <authorinitials>PLBJ</authorinitials>
+    <revremark>Complete revision for NASM, new class organization, lab
+     computers, and tools.  Converted to DocBook format.</revremark>
+   </revision>
+  </revhistory>
+
+  <abstract>
+   <para>This manual is intended to be a supplement to the class notes
+    and text book for ECE 291, the second course in the introductory
+    computer engineering sequence.  This course, along with the use of
+    this manual, attempts to achieve three major objectives.  First,
+    to give the student a fundamental understanding of the principles
+    and techniques of machine-level programming.  Second, to teach
+    students to use computers for real-time data acquisition and
+    control of input-output devices.  Lastly, to give the student an
+    understanding of how to design and implement complex programs on a
+    PC.  This manual contains both lab-specific information as well as
+    general programming information to the end of achieving the stated
+    goals.</para>
+  </abstract>
+ </bookinfo>
+
+ &preface;
+ &chap.introduction;
+ &chap.using-pc;
+ &chap.libraries;
+ &chap.data-structures;
+ &chap.io-devices;
+ &chap.serial-comm;
+
+ <appendix id="ascii-code">
+  <title>ASCII Code Tables</title>
+
+  <sect1 id="ascii-code-charset">
+   <title>Character Set Quick Reference (Hex)</title>
+
+   <para>To use this reference, form the two-digit hex code by finding
+    the most significant digitin the horizontal row at the top, and
+    the least significant digit in the vertical column to the
+    side.</para>
+  </sect1>
+
+  <sect1 id="ascii-code-table">
+   <title>ASCII Codes in Hex, Octal, and Decimal</title>
+
+   <para></para>
+  </sect1>
+ </appendix>
+
+ <appendix id="inst-summary">
+  <title>Instruction Summary</title>
+
+  <para>Following is a summary of common useful assembly language
+   commands.</para>
+
+  <sect1 id="inst-summary-control">
+   <title>Control Transfer Instructions</title>
+
+   <para></para>
+  </sect1>
+
+  <sect1 id="inst-summary-datamove">
+   <title>Data Movement Instructions</title>
+
+   <para></para>
+  </sect1>
+ </appendix>
+
+ &glossary;
+
+ <index id="book-index"></index>
+</book>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     End:
+-->

@@ -1,0 +1,216 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+-->
+
+<chapter id="introduction">
+ <title>Introduction to the Course</title>
+
+ <para>Welcome to ECE 291, Computer Engineering II.  This chapter will
+  acquaint you with the various aspects of this course, from details
+  on grading to instructions on how to demo machine problems.</para>
+
+ <sect1 id="introduction-mps">
+  <title>Machine Problems</title>
+
+  <sect2 id="introduction-mps-grading">
+   <title>Requirements and Grading Procedures</title>
+
+   <sect3 id="introduction-mps-grading-points">
+    <title>Point Totals</title>
+
+    <para>Your machine problems will be graded according to the
+     following formula:</para>
+
+    <para>You are expected to provide an original, fully functional
+     solution to all machine problems.  Due to the complexity of MP2
+     and later machine problems, you will occasionally be supplied
+     with additional library subroutines which implement all or some
+     portion of the assignment.  These subroutines are to assist you
+     in writing and debugging your code, but are not intended to be
+     handed in as part of your solution.  If your solution requires
+     the use of one or more library subroutines, you will be penalized
+     accordingly for using them.  The penalty for each library
+     subroutine will be indicated in the assignment.  There is no
+     penalty for the use of the subroutines
+     <function>kbdin</function>, <function>kbdine</function>,
+     <function>dspout</function>, <function>dspmsg</function>,
+     <function>dosxit</function>, <function>ascbin</function>, and
+     <function>binasc</function> (all present in LIB291).  We may
+     announce additions to this list of free subroutines.</para>
+   </sect3>
+
+   <sect3 id="introduction-mps-grading-comments">
+    <title>Comments</title>
+
+    <para>There are two main kinds of comments we are looking for,
+     <emphasis>line comments</emphasis> and <emphasis>procedure
+      comments</emphasis>.  Good line comments supply additional
+     information or context for a given assembler instruction.  They
+     explain something that might not be obvious, rather than merely
+     echoing the instruction itself.</para>
+
+    <para>Procedure comments, also known as <emphasis>header
+      comments</emphasis>, are required for each andevery procedure in
+     your program.  Foremost, they describe what the procedure is
+     supposed to do.  They should also describe which registers and/or
+     memory locations hold the procedure's input values, which
+     registers and/or memory locations hold the output values when the
+     procedure exits, and which registers are changed as part of the
+     normal execution of the procedure.  Excellent examples of proper
+     commenting style are available in your laboratory notebook.  Take
+     advantage of them.</para>
+   </sect3>
+
+   <sect3 id="introduction-mps-grading-style">
+    <title>Style</title>
+
+    <para>Good style implies a number of practices have been followed
+     in your program: (a) code is not repeated, (b) commonly used
+     sequences are separated into independent subroutines, and (c) the
+     execution path of your program does not look like
+     <quote>spaghetti.</quote></para>
+
+    <para>Generally, if you have a significant series of instructions
+     repeated in your program, you probably need to rethink how you
+     approached the problem.  Look for a way to consolidate the
+     instructions so that you don't have to repeat them; this almost
+     always reveals a solution that is easier to implement and
+     debug.</para>
+
+    <para>If you just can not consolidate the instructions, consider
+     making them a separate, independent subroutine.  Then you just
+     <function>call</function> the subroutine from multiple places in
+     your program.</para>
+
+    <para>Finally, any procedure (this includes
+     <function>main</function>) should probably resemble the flowchart
+     of the same task.  Execution starts at the top, and flows
+     generally downward.  If you have lots of branches every which
+     way, you might want to make it easier for human readers and
+     graders (<emphasis>hint!</emphasis>).  Some advanced
+     microprocessors rely on certain code patterns for optimum
+     performance, and if you follow good programming style, your
+     programs will be more efficient (employers like this!).</para>
+   </sect3>
+
+   <sect3 id="introduction-mps-grading-iospecs">
+    <title>I/O Specifications</title>
+
+    <para>You will be given specifications for some of the procedures
+     you write for later machine problems.  You must follow these
+     specifications, even though you will write the entire program by
+     yourself.  These specifications will include which registers pass
+     values into the procedure, which registers hold values on exit
+     from the procedure, and which registers must remain
+     unmodified.</para>
+   </sect3>
+
+   <sect3 id="introduction-mps-grading-modularity">
+    <title>Modularity</title>
+
+    <para>Modularity and style are closely related.  A modular program
+     will use subroutines inthe obvious places; see above.  A modular
+     program will also use loops instead of in-line code, and tables
+     instead of a long series of compare and branch instructions.  All
+     these practices will make your program much easier to write and
+     debug, and will make your life simpler if you ever need to modify
+     your program.  A modular program rarely encounters the problem of
+     a branch-out-of-range; a modular procedure usually fits on the
+     screen, and certainly fits completely on a printed page.  If your
+     procedures are longer than one page, think carefully about what
+     you wrote.</para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="introduction-mps-demo">
+   <title>Demonstration</title>
+
+   <para>When you hand in machine problems, you are responsible for
+    meeting the following conditions:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>You must demonstrate your correctly working program to a TA
+      or instructor in the lab, and be able to answer reasonable
+      questions about how you did it.</para>
+    </listitem>
+
+    <listitem>
+     <para>You must provide an electronic listing of the
+      <filename>.ASM</filename> file for your program.</para>
+    </listitem>
+
+    <listitem>
+     <para>The TA or instructor must be able to copy your
+      <filename>.ASM</filename> file to the official Web-based
+      hand-in, assemble and link them with our copies of
+      <command>NASM</command> and <command>TLINK</command>, and get
+      the same program.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>The lab computers have Intel Pentium III processors running
+    at 866Mhz.  If you own or have access to other PC compatible
+    computers, you will probably be able to do a lot of the lab work
+    outside of the lab.  However, your program must eventually be
+    demonstrated in the lab, and there are often subtle differences
+    between PC compatible computer models.  If you do your work
+    outside of the lab, make sure you allow yourself enough time to
+    test and modify your program so it runs in the lab.  Also remember
+    that the staff will be unable to answer questions about computers
+    outside the lab.</para>
+
+   <para>The same warning applies to your choice of editor, debugging
+    tools, and so forth.  You may use whatever PC tools you feel most
+    comfortable with, but your program has to run in the lab using our
+    hardware and software. Please note there may be questions on the
+    homework and/or exams which refer to the tools in the lab; you
+    will be expected to be somewhat familiar with them, even if you
+    choose other tools for most of your work.</para>
+  </sect2>
+
+  <sect2 id="introduction-mps-bigpicture">
+   <title>The Big Picture</title>
+
+   <para>Creation of an assembly language program requires several
+    steps, from the initial ideas to the finished executable.  The
+    following flow chart illustrates the development of an
+    assembly-language program.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="introduction-webpage">
+  <title>WWW Page</title>
+
+  <para>ECE 291 also has a WWW home page.  This page contains several
+   FAQ files relevant to ECE 291, lists relevant newsgroups (including
+   our newsgroup uiuc.class.ece291), contains ECE 291 humor, course
+   specific information, as well as other programming resources.  The
+   homeworks and MPs are released and graded online.  It also contains
+   useful information on the staff.  The URL address for the ECE 291
+   home page is:</para>
+
+  <para><ulink
+   url="http://courses.ece.uiuc.edu/ece291/">http://courses.ece.uiuc.edu/ece291/</ulink></para>
+
+  <para>You may access this page using any web browser, including
+   Internet Explorer, Netscape, and Mozilla.</para>
+
+  <para>Internet Explorer is available on the machines in the
+   lab.</para>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

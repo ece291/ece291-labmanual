@@ -1,0 +1,47 @@
+<!--
+     Names of x86 registers
+
+     $Id: registers.ent,v 1.1 2001/06/25 18:57:10 pete Exp $
+-->
+
+<!-- 8 bit -->
+<!ENTITY reg.al                     "<literal role=reg8>AL</literal>">
+<!ENTITY reg.bl                     "<literal role=reg8>BL</literal>">
+<!ENTITY reg.cl                     "<literal role=reg8>CL</literal>">
+<!ENTITY reg.dl                     "<literal role=reg8>DL</literal>">
+<!ENTITY reg.ah                     "<literal role=reg8>AH</literal>">
+<!ENTITY reg.bh                     "<literal role=reg8>BH</literal>">
+<!ENTITY reg.ch                     "<literal role=reg8>CH</literal>">
+<!ENTITY reg.dh                     "<literal role=reg8>DH</literal>">
+
+<!-- 16 bit -->
+<!ENTITY reg.ax                     "<literal role=reg16>AX</literal>">
+<!ENTITY reg.bx                     "<literal role=reg16>BX</literal>">
+<!ENTITY reg.cx                     "<literal role=reg16>CX</literal>">
+<!ENTITY reg.dx                     "<literal role=reg16>DX</literal>">
+<!ENTITY reg.si                     "<literal role=reg16>SI</literal>">
+<!ENTITY reg.di                     "<literal role=reg16>DI</literal>">
+<!ENTITY reg.bp                     "<literal role=reg16>BP</literal>">
+<!ENTITY reg.sp                     "<literal role=reg16>SP</literal>">
+
+<!-- segment -->
+<!ENTITY reg.cs                     "<literal role=segreg>CS</literal>">
+<!ENTITY reg.ds                     "<literal role=segreg>DS</literal>">
+<!ENTITY reg.es                     "<literal role=segreg>ES</literal>">
+<!ENTITY reg.fs                     "<literal role=segreg>FS</literal>">
+<!ENTITY reg.gs                     "<literal role=segreg>GS</literal>">
+<!ENTITY reg.ss                     "<literal role=segreg>SS</literal>">
+
+<!-- 32 bit -->
+<!ENTITY reg.eax                    "<literal role=reg32>EAX</literal>">
+<!ENTITY reg.ebx                    "<literal role=reg32>EBX</literal>">
+<!ENTITY reg.ecx                    "<literal role=reg32>ECX</literal>">
+<!ENTITY reg.edx                    "<literal role=reg32>EDX</literal>">
+<!ENTITY reg.esi                    "<literal role=reg32>ESI</literal>">
+<!ENTITY reg.edi                    "<literal role=reg32>EDI</literal>">
+<!ENTITY reg.ebp                    "<literal role=reg32>EBP</literal>">
+<!ENTITY reg.esp                    "<literal role=reg32>ESP</literal>">
+
+<!-- flags -->
+<!ENTITY flag.zf                    "<literal role=flag>ZF</literal>">
+

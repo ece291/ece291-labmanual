@@ -1,0 +1,46 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: preface.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+-->
+
+<preface id="preface">
+ <title>Preface</title>
+
+ <sect1 id="preface-acknowledgments">
+  <title>Acknowledgments</title>
+
+  <para>
+   The contents of this manual are a compilation of various references, guides,
+   and tutorials taken from many sources and written by several independent
+   authors.  Thanks and appreciation to the following individuals for the use
+   of their material in this manual:
+  </para>
+
+  <simplelist type=vert columns=3>
+   <member>Professor Gernot Metze</member>
+   <member>Professor Michael C. Loui</member>
+   <member>Professor W. Kent Fuchs</member>
+   <member>Professor John W. Lockwood</member>
+   <member>Tom Maciukenas</member>
+   <member>Eric S. Meidel</member>
+   <member>David Eprim Pearah</member>
+   <member>Michael Thiems</member>
+   <member>Doug Stirrett</member>
+   <member>Allan M. Krol</member>
+   <member>Brandon Long</member>
+   <member>Jeff Stahl</member>
+   <member>Joseph Gebis</member>
+   <member>Peter Johnson</member>
+   <member>Jason Gallicchio</member>
+  </simplelist>
+
+  <para>
+   Indeed this list is not extensive, as some of the material comes from
+   authors unknown at the time of printing of this manual.  It is hoped that
+   those individuals who have not been mentioned but have contributed will
+   feel equally appreciated as those listed above.
+  </para>
+ </sect1>
+</preface>
+

@@ -1,0 +1,1282 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+-->
+
+<chapter id="io-devices">
+ <title>I/O Devices</title>
+
+ <sect1 id="io-devices-keyboard">
+  <title>Keyboard</title>
+
+  <sect2 id="io-devices-keyboard-hardware">
+   <title>Keyboard Interface Hardware</title>
+
+   <para>The keyboard unit contains an Intel 8048 microcontroller that
+    is programmed to scan the keyboard for key presses and releases
+    (each counts as an individual keystroke), debounce the keystrokes,
+    implement the <quote>typematic</quote> (hold-to-repeat) feature,
+    maintain a 16-keystroke buffer, and transmit each keystroke
+    serially to the PC's system unit. There are two bidirectional data
+    lines in the cable connecting the keyboard unit to the system
+    unit: KBD DATA carries either the serial keystroke data from the
+    keyboard or a <quote>clear-and-reenable</quote> handshaking signal
+    from the system unit; KBD CLK carries either the baud rate clock
+    from the keyboard unit or a <quote>clock disable</quote> control
+    signal from the system unit.  (Note that when the keyboard clock
+    is disabled, the keyboard does not even respond to
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>ALT</keycap>
+     <keycap>DEL</keycap>
+    </keycombo>.</para>
+
+   <para>Keystroke data are transmitted serially at 10,000 baud over
+    the KBD DATA line together with the baud rate clock on the KBD CLK
+    line.  Each character transmitted consists of 2 start bits and 8
+    data bits; there are no stop bits.  The line is 0 (low) when idle,
+    the start bits are 1 (high). The data bits are transmitted LSB
+    first; bits 0-6 are the <quote>scan code</quote> which uniquely
+    identifies the key by its position on the keyboard, bit 7 (MSB) is
+    0 for key press and 1 for key release.  Holding a key down for
+    more than half a second invokes the <quote>typematic</quote>
+    action: key press scan codes are sent repeatedly at the rate of 10
+    per second without intervening key release scan codes, until the
+    key is released.</para>
+
+   <para>In the system unit the character received on the KBD DATA
+    line is reconverted to parallel format, gated into port
+    <constant>60h</constant>, and a interrupt is sent on
+    <constant>IRQ1</constant> to the Interrupt Controller.  Since the
+    baud rate clock is transmitted along with the data, the circuit
+    needed to deserialize the data is significantly simpler than a
+    UART; it is essentially a serial-in, parallel-out shift register.
+    The Interrupt Controller triggers interrupt 9 for
+    <constant>IRQ1</constant>.</para>
+
+   <para>The interrupt 9 handler must send an End-of-Interrupt signal
+    to the Interrupt Controller, and on the original IBM PC also needs
+    to acknowledge the reception of the character by sending a
+    clear-and-reenable handshaking signal to the keyboard unit over
+    the KBD DATA line.  This is done by setting bit 7 of port
+    <constant>61h</constant> to 1 and back to 0.  (The other bits of
+    port <constant>61h</constant> should be left unchanged since they
+    control other functions.  E.g., bits 0 and 1 enable the built-in
+    speaker, and bit 6 disables the keyboard clock.) On more recent
+    machines, this acknowledgement is unnecessary but not
+    harmful.</para>
+
+   <para>The use of scan codes together with the key press/release
+    information makes it easy to assign arbitrary meanings to the
+    keys, e.g., to convert the standard QWERTY keyboard layout to the
+    Dvorak layout; to discriminate between different keys having the
+    same labels such as the number keys in the main keyboard and the
+    numeric keypad, the left and right <keycap>SHIFT</keycap> keys,
+    etc.; to handle special key combinations for <quote>hot
+     key</quote> applications; and to identify the sequence in which
+    certain keys have been pressed and released.  For normal typing
+    and character entry, on the other hand, keystrokes should simply
+    be converted to ASCII codes; this is done by the default interrupt
+    9 handler in the system BIOS, described below.</para>
+  </sect2>
+
+  <sect2 id="io-devices-keyboard-handler">
+   <title>Keyboard Interrupt 9 Handler</title>
+
+   <para>KBD_INT, the name given to the default BIOS Keyboard
+    Interrupt 9 Handler, reads the scan code from port
+    <constant>60h</constant>, sends the clear-and-reenable handshaking
+    signal to the keyboard unit, processes the scan code, sends an
+    End-of-Interrupt signal to the Interrupt Controller (code
+    <constant>20h</constant> to port <constant>20h</constant>), and
+    returns from the interrupt.</para>
+
+   <para>The scan code processing performed in the KBD_INT routine in
+    BIOS consists of the following tasks:</para>
+
+   <orderedlist>
+    <listitem>
+     <para>Intercept the following special key combinations:</para>
+
+     <itemizedlist>
+      <listitem>
+       <para>
+        <keycombo>
+	 <keycap>CTRL</keycap>
+	 <keycap>ALT</keycap>
+	 <keycap>DEL</keycap>
+	</keycombo> (invokes a system reset)</para>
+      </listitem>
+
+      <listitem>
+       <para>
+        <keycombo>
+	 <keycap>CTRL</keycap>
+	 <keycap>BREAK</keycap>
+	</keycombo> (invokes interrupt <constant>1Bh</constant>.  By
+	default an immediate <literal>IRET</literal> is performed
+	unless the user has installed an interrupt
+	<constant>1Bh</constant> handler)</para>
+      </listitem>
+
+      <listitem>
+       <para>
+	<keycombo>
+	 <keycap>CTRL</keycap>
+	 <keycap>NUM LOCK</keycap>
+	</keycombo> (enters a SUSPEND state, i.e. waits in a loop
+	within KBD_INT until any key other than <keycap>NUM
+	 LOCK</keycap> is pressed)</para>
+      </listitem>
+
+      <listitem>
+       <para>
+	<keycombo>
+	 <keycap>SHIFT</keycap>
+	 <keycap>PRTSC</keycap>
+	</keycombo> (invokes interrupt <constant>5</constant>)</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+
+    <listitem>
+     <para>Maintain a record of the state of the
+      <keycap>SHIFT</keycap>, <keycap>CTRL</keycap>,
+      <keycap>ALT</keycap>, <keycap>CAPS LOCK</keycap>, <keycap>NUM
+       LOCK</keycap>, <keycap>SCROLL LOCK</keycap>, and
+      <keycap>INSERT</keycap> keys.  This invokes monitoring key
+      presses as well as releases, and suppressing the typematic
+      action of the LOCK and <keycap>INSERT</keycap> keys to get
+      toggle action.</para>
+    </listitem>
+
+    <listitem>
+     <para>Convert the scan code for any other key press (and for
+      <keycap>INSERT</keycap>) into a two-byte <quote>extended
+       ASCII</quote> code representation and store it in a 16-word
+      circular <quote>type-ahead</quote> buffer KB_BUFFER (or sound a
+      beep if the buffer is full)</para>
+    </listitem>
+
+    <listitem>
+     <para><quote>Compose</quote> an ASCII code for digits typed on
+      the numeric keypad while <keycap>ALT</keycap> is held down.  The
+      code is the number (modulo 256).</para>
+    </listitem>
+   </orderedlist>
+
+   <sect3 id="io-devices-keyboard-handler-shiftstatus">
+    <title>Shift Status Bytes</title>
+
+    <para>Task 2 maintains two <quote>shift mode status</quote> bytes,
+     located at <constant>0040:0017h</constant> and
+     <constant>0040:0018h</constant> in IBM-compatible BIOS,
+     indicating the following:</para>
+
+    <para>KB_BUFFER, the type-ahead buffer maintained by Task 3, is
+     independent of the 16-keystroke buffer maintained within the
+     keyboard unit.  For every keypress other than shift mode keys
+     (but including <keycap>INSERT</keycap>) an entry is made in
+     KB_BUFFER, modified as appropriate by the status of the various
+     shift mode keys.  Note that <keycap>CAPS LOCK</keycap> affects
+     only the letter keys, <keycap>NUM LOCK</keycap> only the number
+     keys in the numeric keypad, and that the effect of either key is
+     reversed when <keycap>SHIFT</keycap> is also pressed.  Note
+     further that when <keycap>ALT</keycap>, <keycap>CTRL</keycap>,
+     and <keycap>SHIFT</keycap> are pressed in combination (other than
+     the
+     <keycombo>
+      <keycap>CTRL</keycap>
+      <keycap>ALT</keycap>
+      <keycap>DEL</keycap>
+     </keycombo> <quote>system reset</quote> case) their precedence is
+     <keycap>ALT</keycap> first, <keycap>CTRL</keycap> second,
+     <keycap>SHIFT</keycap> last.</para>
+   </sect3>
+
+   <sect3 id="io-devices-keyboard-handler-user">
+    <title>User-defined Interrupt 9 Handlers</title>
+
+    <para>Writing your own interrupt 9 keyboard handler is relatively
+     straightfoward since the hardware does most of the work for you.
+     If you use your own interrupt 9 handler, none of the above
+     functions will happen, but you can check for things the normal
+     handler won't check for.</para>
+
+    <para>Your interrupt handler will be a normal interrupt service
+     routine. The only special requirement is that it acknowledges
+     reception of the keyboard event by toggling bit 7 of port 61h to
+     1 and back to 0.  The other bits of port 61h must not be
+     modified, since they control other hardware.  This is only
+     required for full original IBM PC compatibility. The following
+     code example is a skeleton of an interrupt 9 handler:</para>
+
+    <example id="io-devices-example-handler">
+     <title>Interrupt 9 (Keyboard) Handler</title>
+
+     <programlisting>
+KbdInt
+        push    ax              ; Save registers
+        push    ds              ;
+        mov     ax, cs          ; Make sure DS = CS
+        mov     ds, ax          ;
+        in      al, 60h         ; Get scan code
+                ¦               ;
+                ¦               ; Process event
+                ¦               ;
+        in      al, 61h         ; Send acknowledgement without
+        or      al, 10000000b   ;   modifying the other bits.
+        out     61h, al         ;
+        and     al, 01111111b   ;
+        out     61h, al         ;
+        mov     al, 20h         ; Send End-of-Interrupt signal
+        out     20h, al         ;
+        pop     ds              ; Restore registers
+        pop     ax              ;
+        iret                    ; End of handler</programlisting>
+    </example>
+
+    <para>The procedure for installing an interrupt 9 handler is
+     exactly the same as that for installing an interrupt 1Ch timer
+     interrupt routine, except that the interrupt 9 vector is located
+     at address <constant>0000:0024</constant> (segment address
+     <constant>0000</constant>, offset <constant>0024h</constant>).
+     Remember to save the old vector and restore it before your
+     program exits.</para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="io-devices-keyboard-library">
+   <title>Library Procedures for Keyboard Input</title>
+
+   <variablelist>
+    <title>Keyboard routines in LIB291</title>
+
+    <varlistentry>
+     <term><function>kbdine</function></term>
+
+     <listitem>
+      <para>This routine waits for a character to become available,
+       echoes the character to the display, and then returns with the
+       character stored in &reg.al;.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><function>kbdin</function></term>
+
+     <listitem>
+      <para>This routine is the same as KBDINE except the character is
+       not echoed.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>One thing to note about the above routines is that they will
+    wait indefinitely until a key is typed.  If this is not desired,
+    one should check to see if a key is available before calling
+    <function>kbdine</function> or <function>kbdin</function>.  For
+    this you call interrupt 16h with &reg.ah;=1, which returns with
+    the zero flag &flag.zf;=1 if no character has been typed, or
+    &flag.zf;=0 if a character is available.  An example of how to use
+    this interrupt is shown below:</para>
+
+   <example id="io-devices-example-int16h">
+    <title>Using Interrupt 16h with &reg.ah;=1</title>
+
+    <programlisting>
+        mov     ah, 1   ; Get the status of keyboard
+                        ;  buffer
+        int     16h     ; ZF=1 if buffer is empty
+        jz      .nochar ; Do something else if buffer is
+                        ;  empty
+        call    kbdine  ; Get the character
+                ¦
+                ¦</programlisting>
+   </example>
+  </sect2>
+
+  <sect2 id="io-devices-keyboard-bios">
+   <title>BIOS Function Calls</title>
+
+   <para>Several useful BIOS routines for the keyboard can be accessed
+    by using <literal>INT 16h</literal> with &reg.ah;=0, 1, or
+    2.</para>
+
+   <para>Subfunction 0 (i.e. &reg.ah;=0) waits, if necessary, until an
+    entry is present in the BIOS type-ahead buffer KB_BUFFER, then
+    removes the entry from KB_BUFFER into register
+    <literal>AX</literal>.  The scan code (or second code) is in
+    &reg.ah; and the ASCII code (or 00h) is in &reg.al;.</para>
+
+   <para>Subfunction 1 returns with the entry at the tail of KB_BUFFER
+    copied into &reg.ax; (but not removed from the buffer) and the
+    zero flag set/reset if the buffer is/isn't empty.  I.e., if
+    &flag.zf;=1, a new entry is not available, and the entry copied
+    into &reg.ax; was typed 16 entries ago; if &flag.zf;=0, &reg.ax;
+    contains the new entry (subfunction 0 must be used to actually
+    remove the entry from KB_BUFFER).  Subfunction 1 may be used to
+    <quote>preview</quote> a character such as
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>C</keycap>
+    </keycombo> before it is acted upon.</para>
+
+   <!-- TODO: Fix table reference -->
+   <para>Subfunction 2 copies the first <quote>shift status</quote>
+    byte (see Table Ia above) into &reg.al;.</para>
+
+   <para>Subfunction 0 and 1 recognize
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>BREAK</keycap>
+    </keycombo> and invoke interrupt 1Bh.  The default interrupt 1Bh
+    handler in BIOS is an <literal>IRET</literal>.  A user-written
+    interrupt 1Bh handler may be installed, but care must be taken to
+    issue End-of-Interrupt commands for all hardware interrupts that
+    happen to be in service when
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>BREAK</keycap>
+    </keycombo> was pressed, and to reset those hardware
+    devices.</para>
+
+   <para>Here is a short table summarizing the <literal>INT
+     16h</literal> functions above:</para>
+
+   <!-- TODO: Table -->
+  </sect2>
+
+  <sect2 id="io-devices-keyboard-dos">
+   <title>DOS Function Calls</title>
+
+   <para>In addition to the BIOS calls, there are several DOS function
+    calls which also provide keyboard services.  The calls are
+    performed using <literal>INT 21h</literal> with &reg.ah;=01h, 06h,
+    07h, 0Ah, 0Bh, and 0Ch. These DOS function calls use the BIOS
+    calls described above.  Some functions recognize
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>BREAK</keycap>
+    </keycombo> and
+    <keycombo>
+     <keycap>SHIFT</keycap>
+     <keycap>PRTSC</keycap>
+    </keycombo>; note that
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>BREAK</keycap>
+    </keycombo> from a DOS function invokes interrupt 23h.</para>
+
+   <para>DOS functions 01h, 07h, or 08h wait (if necessary), read a
+    new buffer entry, and return the ASCII code in register &reg.al;;
+    an ASCII code of 00h indicates that a second DOS function call is
+    needed to get the <quote>second code</quote> into &reg.al;.
+    Function 01h also echoes the character to the display, functions
+    07h and 08h don't.  Functions 01h and 08h recognize
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>BREAK</keycap>
+    </keycombo> and
+    <keycombo>
+     <keycap>SHIFT</keycap>
+     <keycap>PRTSC</keycap>
+    </keycombo>; function 07h ignores them.</para>
+
+   <para>DOS function 06h, when used for input by setting &reg.dl; =
+    -1, is similar to function 07h but does not wait for an entry: if
+    no entry is ready the function returns with the zero flag set,
+    otherwise the zero flag is reset and the ASCII code is returned in
+    &reg.al;.</para>
+
+   <para>DOS function 0Ah allows input of an entire input string.  The
+    characters are echoed to the display as they are entered; the
+    string is terminated with <keycap>ENTER</keycap>.  Keys requiring
+    a <quote>second code</quote> are ignored.  If the allowed maximum
+    length of the string (including the terminating
+    <keycap>ENTER</keycap>) is N characters, an (N+2)-byte input
+    buffer pointed to by <literal>&reg.ds;:&reg.dx;</literal> must be
+    set up, with byte 0 set to N.  When the complete string has been
+    input, byte 1 of the buffer will be set to the actual character
+    count (<emphasis>not</emphasis> including the terminating
+    <keycap>ENTER</keycap>); the characters of the string, including
+    the <keycap>ENTER</keycap>, start in byte 2.  A beep sounds if the
+    string is too long, i.e., if the Nth character is not
+    <keycap>ENTER</keycap>.</para>
+
+   <para>DOS function 0Bh returns 0/-1 in register &reg.al; if
+    KB_BUFFER is/isn't empty.  This function recognizes
+    <keycombo>
+     <keycap>CTRL</keycap>
+     <keycap>BREAK</keycap>
+    </keycombo>.</para>
+
+   <para>DOS function 0Ch, with &reg.al; = 01h, 06h, 07h, 08h, or 0Ah,
+    first clears KB_BUFFER and then invokes the DOS function specified
+    in &reg.al;</para>
+  </sect2>
+
+  <sect2 id="io-devices-keyboard-xascii">
+   <title>Extended ASCII Codes</title>
+
+   <sect3 id="io-devices-keyboard-xascii-scancode">
+    <title>Scan Codes</title>
+
+    <para>The KB_BUFFER entries are <quote>extended ASCII</quote>
+     codes consisting of two bytes.  For letter, number, and
+     punctuation keys (combined with the status of
+     <keycap>SHIFT</keycap>, <keycap>CAPS LOCK</keycap>, <keycap>NUM
+      LOCK</keycap>, or <keycap>CTRL</keycap>) the extended ASCII code
+     consists of the key's scan code in the high byte (with MSB = 0
+     for a key press) and the corresponding ASCII code in the low
+     byte. Scan codes for the standard and the AT keyboards ae shown
+     below.</para>
+
+    <para>ASCII codes composed on the numeric keypad with
+     <keycap>ALT</keycap> held down return a <keycode>00h</keycode>
+     scancode.</para>
+   </sect3>
+
+   <sect3 id="io-devices-keyboard-xascii-secondcode">
+    <title>Second Codes</title>
+
+    <!-- TODO: Fix table reference -->
+    <para>Keys which have no standard ASCII representation
+     (<keycap>F1</keycap>, <keycap>PageUp</keycap>,
+     <keycap>Insert</keycap>, etc.) are stored with an ASCII code of
+     00h in the low byte and a <quote>second code</quote> (usually,
+     but not always, the scan code) in the high byte, as shown in
+     Table 9.1d below.  Key combinations not shown are ignored.</para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="io-devices-keyboard-app">
+   <title>Applications</title>
+
+   <sect3 id="io-devices-keyboard-app-monitor">
+    <title>Monitoring How Long a Key is Pressed</title>
+
+    <para>When the keyboard is to be used for real-time control of a
+     simple sound synthesizer, or the motors in a robot, etc., it may
+     be necessary to monitor not only key presses but also key
+     releases, possibly for several keys at once.  Of course, the
+     KBD_INT interrupt 9 handler in BIOS does exactly that for the
+     shift keys, but not for other, arbitrary keys.  A substitute
+     interrupt 9 handler would differ from KBD_INT only in the way the
+     scan codes sent from the keyboard unit are processed.  It would
+     most likely maintain a <quote>status word</quote> in which
+     individual bits are set or reset according to whether the
+     corresponding keys are pressed or released.  This status word can
+     then be monitored by the main program.</para>
+   </sect3>
+
+   <sect3 id="io-devices-keyboard-app-hotkey">
+    <title><quote>Hot Keys</quote></title>
+
+    <para>A <firstterm>hot key</firstterm> is a key combination that
+     activates a resident program, temporarily suspends whatever
+     application program is running, performs a specific task, and
+     then returns control to the application program.  A hot key thus
+     acts like an interrupt, as in
+     <keycombo>
+      <keycap>SHIFT</keycap>
+      <keycap>PRTSC</keycap>
+     </keycombo>.  E.g., a hot key combination might be used to
+     display the time in the right hand upper corner of the screen for
+     a few seconds.</para>
+
+    <para>Key combinations that are unlikely to be used normally are
+     candidates for this purpose, particularly key combinations that
+     are ignored by KBD_INT, such as <keycap>ALT</keycap> and
+     <keycap>gray +</keycap> (key #<keycode>78</keycode>).  A solution
+     which is simple, elegant, and does not interfere with the normal
+     operation of KBD_INT, is to write a <quote>preprocessor</quote>
+     for interrupt 9 which intercepts and processes
+     <keycap>ALT</keycap> and key #<keycode>78</keycode> scan codes,
+     ignores all others, and then exits to the original KBD_INT
+     routine to send the acknowledge signal to the keyboard, process
+     the scan codes, send E-o-I to the Interrupt Controller, and
+     return from the interrupt.  The preprocessor either maintains a
+     flag bit which is set/reset when <keycap>ALT</keycap> is
+     pressed/released, or tests the KBD_INT Shift Status byte at
+     <constant>0040:0017h</constant>, and invokes the desired hot-key
+     action when the <keycap>ALT</keycap> mode is active
+     <emphasis>and</emphasis> key #<keycode>78</keycode> is
+     pressed.</para>
+
+    <para>Shown below is the outline of a hot-key routine that
+     displays the current time on the screen for a few seconds
+     whenever <keycap>ALT</keycap> &amp; key #<keycode>78</keycode> is
+     pressed.  Because hot key routines, like interrupts, may be
+     invoked at any time (in particular, during execution of a DOS
+     function), and DOS is not a reentrant operating system, DOS
+     functions cannot be used in hot-key routines.  Hence, BIOS call
+     1Ah is used to get the Time-of-Day value, rather that the much
+     simpler DOS function 2Ch.</para>
+
+    <procedure>
+     <title>Display subroutine</title>
+
+     <step>
+      <para>Get Time-of-Day (BIOS call 1Ah) in
+       <literal>&reg.cx;:&reg.dx;</literal></para>
+     </step>
+
+     <step>
+      <para>Convert to HH:MM:SS format</para>
+     </step>
+
+     <step>
+      <para>Save contents of upper right hand corner of screen</para>
+     </step>
+
+     <step>
+      <para>Display the current time there</para>
+     </step>
+
+     <step>
+      <para>Delay about 2 seconds</para>
+     </step>
+
+     <step>
+      <para>Restore original screen contents</para>
+     </step>
+
+     <step>
+      <para>Return</para>
+     </step>
+    </procedure>
+
+    <procedure>
+     <title>Preprocessor (invoked when an interrupt 9 occurs)</title>
+     
+     <step>
+      <para>Enable interrupts</para>
+     </step>
+
+     <step>
+      <para>Save working registers</para>
+     </step>
+
+     <step>
+      <para>Maintain/check <keycap>ALT</keycap> mode flag</para>
+     </step>
+
+     <step>
+      <para>If key #<keycode>78</keycode> and
+       <keycap>ALT</keycap>-mode, call Display subroutine</para>
+     </step>
+
+     <step>
+      <para>Restore working registers</para>
+     </step>
+
+     <step>
+      <para>Exit to old type-9 interrupt vector</para>
+     </step>
+    </procedure>
+
+    <para>The program to install the hot-key routine must
+     <quote>chain</quote> interrupt 9 and then exit to DOS, but leave
+     the preprocessor and all routines required for the hot-key action
+     resident.  The old interrupt 9 vector should be saved in a
+     doubleword so the preprocessor can exit to it with a JMP dword
+     [oldvect] before the interrupt 9 vector is set to point to the
+     preprocessor.  DOS function 31h is used to
+     <quote>terminate-but-stay-resident</quote> by setting &reg.dx; to
+     the number of 16-byte paragraphs to be kept resident (including
+     16 paragraphs for PSP, the Program Segment Prefix), and &reg.al;
+     to an exit code that can be examined by batch commands.</para>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="io-devices-mouse">
+  <title>Mouse</title>
+
+  <para>The mouse is controlled using the mouse functions at interrupt
+   33h. There are many functions, but this section will only cover the
+   basic set required to get things going. For more information, see
+   the references on the web page.</para>
+
+  <para>In order to use the mouse, you must first call Function 0000h
+   (Reset Driver and Read Status). This initializes the drivers and
+   hardware. The mouse cursor will initially be hidden, so you must
+   use Function 0001h (Show Mouse Cursor) to make it visible. From
+   then on, just call Function 0003h (Return Position and Button
+   Status) to get the position and button status whenever your program
+   needs it. Make sure you hide the mouse cursor before your program
+   exits.</para>
+
+  <sect2 id="io-devices-mouse-int33h">
+   <title>Mouse Interrupts (INT 33h)</title>
+
+   <sect3 id="io-devices-mouse-int33h-0000h">
+    <title>Function 0000h: RESET DRIVER and READ STATUS</title>
+
+    <para>This function initializes the hardware and software so the
+     mouse is ready to be used. The mouse will initially be
+     hidden.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0000h</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = Status</para>
+
+	 <itemizedlist spacing=compact mark="None">
+	  <listitem>
+	   <para>0000h : Error. Hardware/software not installed.</para>
+	  </listitem>
+	  <listitem>
+	   <para>FFFFh : OK. Hardware/software installed.</para>
+	  </listitem>
+	 </itemizedlist>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.bx; = Number of buttons</para>
+
+	 <itemizedlist spacing=compact mark="None">
+	  <listitem>
+	   <para>FFFFh : Two buttons.</para>
+	  </listitem>
+	  <listitem>
+	   <para>0000h : Other than two buttons.</para>
+	  </listitem>
+	  <listitem>
+	   <para>0003h : Three buttons.</para>
+	  </listitem>
+	 </itemizedlist>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="io-devices-mouse-int33h-0001h">
+    <title>Function 0001h: SHOW MOUSE CURSOR</title>
+
+    <para>This function makes the mouse cursor visible on the screen.
+     If you are programming text or graphics by writing directly to
+     the video memory, you should hide the mouse cursor before doing
+     so to stop the mouse from leaving graphic junk on the
+     screen.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0001h</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="io-devices-mouse-int33h-0002h">
+    <title>Function 0002h: HIDE MOUSE CURSOR</title>
+
+    <para>This function makes the mouse cursor invisible. Multiple
+     calls to this function require multiple calls to Function 0001h
+     (Show Mouse Cursor) before the mouse cursor will appear again,
+     because the mouse driver keeps a count of the number of times the
+     mouse has been hidden.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0002h</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="io-devices-mouse-int33h-0003h">
+    <title>Function 0003h: RETURN POSITION AND BUTTON STATUS</title>
+
+    <para>This function returns the current mouse cursor position and
+     button status. Position is measured in pixels, with the origin
+     (0,0) at the upper left corner of the screen. In text mode, each
+     character is assumed by the mouse driver to correspond to eight
+     pixels horizontally and eight pixels vertically. Thus, to get the
+     row and column position of the mouse cursor in text mode, divide
+     the values in &reg.cx; and &reg.dx; by eight.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0003h</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.bx; =  Button status (1 = corresponding button
+	  pressed)</para>
+	</listitem>
+
+	<listitem>
+	 <itemizedlist spacing=compact mark="None">
+	  <listitem>
+	   <para>Bit 0 : Left mouse button.</para>
+	  </listitem>
+	  <listitem>
+	   <para>Bit 1 : Right mouse button.</para>
+	  </listitem>
+	  <listitem>
+	   <para>Bit 2 : Middle mouse button (if present).</para>
+	  </listitem>
+	  <listitem>
+	   <para>Bits 3-15 : Cleared to 0.</para>
+	  </listitem>
+	 </itemizedlist>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.cx; = Pixel column position.</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.dx; = Pixel row position.</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="io-devices-mouse-int33h-0004h">
+    <title>Function 0004h: POSITION MOUSE CURSOR</title>
+
+    <para>This function will position the mouse cursor on the screen.
+     As in function 0003h, position is measured in pixels, with the
+     origin (0,0) at the upper left corner of the screen. See the
+     description of function 0003h for more information.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0004h</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.cx; = Column position</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.dx; = Row position</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="io-devices-mouse-int33h-0007h">
+    <title>Function 0007h: DEFINE HORIZONTAL CURSOR RANGE</title>
+
+    <para>This function will limit the horizontal position of the
+     mouse cursor to a defined section on the screen. The column
+     positions are given in pixels.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0007h</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.cx; = Leftmost column boundary</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.dx; = Rightmost column boundary</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="io-devices-mouse-int33h-0008h">
+    <title>Function 0008h: DEFINE VERTICAL CURSOR RANGE</title>
+
+    <para>This function will limit the vertical position of the mouse
+     cursor to a defined section on the screen. The row positions are
+     given in pixels.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0008h</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.cx; = Upper row boundary</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.dx; = Lower row boundary</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="io-devices-mouse-cursor">
+   <title>Changing the Mouse Cursor</title>
+
+   <para>When the mouse cursor is enabled, the actual appearance of
+    the cursor is dependent on the current video mode. If the video
+    mode is text, then the cursor defaults to a character-sized block
+    of color. If the video mode is a graphics mode, then the cursor
+    appears as an arrow. Oftentimes you will want to change the
+    appearance of the mouse cursor to better facilitate the
+    application in which you are using it. For example, if the
+    application is a paint program, you may want to the mouse cursor
+    to appear as a paint brush perhaps. In a video game, you may want
+    the mouse cursor to appear as a crosshair for targetting enemy
+    space ships.</para>
+
+   <para>There are two basic ways in which this can be accomplished.
+    First, you could manually create your own mouse
+    <quote>cursor</quote> by simply reading the position of the mouse
+    and manually drawing and erasing whatever graphic image you
+    desire. However, you would necessarily have to be sure to restore
+    the contents of the screen under which the mouse cursor is moving
+    as the mouse is repositioned.</para>
+
+   <para>The second method is to use functions 0009h and 000Ah of
+    <literal>INT 33h</literal> to redefine the appearance of the mouse
+    cursor. This method is more attractive because you do not need to
+    concern yourself with restoring the screen contents under the
+    mouse cursor as it moves this would be done automatically as it
+    normally is. Function 0009h is used more often than 000Ah, so it
+    is the only one discussed below.</para>
+
+   <sect3 id="io-devices-mouse-cursor-0009h">
+    <title>Function 0009h: </title>
+
+    <para>This function will redefine the appearance of the mouse
+     cursor when the screen is in a <emphasis>graphics</emphasis>
+     mode.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>&reg.ax; = 0009h</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.bx; = Column of cursor hot spot in bitmap (-16 to
+	  16)</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.cx; = Row of cursor hot spot in bitmap (-16 to
+	  16)</para>
+	</listitem>
+
+	<listitem>
+	 <para><literal>&reg.es;:&reg.dx;</literal> = Pointer to
+	  cursor bitmap</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+      <listitem>
+       <itemizedlist spacing=compact mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+
+    <para>The <firstterm>hot spot</firstterm> is a term given to the
+     pixel location within the mouse cursor image whose coordinate on
+     the screen is the same as the position of the mouse cursor.
+     Essentially, this hot spot allows us to know where the entire
+     image is located on the screen relative to the mouse position
+     (returned in function 0003h, for instance).  Initially, the hot
+     spot is in the upper-left corner of the default mouse cursor (the
+     arrow).</para>
+
+    <para>The <firstterm>cursor bitmap</firstterm> can be a 16x16
+     pixel image which is defined in memory as follows:</para>
+
+    <segmentedlist>
+     <segtitle>Offset</segtitle>
+     <segtitle>Size</segtitle>
+     <segtitle>Description</segtitle>
+
+     <seglistitem>
+      <seg>00h</seg>
+      <seg>16 words</seg>
+      <seg>Screen Mask</seg>
+     </seglistitem>
+
+     <seglistitem>
+      <seg>20h</seg>
+      <seg>16 words</seg>
+      <seg>Cursor Mask</seg>
+     </seglistitem>
+    </segmentedlist>
+
+    <para>Each word defines the sixteen pixels of a row, with the
+     rightmost pixel being the least significant bit. The image is
+     defined beginning with the top row of pixels in the image.</para>
+
+    <para>The image is formed on the screen by first ANDing the pixels
+     on the screen with the Screen Mask image, then XORing the pixels
+     on the screen with the Cursor Mask image.</para>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="io-devices-timer">
+  <title>8253 Timer Chip</title>
+
+  <para>The 8253 Timer contains 3 independent channels. Each channel
+   consists of a 16-bit downcounter with a CLOCK input, a GATE input
+   for enabling/triggering the count, and a counter output (OUT), a
+   16-bit COUNT register for holding the count value, and a CONTROL
+   register for controlling the operation of the counter and the
+   loading/reading of the COUNT register. Each channel may count in
+   one of six modes (interrupt on terminal count, hardware
+   retriggerable one-shot, rate generator, square wave generator,
+   software triggered strobe, and hardware triggered strobe) and may
+   count in BCD or binary. The output is formed by copying the
+   contents of the channel's COUNT register to the channel's counter
+   and starting the downcount. Depending on the mode selected, the
+   GATE input may act as an enable input, or as a trigger to start the
+   downcount; similarly, the downcounter may automatically reload the
+   COUNT and repeat, or require a reload/retrigger (one-shot
+   operation). Consult the Intel 8253-5 Programmable Interval Timer
+   data sheet for more details.</para>
+
+  <para>The CONTROL register of a channel is loaded by writing a
+   control byte to I/O port 43h. The interpretation of the control
+   byte is shown in the table below; note that bits 7 and 6 determine
+   which channel is affected.</para>
+
+  <!-- TODO: Table/list "Interpretation of the Timer Control Byte" -->
+
+  <para>The 16-bit COUNT registers of channels 0, 1, and 2 are located
+   at I/O ports 40h, 41h, and 43h, resp. Each COUNT register must be
+   loaded according to the mode selected in the CONTROL byte for that
+   channel; single-byte loads leave the other byte 0. The COUNT
+   register may be read <quote>on the fly</quote> by latching the
+   current count from the downcounter into the COUNT register while
+   the downcounter continues counting.</para>
+
+  <para>In the PC all three channels use a 1.19318 MHz signal as clock
+   input. GATE0 and GATE1 are permanently tied to 1, so the outputs of
+   Channels 0 and 1 are continuous. The channels are programmed during
+   the BIOS power-up initialization sequence as follows:</para>
+
+  <para>The CONTROL byte for Channel 0 is 00110110b  Channel 0, 2-byte
+   count value, mode 3 (continuous symmetrical square wave), count in
+   binary. The COUNT value for Channel 0 is 0000h, i.e., 65536 counts,
+   so the frequency of OUT0 is 1.1931817 Mhz/65536 &ap; 18.2 Hz.
+   Channel 0's output is connected to the IRQ0 Interrupt Request line
+   of the 8259 Interrupt Controller; hence an interrupt 08h will occur
+   at a 18.2 Hz rate, or once every 55 msec. The interrupt 08h handler
+   maintains the PC's time-of-day clock and performs other internal
+   timing functions. To simplify the use of the timer interrupt for
+   user applications (and to minimize interactions with the internal
+   timing functions), the interrupt 08h handler issues a software
+   interrupt 1Ch which is vectored during initialization to the
+   <quote>default interrupt handler</quote> (an
+   <literal>IRET</literal>).</para>
+
+  <para>The CONTROL byte for Channel 1 is 01010100b  Channel 1, 1-byte
+   (LsB) count value, mode 2 (rate generator), count in binary. The
+   COUNT value for Channel 1 is (00)12h = 18, so the frequency of OUT1
+   is 1.1931817 Mhz/18 &ap; 66 kHz. Channel 1 controls the refresh
+   timing of the memory.</para>
+
+  <para>The CONTROL byte for Channel 2 is 10110110b  Channel 2, 2-byte
+   count value, mode 3 (symmetrical square wave, continuous provided
+   OUT2 = 1), count in binary. The COUNT value for Channel 2 is 0533h
+   = 1331, so the frequency of OUT2 is 1.1931817 MHz/1331 &ap; 896 Hz.
+   Channel 2 is used to produce a beep from the built-in speaker.
+   More details on controlling the speaker are given below.</para>
+ </sect1>
+
+ <sect1 id="io-devices-speaker">
+  <title>Internal Speaker</title>
+
+  <sect2 id="io-devices-speaker-interface">
+   <title>The Speaker Interface</title>
+
+   <para>The PC has an internal speaker which is capable of generating
+    beeps of different frequencies. You control the speaker by
+    providing a frequency number which determines the pitch of the
+    beep, then turning the speaker on for the duration of the
+    beep.</para>
+
+   <para>The frequency number you provide is actually a counter value.
+    The PC uses it to determine how long to wait between sending
+    pulses to the speaker. A smaller frequency number will cause the
+    pulses to be sent quicker, resulting in a higher pitch. The PC
+    uses a base rate of 1,193,180 Hz (this frequency is generated by
+    an oscillator chip). The frequency number tells the PC how many of
+    these cycles to wait before sending another pulse. Thus, you can
+    calculate the frequency number required to generate a specific
+    frequency by the following formula:</para>
+
+   <informalequation>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="io-devices/speakerfreq">
+     </imageobject>
+
+     <textobject>
+      <phrase>frequency number = 1,193,180 / frequency</phrase>
+     </textobject>
+    </mediaobject>
+   </informalequation>
+
+   <para>The frequency number is a word value, so it can take values
+    between 0 and 65,535 inclusive.  This means you can generate any
+    frequency between 18.21 Hz (frequency number = 65,535) and
+    1,193,180 Hz (frequency number = 1).</para>
+
+   <para><xref linkend="io-devices-fig-speaker"> is a diagram of the
+    hardware for driving the built-in speaker. OUT2 is the output of
+    Channel 2 of the 8253-5 timer chip, GATE2 (= bit 1 of port 61h) is
+    the enable/trigger control for the Channel 2 counter, and SPEAKER
+    DATA (= bit 0 of port 61h) is a line that may be used
+    independently to modulate the output waveform, e.g., to control
+    the speaker volume.</para>
+
+   <figure id="io-devices-fig-speaker">
+    <title>Built-in speaker hardware</title>
+
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="io-devices/speaker" format=eps>
+     </imageobject>
+    </mediaobject>
+   </figure>
+
+   <para>The count and load modes selected for Channel 2 during BIOS
+    initialization are probably the best to use for tone production.
+    In Mode 3, the counter output is a continuous symmetrical square
+    wave as long as the GATE line of the channel is enabled; the other
+    modes either produce outputs that are too asymmetrical or require
+    retriggering for each count cycle.</para>
+
+   <para>The frequency count is loaded into the Channel 2 COUNT
+    register at I/O port 42h. GATE2 (bit 1 of I/O port 61h) must be
+    set to 1 to get an output on OUT2; the SPEAKER DATA line (bit 0 of
+    I/O port 61h) must also be set to 1 to produce a tone. Note that
+    the remaining bits of port 61h must not be changed since they
+    control RAM enable, keyboard clock, etc. To silence the speaker,
+    bits 1 or 0 of port 61h are set to 0 (without disturbing the
+    remaining bits of port 61h).</para>
+  </sect2>
+
+  <sect2 id="io-devices-speaker-sounds">
+   <title>Generating Sounds</title>
+
+   <para>You can communicate with the speaker controller using IN and
+    OUT instructions. The following lists the steps in generating a
+    beep:</para>
+
+   <procedure>
+    <step>
+     <para>Send the value 182 to port 43h. This sets up the
+      speaker.</para>
+    </step>
+
+    <step>
+     <para>Send the frequency number to port 42h. Since this is an
+      8-bit port, you must use two <literal>OUT</literal> instructions
+      to do this. Send the least significant byte first, then the most
+      significant byte.</para>
+    </step>
+
+    <step>
+     <para>To start the beep, bits 1 and 0 of port 61h must be set to
+      1. Since the other bits of port 61h have other uses, they must
+      not be modified. Therefore, you must use an
+      <literal>IN</literal> instruction first to get the value from
+      the port, then do an OR to set the two bits, then use an
+      <literal>OUT</literal> instruction to send the new value to the
+      port.</para>
+    </step>
+
+    <step>
+     <para>Pause for the duration of the beep.</para>
+    </step>
+
+    <step>
+     <para>Turn off the beep by resetting bits 1 and 0 of port 61h to
+      0. Remember that since the other bits of this port must not be
+      modified, you must read the value, set just bits 1 and 0 to 0,
+      then output the new value.</para>
+    </step>
+   </procedure>
+
+   <para>The following code fragment generates a beep with a frequency
+    of 261.63 Hz (middle C on a piano keyboard) and a duration of
+    approximately one second:</para>
+
+   <programlisting>
+        mov     al, 182         ; Prepare the speaker for the
+        out     43h, al         ;  note.
+        mov     ax, 4560        ; Frequency number (in decimal)
+                                ;  for middle C.
+        out     42h, al         ; Output low byte.
+        mov     al, ah          ; Output high byte.
+        out     42h, al	
+        in      al, 61h         ; Turn on note (get value from
+                                ;  port 61h).
+        or      al, 00000011b   ; Set bits 1 and 0.
+        out     61h, al         ; Send new value.
+        mov     bx, 25          ; Pause for duration of note.
+.pause1:
+        mov     cx, 65535
+.pause2:
+        dec     cx
+        jne     .pause2
+        dec     bx
+        jne     .pause1
+        in      al, 61h         ; Turn off note (get value from
+                                ;  port 61h).
+        and     al, 11111100b   ; Reset bits 1 and 0.
+        out     61h, al         ; Send new value.</programlisting>
+
+   <para>Another way to control the length of beeps is to use the
+    timer interrupt. This gives you better control over the duration
+    of the note and it also allows your program to perform other tasks
+    while the note is playing.</para>
+  </sect2>
+
+  <sect2 id="io-devices-speaker-freqtable">
+   <title>Frequency Table</title>
+
+   <para>The following table lists frequencies and frequency numbers
+    for the three octaves around middle C on a piano keyboard.</para>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

@@ -1,0 +1,1003 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+-->
+
+<chapter id="data-structures">
+ <title>Data Structures</title>
+ 
+ <highlights>
+  <para>Data used in computer programs needs to be organized for
+   efficient storage and retrieval.  Thus, a critical design decision
+   in the development of any program is the selection of an
+   appropriate data structure and its implementation.  This chapter
+   describes arrays, queues, linked lists, binary trees, and hash
+   tables and their implementations on the PC.  For further study of
+   these data structures as well as more complex structures, consult
+   the references.</para>
+ </highlights>
+
+ <para>A <firstterm>data structure</firstterm> is a collection of data
+  <firstterm>records</firstterm> along with a mechanism for insertion,
+  retrieval, and deletion of records.  Each record consists of several
+  <firstterm>fields</firstterm>, including the information fields that
+  contain the actual data.  Other fields of a record may contain
+  <firstterm>links</firstterm>, which hold addresses of other
+  records.</para>
+
+ <sect1 id="data-structures-array">
+  <title>Arrays</title>
+
+  <para>The array is a fundamental data structure.  Most programming
+   languages provide for arrays as primitive structures.  In a
+   <firstterm>linear array</firstterm>, each record is associated with
+   a single integer called its <firstterm>subscript</firstterm> or
+   <firstterm>index</firstterm>.  The records in a linear array
+   <replaceable>X</replaceable> of <replaceable>n</replaceable>
+   records are customarily denoted:</para>
+
+  <informalequation>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/lineararray" format=tex>
+    </imageobject>
+
+    <textobject>
+     <phrase>X(0), X(1),...,X(n-1)</phrase>
+    </textobject>
+   </mediaobject>
+  </informalequation>
+
+  <para>For example, the array <varname>Names</varname> given below
+   contains 6 records: <literal>Alice</literal>,
+   <literal>Bobby</literal>, <literal>Cindy</literal>,
+   <literal>David</literal>, <literal>Ellen</literal>, and
+   <literal>Frank</literal>.</para>
+
+  <segmentedlist>
+   <segtitle>Location</segtitle>
+   <segtitle>Value</segtitle>
+
+   <seglistitem>
+    <seg><varname>Names(0)</varname></seg>
+    <seg><literal>Alice</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg><varname>Names(1)</varname></seg>
+    <seg><literal>Bobby</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg><varname>Names(2)</varname></seg>
+    <seg><literal>Cindy</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg><varname>Names(3)</varname></seg>
+    <seg><literal>David</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg><varname>Names(4)</varname></seg>
+    <seg><literal>Ellen</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg><varname>Names(5)</varname></seg>
+    <seg><literal>Frank</literal></seg>
+   </seglistitem>
+  </segmentedlist>
+
+  <para>In a d-dimensional array, each record is associated with a
+   vector of <replaceable>d</replaceable> integer subscripts.  For
+   example, the 2-dimensional array <varname>Alias</varname> given
+   below has the same set of records as <varname>Names</varname>, but
+   they are organized differently:</para>
+
+  <informaltable frame=none>
+   <tgroup cols=4 align=center>
+    <colspec colname="record">
+    <colspec colname="i0">
+    <colspec colname="i1">
+    <colspec colname="i2">
+
+    <thead>
+     <row>
+      <entry>i =</entry>
+      <entry>0</entry>
+      <entry>1</entry>
+      <entry>2</entry>
+     </row>
+    </thead>
+
+    <tbody valign=middle>
+     <row>
+      <entry><varname>Alias(0,i)</varname></entry>
+      <entry><literal>Alice</literal></entry>
+      <entry><literal>Cindy</literal></entry>
+      <entry><literal>Ellen</literal></entry>
+     </row>
+
+     <row>
+      <entry><varname>Alias(1,i)</varname></entry>
+      <entry><literal>Bobby</literal></entry>
+      <entry><literal>David</literal></entry>
+      <entry><literal>Frank</literal></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+
+  <para><varname>Alias</varname> is called a 2 x 3 array, for it has 2
+   rows and 3 columns.</para>
+
+  <para>On the PC, the records of an array are stored in contiguous
+   words to facilitate the computation of the address corresponding to
+   the subscripts. First consider a linear array <varname>Y</varname>
+   with <replaceable>n</replaceable> records, each of which contains
+   <replaceable>b</replaceable> bytes of information.  We reserve
+   <replaceable>n</replaceable>*<replaceable>b</replaceable> bytes of
+   memory space for <varname>Y</varname> with the pseudo-op
+   <literal>resb</literal>:</para>
+
+  <programlisting>
+Y       resb    n*b</programlisting>
+
+  <para>To access this array, an address calculation has to be
+   performed.  Let <replaceable>y</replaceable> be the offset of the
+   first byte of <varname>Y</varname>.  With
+   <replaceable>b</replaceable> bytes per record in
+   <varname>Y</varname>, the address of the first byte of
+   <varname>Y(i)</varname> is:</para>
+
+  <informalequation>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/lineararrayac">
+    </imageobject>
+
+    <imageobject>
+     <imagedata fileref="data-structures/lineararrayac.tex" format=tex>
+    </imageobject>
+
+    <textobject>
+     <phrase>(<replaceable>y</replaceable>+i*<replaceable>b</replaceable>)</phrase>
+    </textobject>
+   </mediaobject>
+  </informalequation>
+
+  <para>Suppose that each record of array <varname>Y</varname>
+   comprises one word (<replaceable>b</replaceable>=2).  Then to copy
+   <varname>Y(i)</varname> into <literal>AX</literal>, we use the
+   following:</para>
+
+  <programlisting>
+        mov     bx, &lt;value of i&gt;
+        sal     bx, 1           ; bx = 2*i
+        mov     ax, [Y+bx]      ; fetch entry</programlisting>
+
+  <para>A similar, but more complex calculation must be made for
+   d-dimensional arrays.  First one decides how to allocate memory for
+   the records.  The Fortran convention is to iterate the leftmost
+   subscript first.  Thus the elements of the array
+   <varname>Alias</varname> above would be stored in successive memory
+   words in the following order (memory addresses increase
+   downwards):</para>
+
+  <itemizedlist spacing=compact mark=None>
+   <listitem>
+    <para><varname>Alias(0,0)</varname></para>
+   </listitem>
+
+   <listitem>
+    <para><varname>Alias(1,0)</varname></para>
+   </listitem>
+
+   <listitem>
+    <para><varname>Alias(0,1)</varname></para>
+   </listitem>
+
+   <listitem>
+    <para><varname>Alias(1,1)</varname></para>
+   </listitem>
+
+   <listitem>
+    <para><varname>Alias(0,2)</varname></para>
+   </listitem>
+
+   <listitem>
+    <para><varname>Alias(1,2)</varname></para>
+   </listitem>
+  </itemizedlist>
+
+  <para>For example, assume that each record of an
+   <replaceable>r</replaceable> x <replaceable>s</replaceable> array
+   <varname>Z</varname> with <replaceable>r</replaceable> rows and
+   <replaceable>s</replaceable> columns has
+   <replaceable>b</replaceable> bytes and that <varname>Z</varname> is
+   defined by:</para>
+
+  <programlisting>
+Z       resb    r*s*b</programlisting>
+
+  <para>If z is the offset of <varname>Z</varname>, then the offset of
+   the first byte of record <varname>Z(i,j)</varname> is given
+   by:</para>
+
+  <informalequation>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/dimensionalac">
+    </imageobject>
+
+    <imageobject>
+     <imagedata fileref="data-structures/dimensionalac.tex" format=tex>
+    </imageobject>
+
+    <textobject>
+     <phrase>z +
+      <replaceable>b</replaceable>*(i+j*<replaceable>r</replaceable>)</phrase>
+    </textobject>
+   </mediaobject>
+  </informalequation>
+ </sect1>
+
+ <sect1 id="data-structures-queue">
+  <title>Queues</title>
+
+  <para>A queue is a list of records in which records are inserted at
+   one end of the list (the <firstterm>tail</firstterm> or
+   <firstterm>rear</firstterm> of the list), and records are extracted
+   and deleted from the other end (the <firstterm>head</firstterm> or
+   <firstterm>front</firstterm> of the list).  A queue has the
+   First-In-First-Out (<firstterm><acronym>FIFO</acronym></firstterm>)
+   property: records are removed from the list in the same order as
+   they arrive.  An insertion of a record is said to
+   <firstterm>enqueue</firstterm> it; similarly, deletion
+   <firstterm>dequeues</firstterm> a record.</para>
+
+  <para>For example, assume that the names <literal>Alice</literal>,
+   <literal>Bobby</literal>, <literal>Cindy</literal>, and
+   <literal>David</literal> are enqueued in this order onto an
+   initially empty queue:</para>
+
+  <segmentedlist>
+   <segtitle>Location</segtitle>
+   <segtitle>Value</segtitle>
+
+   <seglistitem>
+    <seg>(head/front)</seg>
+    <seg><literal>Alice</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg></seg>
+    <seg><literal>Bobby</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg></seg>
+    <seg><literal>Cindy</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg>(tail/rear)</seg>
+    <seg><literal>David</literal></seg>
+   </seglistitem>
+  </segmentedlist>
+
+  <para>If a dequeue operation were performed, then
+   <literal>Alice</literal> would be deleted; if
+   <literal>Ellen</literal> were then enqueued, the queue would
+   become:</para>
+
+  <segmentedlist>
+   <segtitle>Location</segtitle>
+   <segtitle>Value</segtitle>
+
+   <seglistitem>
+    <seg>(head/front)</seg>
+    <seg><literal>Bobby</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg></seg>
+    <seg><literal>Cindy</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg></seg>
+    <seg><literal>David</literal></seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg>(tail/rear)</seg>
+    <seg><literal>Ellen</literal></seg>
+   </seglistitem>
+  </segmentedlist>
+
+  <para>If implemented as a linear array, a queue would crawl through
+   memory as records were added and deleted.  Even if the queue never
+   held more than two records at any time, the queue might exhaust all
+   the memory allocated for it!</para>
+
+  <para>The <firstterm>circular</firstterm> queue offers a simple
+   solution to this problem.  A circular queue is simply a queue
+   consisting of a finite number of memory locations together with
+   pointers, <varname><replaceable>Rear</replaceable></varname> and
+   <varname><replaceable>Front</replaceable></varname>, that point to
+   the last character enqueued and dequeued and <quote>wrap
+    around</quote> from the last to the first memory location assigned
+   to the queue.</para>
+
+  <para>For example, suppose the message <literal>CIRCULAR
+    QUEUES!</literal> has been enqueued onto a queue of length
+   <varname>QLen</varname> = 20 bytes that was initially empty, and
+   that the first 3 characters have been dequeued.  The 20 memory
+   locations assigned to the queue would then contain:</para>
+
+  <para>At this point, additional characters may be dequeued until the
+   queue is empty, and additional characters may be enqueued until the
+   queue is full. The empty/full conditions may be deduced from the
+   relative positions of the <varname>Front</varname> and
+   <varname>Rear</varname> pointers: since
+   <varname>Front</varname>=<varname>Rear</varname> may mean either
+   empty or full, <varname>Rear</varname> is usually allowed to
+   advance only to just before <varname>Front</varname>; then
+   <varname>Front</varname>=<varname>Rear</varname> means empty,
+   <varname>Rear</varname>=<varname>Front</varname>-1 (mod
+   <varname>QLen</varname>) means full.  The maximum useable queue
+   length is <varname>QLen</varname>-1 when this method is used.
+   Alternately, the number of characters currently in the queue can be
+   monitored - as in the example below.</para>
+
+  <para>If several identical queues are used, the queue parameters can
+   be specified conveniently in a <literal>STRUC</literal>ture:</para>
+
+  <programlisting>
+QLen    equ     512     ; queue length
+
+STRUC   QSpec
+.Front  resw    1       ; index to last char. dequeued
+.Rear   resw    1       ; index to last char. enqueued
+.QBeg   resw    1       ; pointer to first byte of queue
+.Count  resw    1       ; # of bytes currently in queue
+.NMsgs  resw    1       ; # of messages pending
+....
+ENDSTRUC</programlisting>
+
+  <para>Two queues (e.g., a Transmit Queue <varname>TQ</varname> and a
+   Receive Queue <varname>RQ</varname>) are then specified as
+   follows:</para>
+
+  <programlisting>
+TQBeg   resb    QLen    ; TQ Space
+RQBeg   resb    QLen    ; RQ Space
+TQ      istruc QSpec
+        at .Front, dw -1
+        at .Rear, dw -1
+        at .QBeg, dw TQBeg
+        at .Count, dw 0
+        at .NMsgs, dw 0
+        ....
+        iend
+RQ      istruc QSpec
+        at .Front, dw -1
+        at .Rear, dw -1
+        at .QBeg, dw RQBeg
+        at .Count, dw 0
+        at .NMsgs, dw 0
+        ....
+        iend</programlisting>
+
+  <para>The use of the <literal>QSpec</literal> structure simplifies
+   references to the queue parameters: e.g.,
+   <varname>TQ+QSpec.Front</varname> refers to the front pointer of
+   the Transmit Queue, and <varname>RQ+QSpec.NMsgs</varname> refers to
+   the number of messages pending in the Receive Queue.</para>
+
+  <para>Outlines of subroutines to enqueue and dequeue a character,
+   using <varname>QLen</varname> and the <literal>QSpec</literal>
+   defined above, are shown below:</para>
+
+  <procedure>
+   <title>Subroutine to <emphasis>enqueue</emphasis> the character in
+    &reg.al; at the rear of the queue pointed to by &reg.di;:</title>
+
+   <step>
+    <para>If queue is full, set error flag and return
+     immediately.</para>
+   </step>
+
+   <step>
+    <para>If not,</para>
+
+    <substeps>
+     <step>
+      <para>advance <literal>word [&reg.di;+QSpec.Rear]</literal>
+       (modulo <varname>QLen</varname>)</para>
+     </step>
+
+     <step>
+      <para>adjust <literal>word
+	[&reg.di;+QSpec.Count]</literal></para>
+     </step>
+
+     <step>
+      <para>reset error flag</para>
+     </step>
+
+     <step>
+      <para>enqueue the character in &reg.al; at <literal>byte [word
+	[&reg.di;+QSpec.Rear]]</literal></para>
+     </step>
+
+     <step>
+      <para>return</para>
+     </step>
+    </substeps>
+   </step>
+  </procedure>
+
+  <procedure>
+   <title>Subroutine to <emphasis>dequeue</emphasis> into &reg.al; the
+    character at the front of the queue pointed to by
+    &reg.di;:</title>
+
+   <step>
+    <para>If queue is empty, set error flag and return
+     immediately.</para>
+   </step>
+
+   <step>
+    <para>If not,</para>
+
+    <substeps>
+     <step>
+      <para>advance <literal>word [&reg.di;+QSpec.Front]</literal>
+       (modulo <varname>QLen</varname>)</para>
+     </step>
+
+     <step>
+      <para>adjust <literal>word
+	[&reg.di;+QSpec.Count]</literal></para>
+     </step>
+
+     <step>
+      <para>reset error flag</para>
+     </step>
+
+     <step>
+      <para>dequeue the character at <literal>byte [word
+	[&reg.di;+QSpec.Front]]</literal> into &reg.al;</para>
+     </step>
+
+     <step>
+      <para>return</para>
+     </step>
+    </substeps>
+   </step>
+  </procedure>
+ </sect1>
+
+ <sect1 id="data-structures-llist">
+  <title>Linked Lists</title>
+
+  <para>Suppose that we wish to maintain a list of records sorted
+   according to the value of an information field in the records.  We
+   may wish to insert a new record at the appropriate point in the
+   list or to delete some record from the list.  What data structure
+   should we use?  Stacks and queues are inappropriate because they
+   allow records to be inserted or deleted only at the ends of the
+   list.  To insert a new record into the middle of a linear array
+   requires a slow, awkward relocation of all records between the
+   insertion point and the end of the array.</para>
+
+  <para>An approrpiate solution to this problem is the
+   <firstterm>linked list</firstterm>, which, at some cost in memory
+   space, permits lists to be constructed and modified easily.  In a
+   linked list, each record contains a link field which holds the
+   address of the next record in the list.  The sequencing from one
+   record of the list to the next thus involves accessing the link
+   field of each record, rather than stepping along in linear address
+   space.  In this fashion, insertions and deletions of records
+   involve merely resetting of links.  Because records may now be
+   located anywhere in the memory space allocated for storage, linked
+   lists are appropriate whenever dynamic storage allocation is
+   needed.  Linked lists are not needed for storage of static data
+   (e.g., tables of constants) nor in cases where data arrives in
+   orderly fashion (e.g., data buffers).</para>
+
+  <para>To illustrate, consider the list of names given below:
+   <literal>Alice</literal> is at offset a, <literal>Bobby</literal>
+   is at b, <literal>Cindy</literal> is at c, and
+   <literal>David</literal> is at d. Each cell now has two fields:
+   info and link:</para>
+
+  <segmentedlist>
+   <segtitle>Address</segtitle>
+   <segtitle>Info</segtitle>
+   <segtitle>Link</segtitle>
+
+   <seglistitem>
+    <seg>a</seg>
+    <seg><literal>Alice</literal></seg>
+    <seg>b</seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg>b</seg>
+    <seg><literal>Bobby</literal></seg>
+    <seg>c</seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg>c</seg>
+    <seg><literal>Cindy</literal></seg>
+    <seg>d</seg>
+   </seglistitem>
+
+   <seglistitem>
+    <seg>d</seg>
+    <seg><literal>David</literal></seg>
+    <seg>00</seg>
+   </seglistitem>
+  </segmentedlist>
+
+  <para>The link field in the last record, <literal>David</literal>,
+   has a special value &lsquo;00&rsquo; to mark the end of the list.
+   We draw this list with an arrow from each link field to the record
+   whose address is stored in this link.</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/llistinitial" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>To delete the record <literal>Bobby</literal>, simply change
+   the link field in the record <literal>Alice</literal>: (the space
+   used for <literal>Bobby</literal> is actually saved in another
+   list; see below)</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/llistdelete" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>The list now has only three records:</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/llistafterdelete" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>To insert a new record <literal>Danny</literal> at address g
+   between <literal>Cindy</literal> and <literal>David</literal>,
+   merely set the link of <literal>Cindy</literal> to the address of
+   <literal>Danny</literal> and the link of <literal>Danny</literal>
+   to the address of <literal>David</literal>:</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/llistinsert" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>On the PC each link field holds a one-word offset in the Data
+   Segment. Thus if the information fields occupy
+   <replaceable>b</replaceable> bytes, then the length of each record
+   is <replaceable>b</replaceable>+2 bytes. Assume that the link field
+   is located <replaceable>b</replaceable> bytes from the beginning of
+   the record; let us define the constant
+   <constant>LINK</constant>:</para>
+
+  <programlisting>
+LINK    equ     b</programlisting>
+
+  <para>Suppose &reg.bx; holds the offset of (the first byte of) a
+   record in a linked list.  Then
+   <literal>[&reg.bx;+<constant>LINK</constant>]</literal> specifies
+   the link field of this record.  To change &reg.bx; to point to the
+   next record in the list:</para>
+
+  <programlisting>
+        mov     bx, [bx+LINK]</programlisting>
+
+  <para>To insert a record whose offset is in &reg.si; immediately
+   following the record whose offset is in &reg.bx;, we do the
+   following:</para>
+
+  <programlisting>
+        mov     ax, [bx+LINK]   ; Copy link
+        mov     [bx+LINK], si
+        mov     [si+LINK], ax</programlisting>
+
+  <para>Before:</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/llistbeforeinsert" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>After:</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/llistafterinsert" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>When a record is deleted from a linked list, it is prudent to
+   recover the memory allocated to the record, rather than simply
+   disconnecting all links to it.  We can organize a linked list of
+   unused records, called the Free Storage List (FSL).  To allocate
+   space for a new record, we take a record from the FSL, set up the
+   information fields, and link the new record into the data
+   structure.  Let the word variable <varname>FSLPtr</varname> hold
+   the offset of the record at the head of the FSL.  Deletions and
+   insertions on the FSL always occur at its head; since the FSL has
+   the LIFO property, it is really a stack.</para>
+
+  <para>Suppose we wish to delete a record R from a linked list.
+   Assume that &reg.bx; contains theoffset of the record immediately
+   preceding R in the list.  To delete R, we unlink it from the list
+   and link it onto the head of the FSL:</para>
+
+  <programlisting>
+        mov     si, [bx+LINK]   ; SI = offset of R
+        mov     ax, [si+LINK]   ; Delete R from list
+        mov     [bx+LINK], ax
+        mov     dx, [FSLPtr]    ; Insert R onto FSL
+        mov     [FSLPtr], si    ;   as the new head record
+        mov     [si+LINK], dx</programlisting>
+
+  <para>To allocate space for a new record, we simply unlink the head
+   record of the FSL:</para>
+
+  <programlisting>
+        mov     bx, [FSLPtr]    ; BX = offset of new record
+        mov     ax, [bx+LINK]   ; Update FSLPTR
+        mov     [FSLPtr], ax</programlisting>
+
+  <para>The use of linked lists arose early (1962) in the development
+   of artificial intelligence research.  The linked list is a
+   fundamental data structure of the LISP language, which is heavily
+   used for artificial intelligence programming.  Many variations on
+   the idea of linked cells have been subsequently introduced.  For
+   example, a doubly linked list has both forward and backward links
+   to facilitate searching in the list.  The binary trees discussed
+   below also use more than one link per record.</para>
+ </sect1>
+
+ <sect1 id="data-structures-btree">
+  <title>Binary Trees</title>
+
+  <para>To locate a record with a particular information field in a
+   linked list, one starts at the head of the list and traces through
+   successive records, one at a time.  This process can take a long
+   time, even with sorted lists.  to reduce the time, we would like to
+   avoid inspecting many records. The <firstterm>binary
+    tree</firstterm> data structure permits faster searches than
+   linked lists, but requires more space because it has more link
+   fields in each record.</para>
+
+  <para>In a binary tree, each record is stored in a
+   <firstterm>node</firstterm>.  For each node X, at most one node Y
+   is the <firstterm>left child</firstterm> of X and at most one node
+   Z is the <firstterm>right child</firstterm> of X.  In other words,
+   any node X may have 0, 1, or 2 children.  X is the common
+   <firstterm>parent</firstterm> of nodes Y and Z.  There is one node
+   in the tree with no parent; it is called the
+   <firstterm>root</firstterm> of the tree.</para>
+
+  <para>In the following tree, each record has a link that points to
+   its left child and a link that points to its right child.  (For
+   some applications the implementation of the binary tree could
+   include a pointer from each node to its parent.)
+   <literal>Bobby</literal> is the left child of
+   <literal>David</literal>, and <literal>Ellen</literal> is the right
+   child of <literal>David</literal>.  <literal>David</literal> is the
+   parent of both <literal>Bobby</literal> and
+   <literal>Ellen</literal>. <literal>Frank</literal> is the root of
+   the tree.</para>
+
+  <informalfigure>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/btree" format=eps>
+    </imageobject>
+   </mediaobject>
+  </informalfigure>
+
+  <para>Notice the arrangement of names in this tree.  All names in
+   the left subtree of any node are lexicographically less than the
+   name at that node; that is, they would occur earlier in an
+   alphabetic sort.  All names in the right subtree are
+   lexicographically greater.  For instance, the left subtree of
+   <literal>Frank</literal> is the tree rooted at
+   <literal>David</literal>, and all names in this subtree are
+   lexicographically less than <literal>Frank</literal>.  Thus the
+   location of a record in the tree expresses its relationship to
+   other records.</para>
+
+  <para>This arrangement of names permits rapid insertion of new
+   records. Starting at the root of the tree, compare the new name
+   with the name at the current node.  If the new name is
+   <quote>smaller,</quote> then proceed to the left child; if the new
+   name is <quote>larger,</quote> then proceed to the right child.
+   For example, to insert <literal>Harry</literal> into the tree,
+   inspect <literal>Frank</literal>, <literal>Janet</literal>, and
+   <literal>Garth</literal> in that order and then make
+   <literal>Harry</literal> the right child of
+   <literal>Garth</literal>.  In similar fashion one can search the
+   tree for a specific name.</para>
+
+  <para>If a tree with n records is well balanced, then the maximum
+   number of records inspected during an insertion is approximately
+   log<subscript>2</subscript>n.  In contrast, for linear lists this
+   maximum number would be n.  The references describe techniques for
+   keeping trees well balanced after both insertions and
+   deletions.</para>
+ </sect1>
+
+ <sect1 id="data-structures-hashtable">
+  <title>Hash Tables</title>
+
+  <para>In their quest for ever faster searching methods, several IBM
+   engineers and scientists discovered hashing in the 1950's.  The
+   idea is to transform the information itself into a subscript in a
+   linear array.  Let the array that holds the data be T(0), ...,
+   T(n-1).  The array T is called a <firstterm>hash table</firstterm>.
+   A <firstterm>hash function</firstterm> h transforms the information
+   x into an integer h(x) such that:</para>
+
+  <informalequation>
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="data-structures/hashfunction">
+    </imageobject>
+
+    <imageobject>
+     <imagedata fileref="data-structures/hashfunction.tex" format=tex>
+    </imageobject>
+
+    <textobject>
+     <phrase>0 <= h(x) <= n-1</phrase>
+    </textobject>
+   </mediaobject>
+  </informalequation>
+
+  <para>The information x is then stored at T(h(x)), together with any
+   additional information fields associated with x.  If the record
+   T(h(x)) is already in use, then a <firstterm>collision</firstterm>
+   occurs, and x must be stored elsewhere.  A good hashing scheme
+   minimizes the frequency of collisions by scattering information
+   into random locations in the hash table.  The choice of hash
+   functions and the resolution of collisions are discussed
+   below.</para>
+
+  <para>The choice of n affects the performance of a hashing scheme.
+   If n is much larger than the number of records to be stored, then
+   collisions are infrequent, but space is wasted.</para>
+
+  <sect2 id="data-structures-hashtable-function">
+   <title>Hash Functions</title>
+
+   <para>Perhaps the simplest hash function maps x, interpreted as a
+    positive integer, to its remainder when divided by n:</para>
+
+   <informalequation>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="data-structures/hfmod">
+     </imageobject>
+
+     <imageobject>
+      <imagedata fileref="data-structures/hfmod.tex" format=tex>
+     </imageobject>
+
+     <textobject>
+      <phrase>h(x) = x mod n</phrase>
+     </textobject>
+    </mediaobject>
+   </informalequation>
+
+   <para>If x consists of more than one word, then one can compress x
+    into one word by forming the exclusive-or of the words
+    x<subscript>1</subscript>, ..., x<subscript>k</subscript> that
+    constitute x:</para>
+
+   <informalequation>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="data-structures/hfxor">
+     </imageobject>
+
+     <imageobject>
+      <imagedata fileref="data-structures/hfxor.tex" format=tex>
+     </imageobject>
+
+     <textobject>
+      <phrase>h(x) = (x<subscript>1</subscript> XOR ... XOR
+       x<subscript>k</subscript>) mod n</phrase>
+     </textobject>
+    </mediaobject>
+   </informalequation>
+
+   <para>This method of compression generally works well in practice,
+    for every bit of x participates in the computation.  For example,
+    suppose the names <literal>Alice</literal>,
+    <literal>Bobby</literal>, <literal>Cindy</literal>,
+    <literal>David</literal>, and <literal>Ellen</literal> are
+    inserted into a hash table with n = 7.  On the PC with this
+    compression method we obtain the following table
+    <varname>Names</varname>:</para>
+
+   <segmentedlist>
+    <segtitle>Location</segtitle>
+    <segtitle>Value</segtitle>
+
+    <seglistitem>
+     <seg><varname>Names(0)</varname></seg>
+     <seg></seg>
+    </seglistitem>
+
+    <seglistitem>
+     <seg><varname>Names(1)</varname></seg>
+     <seg><literal>Bobby</literal></seg>
+    </seglistitem>
+
+    <seglistitem>
+     <seg><varname>Names(2)</varname></seg>
+     <seg><literal>Ellen</literal></seg>
+    </seglistitem>
+
+    <seglistitem>
+     <seg><varname>Names(3)</varname></seg>
+     <seg><literal>Cindy</literal></seg>
+    </seglistitem>
+
+    <seglistitem>
+     <seg><varname>Names(4)</varname></seg>
+     <seg><literal>Alice</literal></seg>
+    </seglistitem>
+
+    <seglistitem>
+     <seg><varname>Names(5)</varname></seg>
+     <seg></seg>
+    </seglistitem>
+
+    <seglistitem>
+     <seg><varname>Names(6)</varname></seg>
+     <seg><literal>David</literal></seg>
+    </seglistitem>
+   </segmentedlist>
+  </sect2>
+
+  <sect2 id="data-structures-hastable-collision">
+   <title>Collision Resolution</title>
+
+   <para>The two fundamental collision resolution schemes are
+    <firstterm>linear probing</firstterm> and <firstterm>separate
+     chaining</firstterm>.  Many other collision resolution schemes
+    have been devised.  They are described in the references.</para>
+
+   <para>In linear probing, when a collision occurs during insertion
+    at T(i), one probes sequentially among T(i+1), T(i+1), ...,
+    T(n-1), T(0), T(1), etc. For example, in the hash table
+    <varname>Names</varname> above, an attempt to insert
+    <literal>Frank</literal> causes a collision with
+    <literal>David</literal> at <varname>Names(6)</varname>.  With
+    linear probing, <literal>Frank</literal> would be stored at
+    <varname>Names(0)</varname>.  An attempt to insert
+    <literal>Garth</literal> into <varname>Names</varname> causes a
+    collision with <literal>Ellen</literal> at
+    <varname>Names(2)</varname>.  With linear probing, since
+    <varname>Names(3)</varname> and <varname>Names(4)</varname> are
+    already occupied, <literal>Garth</literal> must be stored in
+    <varname>Names(5)</varname>.  Although linear probing permits very
+    rapid insertions, deletions are difficult.</para>
+
+   <para>In separate chaining, each table entry T(i) is a pointer to
+    the head of a separate linked list.  All records that are mapped
+    to the same subscript are stored in the same list.  With separate
+    chaining both insertions and deletions are straightforward.  In
+    essence, separate chaining partitions a list into n pieces.  Thus
+    an insertion into a hash table with separate chaining could be n
+    times faster than insertion into a sorted linked list.</para>
+  </sect2>
+ </sect1>
+
+ <bibliography id="data-structures-references">
+  <title>References</title>
+
+  <bibliomixed>
+   <authorgroup>
+    <author>
+     <firstname>A. V.</firstname>
+     <surname>Aho</surname>
+    </author>
+
+    <author>
+     <firstname>J. E.</firstname>
+     <surname>Hopcroft</surname>
+    </author>
+
+    <author>
+     <firstname>J. D.</firstname>
+     <surname>Ullman</surname>
+    </author>
+   </authorgroup>.  <title>Data Structures and Algorithms</title>.
+   <publishername>Addison-Wesley</publishername>,
+   <pubdate>1982</pubdate>.</bibliomixed>
+
+  <bibliomixed>
+   <author>
+    <firstname>D. E.</firstname>
+    <surname>Knuth</surname>
+   </author>.  <title>The Art of Computer Programming</title>.  Vol.
+   <volumenum>1</volumenum> and vol. <volumenum>3</volumenum>,
+   <publishername>Addison-Wesley</publishername>,
+   <pubdate>1973</pubdate>.</bibliomixed>
+
+  <bibliomixed>
+   <authorgroup>
+    <author>
+     <firstname>E. M.</firstname>
+     <surname>Reingold</surname>
+    </author>
+
+    <author>
+     <firstname>W. J.</firstname>
+     <surname>Hansen</surname>
+    </author>
+   </authorgroup>.  <title>Data Structures</title>.
+   <publishername>Little, Brown</publishername>,
+   <pubdate>1983</pubdate>.</bibliomixed>
+
+  <bibliomixed>
+   <authorgroup>
+    <author>
+     <firstname>H. R.</firstname>
+     <surname>Lewis</surname>
+    </author>
+
+    <author>
+     <firstname>L.</firstname>
+     <surname>Denenberg</surname>
+    </author>
+   </authorgroup>.  <title>Data Structures and their Algorithms</title>.
+   <publishername>Harper Collins</publishername>,
+   <pubdate>1991</pubdate>.</bibliomixed>
+ </bibliography>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
