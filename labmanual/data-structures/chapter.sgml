@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/06/26 22:46:51 pete Exp $
 -->
 
 <chapter id="data-structures">
@@ -155,11 +155,7 @@ Y       resb    n*b</programlisting>
   <informalequation>
    <mediaobject>
     <imageobject>
-     <imagedata fileref="data-structures/lineararrayac">
-    </imageobject>
-
-    <imageobject>
-     <imagedata fileref="data-structures/lineararrayac.tex" format=tex>
+     <imagedata fileref="data-structures/lineararrayac" format=tex>
     </imageobject>
 
     <textobject>
@@ -229,11 +225,7 @@ Z       resb    r*s*b</programlisting>
   <informalequation>
    <mediaobject>
     <imageobject>
-     <imagedata fileref="data-structures/dimensionalac">
-    </imageobject>
-
-    <imageobject>
-     <imagedata fileref="data-structures/dimensionalac.tex" format=tex>
+     <imagedata fileref="data-structures/dimensionalac" format=tex>
     </imageobject>
 
     <textobject>
@@ -772,11 +764,7 @@ LINK    equ     b</programlisting>
   <informalequation>
    <mediaobject>
     <imageobject>
-     <imagedata fileref="data-structures/hashfunction">
-    </imageobject>
-
-    <imageobject>
-     <imagedata fileref="data-structures/hashfunction.tex" format=tex>
+     <imagedata fileref="data-structures/hashfunction" format=tex>
     </imageobject>
 
     <textobject>
@@ -807,11 +795,7 @@ LINK    equ     b</programlisting>
    <informalequation>
     <mediaobject>
      <imageobject>
-      <imagedata fileref="data-structures/hfmod">
-     </imageobject>
-
-     <imageobject>
-      <imagedata fileref="data-structures/hfmod.tex" format=tex>
+      <imagedata fileref="data-structures/hfmod" format=tex>
      </imageobject>
 
      <textobject>
@@ -828,11 +812,7 @@ LINK    equ     b</programlisting>
    <informalequation>
     <mediaobject>
      <imageobject>
-      <imagedata fileref="data-structures/hfxor">
-     </imageobject>
-
-     <imageobject>
-      <imagedata fileref="data-structures/hfxor.tex" format=tex>
+      <imagedata fileref="data-structures/hfxor" format=tex>
      </imageobject>
 
      <textobject>
