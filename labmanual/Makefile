@@ -22,28 +22,35 @@ OPENJADE?= yes
 
 # SGML content
 SRCS=  book.sgml
+
 SRCS+= introduction/chapter.sgml
 SRCS+= using-pc/chapter.sgml
 SRCS+= text-editors/chapter.sgml
-SRCS+= debugging/chapter.sgml
+
 SRCS+= assembly/chapter.sgml
 SRCS+= nasm/chapter.sgml
+SRCS+= debugging/chapter.sgml
+SRCS+= data-structures/chapter.sgml
 SRCS+= c-prog/chapter.sgml
 SRCS+= libraries/chapter.sgml
-SRCS+= data-structures/chapter.sgml
+
 SRCS+= io-devices/chapter.sgml
 SRCS+= graphics/chapter.sgml
 SRCS+= serial-comm/chapter.sgml
 SRCS+= parallel-comm/chapter.sgml
-SRCS+= sound/chapter.sgml
+
 SRCS+= pmode-intro/chapter.sgml
 SRCS+= djgpp/chapter.sgml
 SRCS+= start-pmode/chapter.sgml
 SRCS+= realprot-diff/chapter.sgml
 SRCS+= pmodelib-intro/chapter.sgml
+
+SRCS+= sound/chapter.sgml
+
 SRCS+= pmodelib-ref/appendix.sgml
 SRCS+= inst-ref/appendix.sgml
 SRCS+= ascii-code/appendix.sgml
+
 SRCS+= glossary.sgml
 SRCS+= colophon.sgml
 
@@ -55,8 +62,6 @@ IMAGES=  titlepage.dia
 IMAGES+= introduction/mpgrade.tex
 IMAGES+= introduction/bigpicture.dia
 IMAGES+= assembly/flags.dia
-IMAGES+= c-prog/enterstack-value.dia
-IMAGES+= c-prog/enterstack-ref.dia
 IMAGES+= data-structures/lineararray.tex
 IMAGES+= data-structures/lineararrayac.tex
 IMAGES+= data-structures/dimensionalac.tex
@@ -70,6 +75,8 @@ IMAGES+= data-structures/btree.dia
 IMAGES+= data-structures/hashfunction.tex
 IMAGES+= data-structures/hfmod.tex
 IMAGES+= data-structures/hfxor.tex
+IMAGES+= c-prog/enterstack-value.dia
+IMAGES+= c-prog/enterstack-ref.dia
 IMAGES+= io-devices/speaker.dia
 IMAGES+= graphics/text-memory.dia
 IMAGES+= graphics/text-memory-size.tex
