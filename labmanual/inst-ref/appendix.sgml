@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: appendix.sgml,v 1.4 2001/08/13 06:15:39 pete Exp $
+     $Id: appendix.sgml,v 1.5 2001/09/14 22:55:08 pete Exp $
 -->
 
 <appendix id="inst-ref">
@@ -5737,7 +5737,7 @@ RCR r/m32,imm8                ; o32 C1 /3 ib         [386]</screen>
   <para><literal>RCL</literal> and <literal>RCR</literal> perform a
    9-bit, 17-bit or 33-bit bitwise rotation operation, involving the
    given source/destination (first) operand and the carry bit. Thus,
-   for example, in the operation <literal>RCR AL,1</literal>, a 9-bit
+   for example, in the operation <literal>RCL AL,1</literal>, a 9-bit
    rotation is performed in which &reg.al; is shifted left by 1, the
    top bit of &reg.al; moves into the carry flag, and the original
    value of the carry flag is placed in the low bit of
