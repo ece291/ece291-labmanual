@@ -1,5 +1,5 @@
-#
-# $FreeBSD: doc/share/mk/doc.images.mk,v 1.13 2001/11/05 10:33:38 murray Exp $
+# $IdPath$
+# $FreeBSD: doc/share/mk/doc.images.mk,v 1.16 2002/02/06 16:26:41 bmah Exp $
 #
 # This include file <doc.images.mk> handles image processing.
 #
@@ -50,26 +50,37 @@
 _IMAGES_PNG= ${IMAGES:M*.png}
 _IMAGES_EPS= ${IMAGES:M*.eps}
 _IMAGES_SCR= ${IMAGES:M*.scr}
+_IMAGES_PIC= ${IMAGES:M*.pic}
 _IMAGES_DIA= ${IMAGES:M*.dia}
 _IMAGES_TEX= ${IMAGES:M*.tex}
 
 IMAGES_GEN_PNG= ${_IMAGES_EPS:S/.eps$/.png/}
-IMAGES_GEN_PNG+= ${_IMAGES_DIA:S/.dia$/.png/}
 IMAGES_GEN_PNG_TEX= ${_IMAGES_TEX:S/.tex$/.png/}
 IMAGES_GEN_PNG+= ${IMAGES_GEN_PNG_TEX}
 IMAGES_GEN_EPS= ${_IMAGES_PNG:S/.png$/.eps/}
 IMAGES_GEN_PDF= ${_IMAGES_EPS:S/.eps$/.pdf/}
-IMAGES_GEN_PDF+= ${_IMAGES_DIA:S/.dia$/.pdf/}
 IMAGES_SCR_PNG= ${_IMAGES_SCR:S/.scr$/.png/}
 IMAGES_SCR_EPS= ${_IMAGES_SCR:S/.scr$/.eps/}
+IMAGES_SCR_PDF= ${_IMAGES_SCR:S/.scr$/.pdf/}
+IMAGES_PIC_PNG= ${_IMAGES_PIC:S/.pic$/.png/}
+IMAGES_PIC_EPS= ${_IMAGES_PIC:S/.pic$/.eps/}
+IMAGES_PIC_PDF= ${_IMAGES_PIC:S/.pic$/.pdf/}
+IMAGES_DIA_PNG= ${_IMAGES_DIA:S/.dia$/.png/}
 IMAGES_DIA_EPS= ${_IMAGES_DIA:S/.dia$/.eps/}
+IMAGES_DIA_PDF= ${_IMAGES_DIA:S/.dia$/.pdf/}
+IMAGES_GEN_PDF+= ${IMAGES_PIC_PDF} ${IMAGES_SCR_PDF} ${IMAGES_DIA_PDF}
 
 CLEANFILES+= ${IMAGES_GEN_PNG} ${IMAGES_GEN_EPS} ${IMAGES_GEN_PDF}
-CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS} ${IMAGES_DIA_EPS}
+CLEANFILES+= ${_IMAGES_TEX:S/.tex$/-img.tex/} ${_IMAGES_TEX:S/.tex$/-img.dvi/}
+CLEANFILES+= ${_IMAGES_TEX:S/.tex$/.eps/}
+CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS}
+CLEANFILES+= ${IMAGES_DIA_PNG} ${IMAGES_DIA_EPS}
+CLEANFILES+= ${IMAGES_PIC_PNG} ${IMAGES_PIC_EPS} ${_IMAGES_PIC:S/.pic$/.ps/}
 
 IMAGES_PNG= ${_IMAGES_PNG} ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
+IMAGES_PNG+= ${IMAGES_DIA_PNG} ${IMAGES_PIC_PNG}
 IMAGES_EPS= ${_IMAGES_EPS} ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS}
-IMAGES_EPS+= ${IMAGES_DIA_EPS}
+IMAGES_EPS+= ${IMAGES_DIA_EPS} ${IMAGES_PIC_EPS}
 
 .if ${.OBJDIR} != ${.CURDIR}
 LOCAL_IMAGES= ${IMAGES:S|^|${.OBJDIR}/|}
@@ -89,8 +100,10 @@ LOCAL_IMAGES_PNG= ${_IMAGES_PNG}
 LOCAL_IMAGES_EPS= ${_IMAGES_EPS}
 .endif
 
-LOCAL_IMAGES_PNG+= ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
+LOCAL_IMAGES_PNG+= ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG} ${IMAGES_DIA_PNG}
+LOCAL_IMAGES_PNG+= ${IMAGES_PIC_PNG}
 LOCAL_IMAGES_EPS+= ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS} ${IMAGES_DIA_EPS}
+LOCAL_IMAGES_EPS+= ${IMAGES_PIC_EPS}
 
 # The default resolution eps2png (82) assumes a 640x480 monitor, and is too
 # low for the typical monitor in use today. The resolution of 100 looks
@@ -113,9 +126,11 @@ PNMTOPS?=	${PREFIX}/bin/pnmtops
 PNMTOPSOPTS?=	-noturn ${PNMTOPSFLAGS}
 EPSTOPDF?=	${PREFIX}/bin/epstopdf
 EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
+PS2EPS?=	${PREFIX}/bin/ps2epsi
+PIC2PS?=	${GROFF} -p -S -Wall -mtty-char -man
 
 # Use suffix rules to convert .scr files to .png files
-.SUFFIXES:	.dia .scr .png .eps
+.SUFFIXES:	.dia .scr .pic .png .eps
 
 .scr.png:
 	${SCR2PNG} ${SCR2PNGOPTS} < ${.IMPSRC} > ${.TARGET}
@@ -124,6 +139,14 @@ EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
 		${PNGTOPNM} ${PNGTOPNMOPTS} | \
 		${PNMTOPS} ${PNMTOPSOPTS} > ${.TARGET}
 
+.pic.png: ${.TARGET:S/.png$/.eps/}
+	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} ${.ALLSRC}
+.pic.eps:
+	${PIC2PS} ${.ALLSRC} > ${.TARGET:S/.eps$/.ps/}
+	${PS2EPS} ${.OBJDIR}/${.TARGET:S/.eps$/.ps/} ${.OBJDIR}/${.TARGET}
+
+.dia.png: ${.TARGET:S/.png$/.eps/}
+	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} ${.TARGET:S/.png$/.eps/}
 .dia.eps:
 	dia --nosplash --export=${.TARGET} ${.IMPSRC}
 
@@ -161,8 +184,7 @@ ${_curimage}: ${_curimage:S/.eps$/.png/}
 
 .for _curimage in ${IMAGES_GEN_PDF}
 ${_curimage}: ${_curimage:S/.pdf$/.eps/}
-	${EPSTOPDF} ${EPSTOPDFOPTS} --outfile=${.TARGET} \
-		${.CURDIR}/${_curimage:S/.pdf$/.eps/}
+	${EPSTOPDF} ${EPSTOPDFOPTS} --outfile=${.TARGET} ${.ALLSRC}
 .endfor
 
 .if ${.OBJDIR} != ${.CURDIR}

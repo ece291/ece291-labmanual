@@ -1,5 +1,5 @@
 #
-# $FreeBSD: doc/share/mk/doc.install.mk,v 1.5 2001/10/29 09:21:53 murray Exp $
+# $FreeBSD: doc/share/mk/doc.install.mk,v 1.7 2002/02/10 22:05:13 dd Exp $
 #
 #
 # This include file <doc.install.mk> provides variables defining the default
@@ -109,13 +109,15 @@ INSTALL_DOCS?= \
 #
 # Work out the language and encoding used for this document.
 #
-# Liberal default of maximum of 5 directories below to find it.
+# Liberal default of maximum of 10 directories below to find it.
 #
+
+DOC_PREFIX_NAME?=	doc
 
 .if !defined(LANGCODE)
 LANGCODE:=	${.CURDIR}
 .for _ in 1 2 3 4 5 6 7 8 9 10
-.if !(${LANGCODE:H:T} == "doc")
+.if !(${LANGCODE:H:T} == ${DOC_PREFIX_NAME})
 LANGCODE:=	${LANGCODE:H}
 .endif
 .endfor

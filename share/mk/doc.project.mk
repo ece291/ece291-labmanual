@@ -1,5 +1,5 @@
 #
-# $FreeBSD: doc/share/mk/doc.project.mk,v 1.11 2001/10/29 10:52:52 murray Exp $
+# $FreeBSD: doc/share/mk/doc.project.mk,v 1.12 2002/02/25 14:24:51 murray Exp $
 #
 # This include file <doc.project.mk> is the FreeBSD Documentation Project 
 # co-ordination make file.
@@ -69,6 +69,7 @@ PREFIX?=	${LOCALBASE}
 PRI_LANG?=	en_US.ISO8859-1
 
 CP?=		/bin/cp
+CAT?=		/bin/cat
 ECHO_CMD?=	echo
 LN?=		/bin/ln
 MKDIR?=		/bin/mkdir -p

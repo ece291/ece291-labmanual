@@ -1,5 +1,5 @@
 #
-# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.58 2001/12/12 11:49:37 phantom Exp $
+# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.62 2002/02/25 14:24:51 murray Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -179,7 +179,9 @@ TOUCH?=		/usr/bin/touch
 XARGS?=		/usr/bin/xargs
 
 TEX?=		${PREFIX}/bin/tex
+LATEX?=		${PREFIX}/bin/latex
 PDFTEX?=	${PREFIX}/bin/pdftex
+GROFF?=		groff
 TIDY?=		${PREFIX}/bin/tidy
 TIDYOPTS?=	-i -m -raw -preserve -f /dev/null ${TIDYFLAGS}
 HTML2TXT?=	${PREFIX}/bin/links
@@ -726,4 +728,7 @@ package-${_curformat}: ${PACKAGES}/${.CURDIR:T}.${LANGCODE}.${_curformat}.tgz
 .if ${LOCAL_CSS_SHEET} != ${CSS_SHEET}
 ${LOCAL_CSS_SHEET}: ${CSS_SHEET}
 	${CP} -p ${.ALLSRC} ${.TARGET}
+.if defined(CSS_SHEET_ADDITIONS)
+	${CAT} ${.CURDIR}/${CSS_SHEET_ADDITIONS} >> ${.TARGET}
+.endif
 .endif
