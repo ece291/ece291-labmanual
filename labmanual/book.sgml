@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.10 2001/07/26 05:33:04 pete Exp $
+     $Id: book.sgml,v 1.11 2001/07/26 06:15:48 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -27,6 +27,7 @@
 <!ENTITY % chap.graphics "IGNORE">
 <!ENTITY % chap.serial-comm "IGNORE">
 <!ENTITY % chap.parallel-comm "IGNORE">
+<!ENTITY % chap.ascii-code "IGNORE">
 <!ENTITY % chap.inst-ref "IGNORE">
 <!ENTITY % chap.glossary "IGNORE">
 
@@ -125,25 +126,7 @@
  <![ %chap.serial-comm;     [ &chap.serial-comm;     ]]>
  <![ %chap.parallel-comm;   [ &chap.parallel-comm;   ]]>
 
- <appendix id="ascii-code">
-  <title>ASCII Code Tables</title>
-
-  <sect1 id="ascii-code-charset">
-   <title>Character Set Quick Reference (Hex)</title>
-
-   <para>To use this reference, form the two-digit hex code by finding
-    the most significant digitin the horizontal row at the top, and
-    the least significant digit in the vertical column to the
-    side.</para>
-  </sect1>
-
-  <sect1 id="ascii-code-table">
-   <title>ASCII Codes in Hex, Octal, and Decimal</title>
-
-   <para></para>
-  </sect1>
- </appendix>
-
+ <![ %chap.ascii-code;      [ &chap.ascii-code;      ]]>
  <![ %chap.inst-ref;        [ &chap.inst-ref;        ]]>
 
  <![ %chap.glossary;        [ &chap.glossary;        ]]>

@@ -1,0 +1,35 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: appendix.sgml,v 1.1 2001/07/26 06:15:48 pete Exp $
+-->
+
+<appendix id="ascii-code">
+ <title>ASCII Code Tables</title>
+
+ <sect1 id="ascii-code-charset">
+  <title>Character Set Quick Reference (Hex)</title>
+
+  <para>To use this reference, form the two-digit hex code by finding
+   the most significant digitin the horizontal row at the top, and the
+   least significant digit in the vertical column to the side.</para>
+ </sect1>
+
+ <sect1 id="ascii-code-table">
+  <title>ASCII Codes in Hex, Octal, and Decimal</title>
+
+  <para></para>
+ </sect1>
+</appendix>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../appendix.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "appendix")
+     End:
+-->
