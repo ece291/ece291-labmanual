@@ -7,42 +7,25 @@
 <chapter id="introduction">
  <title>Introduction</title>
 
- <sect1 id="introduction-dontprint">
-  <title>Don't Print This</title>
-
-  <itemizedlist>
-   <listitem>
-    <para>Tutorial may change.</para>
-   </listitem>
-
-   <listitem>
-    <para>Links don't do anything when you click a piece of paper.</para>
-   </listitem>
-
-   <listitem>
-    <para>Copy/Paste is harder on paper.</para>
-   </listitem>
-  </itemizedlist>
- </sect1>
-
  <sect1 id="introduction-howto">
   <title>How to Do this Tutorial</title>
 
-  <para>We could have a huge reference section, and then a huge code
-   description section, but we decided to do a little bit at a time in
-   a tutorial format.  <quote>Here's how this works.  Now here's how
-    you write the code.  Now write the code.</quote>  It's probably
-   not worth reading over the whole thing before you start.  Just sit
-   down at a computer and go through it step by step.  It's going to
-   some time to go through this, but you're going to learn everything
-   the right way with no <quote>black boxes</quote> or mysterious
-   files given to you by the TAs.  If a file does seem mysterious,
-   type it in instead of blindly pasting it in.  Look at the
-   references.  Ask the guy (or gal) next to you.  Hopefully you'll
-   learn not only 32-bit protected mode, but a little about how
-   assemblers, compilers, and linkers work, learn a little about
-   Makefiles, and learn a little about graphics. So let's begin where
-   every good tutorial should begin &ndash; at the end.</para>
+  <para>Instead of having a huge reference section, and then a huge
+   code description section, this tutorial introduces protected mode a
+   little bit at a time.  <quote>Here's how this works.  Now here's
+    how the code needs to be written.  Now write the code, and explore
+    a little.</quote>  It's probably not worth reading over the whole
+   thing before starting.  Just sit down at a computer and go through
+   it step by step.  It will take some time to complete this tutorial,
+   but you'll learn everything the right way with no <quote>black
+    boxes</quote> or mysterious files.  If a file does seem
+   mysterious, type it in instead of blindly pasting it in.  Look at
+   the references.  Ask questions in the class newsgroup if something
+   is puzzling.  This tutorial covers more than just 32-bit protected
+   mode itself; it also explains a little about how assemblers,
+   compilers, and linkers work, a little about Makefiles, and a little
+   about graphics.  So let's begin where every good tutorial should
+   begin&ndash;at the end.</para>
  </sect1>
 
  <sect1 id="introduction-goal">
@@ -50,11 +33,34 @@
 
   <para>The Goal is to learn the basics of protected mode to prepare
    you for later MPs in ECE 291, where you'll be using the tools and
-   concepts you learn in this tutorial.</para>
+   concepts you learn in this tutorial.  By the end of the tutorial,
+   you should be familiar with the following:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>The differences between real and protected mode on the x86
+     architecture.</para>
+   </listitem>
+
+   <listitem>
+    <para>The purpose of DPMI, and how to use it from protected
+     mode.</para>
+   </listitem>
+
+   <listitem>
+    <para>How to write a protected mode program in assembler with the
+     help of DJGPP.</para>
+   </listitem>
+
+   <listitem>
+    <para>How to use the PModeLib functions, and how some of them work
+     internally.</para>
+   </listitem>
+  </itemizedlist>
  </sect1>
 
  <sect1 id="introduction-finalproject">
-  <title>Protected Mode and Your Final Project</title>
+  <title>Protected Mode and the Final Project</title>
 
   <para>Advantages:</para>
 
@@ -64,8 +70,8 @@
 
     <itemizedlist>
      <listitem>
-      <para>Can allocate huge (multimegabyte) buffers for huge
-       pictures.</para>
+      <para>Can allocate huge (multimegabyte) buffers for high color,
+       high resolution images and other data.</para>
      </listitem>
 
      <listitem>
@@ -94,24 +100,25 @@
 
     <itemizedlist>
      <listitem>
-      <para>Your final projects will look <emphasis>much</emphasis>
+      <para>Final projects look <emphasis>much</emphasis>
        nicer.</para>
      </listitem>
 
      <listitem>
-      <para>No need to manage or match palettes of only 16-256
+      <para>No need to manage or match palettes of only 16 or 256
        colors.</para>
      </listitem>
     </itemizedlist>
    </listitem>
 
    <listitem>
-    <para>The Library</para>
+    <para>PModeLib</para>
 
     <itemizedlist>
      <listitem>
-      <para>We give you a big library <emphasis>with</emphasis> source
-       code for some cool stuff.</para>
+      <para>A big library <emphasis>with</emphasis> source code that
+       provides memory allocation, sound, graphics, and networking
+       functions.</para>
      </listitem>
     </itemizedlist>
    </listitem>
@@ -121,7 +128,8 @@
 
   <itemizedlist>
    <listitem>
-    <para>You're not as used to its beauty.</para>
+    <para>It's less familiar and more complex than real mode
+     (hopefully this tutorial will make it more familiar).</para>
    </listitem>
 
    <listitem>
@@ -129,8 +137,9 @@
    </listitem>
 
    <listitem>
-    <para>Debugging will be <emphasis>much</emphasis> more
-     difficult.</para>
+    <para>Debugging will be <emphasis>much</emphasis> more difficult
+     (the debugger is significantly harder to use than Turbo Debugger,
+     and doesn't provide source-level debugging).</para>
    </listitem>
   </itemizedlist>
  </sect1>
