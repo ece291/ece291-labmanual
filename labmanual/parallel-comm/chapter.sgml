@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.3 2001/07/03 05:49:03 pete Exp $
+     $Id: chapter.sgml,v 1.4 2001/07/26 09:26:33 pete Exp $
 -->
 
 <chapter id="parallel-comm">
@@ -252,7 +252,7 @@
 
   <para>If 5 bits are sufficient for input, BIOS call 17h, subfunction
    2, can be used to read the printer status lines into bits 3-7 of
-   register &reg.ah; &ndash; see <xref
+   register &reg.ah;&mdash;see <xref
     linkend="parallel-comm-biosdos">. Note that the signals appearing
    in bits 7, 6, and 3 will have been complemented either by the
    printer adapter hardware or BIOS software, bits 2 and 1 will be
@@ -260,8 +260,8 @@
 
   <!-- TODO: Fix table references -->
   <para>Either the 5 status lines or the 4 control lines can be read
-   into register &reg.al; with machine language instructions &ndash;
-   see Tables III and IV for the bit assignments and signal
+   into register &reg.al; with machine language instructions&mdash;see
+   Tables III and IV for the bit assignments and signal
    complementations. The control lines can safely be used for input
    since the Control Out Latch outputs are buffered properly.
    Unconnected lines will float high.</para>

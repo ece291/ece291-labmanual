@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.2 2001/07/03 05:46:40 pete Exp $
+     $Id: chapter.sgml,v 1.3 2001/07/26 09:26:33 pete Exp $
 -->
 
 <chapter id="serial-comm">
@@ -511,11 +511,11 @@
    <para>The RS-232C interface signals Data Terminal Ready (DTR) and
     Request to Send (RTS) may be controlled via bits 0 and 1 of the
     MODEM CONTROL Register; Clear to Send (CTS), Data Set Ready (DSR),
-    Ring Indicator (RI), and Received Line Signal Detect (RLSD)
-    &ndash; also Carrier Detect (CD) &ndash; may be sensed as bits 4,
-    5, 6, and 7 of the MODEM STATUS register, and changes in CTS, DSR,
-    RI, and RLSD since the last time the Modem Status Register was
-    read as bits 0, 1, 2, and 3.</para>
+    Ring Indicator (RI), and Received Line Signal Detect
+    (RLSD)&mdash;also Carrier Detect (CD)&mdash;may be sensed as bits
+    4, 5, 6, and 7 of the MODEM STATUS register, and changes in CTS,
+    DSR, RI, and RLSD since the last time the Modem Status Register
+    was read as bits 0, 1, 2, and 3.</para>
   </sect2>
 
   <sect2 id="serial-comm-portio-datatransfer">
@@ -682,7 +682,7 @@
     itself.</quote>  In other words, the receive and send lines on the
    serial port are in some fashion connected to one another.  This
    means that whatever your computer sends out will be immediately
-   received again &ndash; although for all intents and purposes, your
+   received again&mdash;although for all intents and purposes, your
    computer does not know that the received data originated from
    itself. One quick way to accomplish this task is to use a so-called
    turnaround plug on the serial port (the shop often carries these

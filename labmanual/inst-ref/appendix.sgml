@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: appendix.sgml,v 1.1 2001/07/26 03:27:29 pete Exp $
+     $Id: appendix.sgml,v 1.2 2001/07/26 09:26:33 pete Exp $
 -->
 
 <appendix id="inst-ref">
@@ -3890,7 +3890,7 @@ LOOPNZ imm,CX                 ; a16 E0 rb            [8086]
 LOOPNZ imm,ECX                ; a32 E0 rb            [386]</screen>
 
   <para><literal>LOOP</literal> decrements its counter register
-   (either &reg.cx; or &reg.ecx; &ndash; if one is not specified
+   (either &reg.cx; or &reg.ecx;&mdash;if one is not specified
    explicitly, the <literal>BITS</literal> setting dictates which is
    used) by one, and if the counter does not become zero as a result
    of this operation, it jumps to the given label. The jump has a
