@@ -1,7 +1,7 @@
 <!--
      Names of x86 registers
 
-     $Id: registers.ent,v 1.1 2001/06/25 18:57:10 pete Exp $
+     $Id: registers.ent,v 1.1 2001/07/03 09:23:44 pete Exp $
 -->
 
 <!-- 8 bit -->

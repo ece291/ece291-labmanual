@@ -1,5 +1,6 @@
 -- ECE 291 SGML Public Identifiers --
--- $Id: catalog,v 1.1 2001/06/25 18:57:11 pete Exp $ --
+-- $Id: catalog,v 1.2 2001/07/03 09:23:44 pete Exp $ --
 
 PUBLIC "-//ECE291//DOCUMENT DocBook Stylesheet//EN" "ece291.dsl"
 
+PUBLIC "-//ECE291//ENTITIES DocBook Register Entities//EN" "registers.ent"
