@@ -158,12 +158,17 @@
   <![ %chap.introduction;    [ &chap.introduction;    ]]>
   <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
   <![ %chap.text-editors;    [ &chap.text-editors;    ]]>
-  <![ %chap.debugging;       [ &chap.debugging;       ]]>
+ </part>
+
+ <part>
+  <title>Assembly Programming</title>
+
   <![ %chap.assembly;        [ &chap.assembly;        ]]>
   <![ %chap.nasm;            [ &chap.nasm;            ]]>
+  <![ %chap.debugging;       [ &chap.debugging;       ]]>
+  <![ %chap.data-structures; [ &chap.data-structures; ]]>
   <![ %chap.c-prog;          [ &chap.c-prog;          ]]>
   <![ %chap.libraries;       [ &chap.libraries;       ]]>
-  <![ %chap.data-structures; [ &chap.data-structures; ]]>
  </part>
 
  <part>
@@ -173,7 +178,6 @@
   <![ %chap.graphics;        [ &chap.graphics;        ]]>
   <![ %chap.serial-comm;     [ &chap.serial-comm;     ]]>
   <![ %chap.parallel-comm;   [ &chap.parallel-comm;   ]]>
-  <![ %chap.sound;           [ &chap.sound;           ]]>
  </part>
 
  <part>
@@ -184,6 +188,12 @@
   <![ %chap.start-pmode;     [ &chap.start-pmode;     ]]>
   <![ %chap.realprot-diff;   [ &chap.realprot-diff;   ]]>
   <![ %chap.pmodelib-intro;  [ &chap.pmodelib-intro;  ]]>
+ </part>
+
+ <part>
+  <title>Advanced Topics</title>
+
+  <![ %chap.sound;           [ &chap.sound;           ]]>
  </part>
 
  <part>
