@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: preface.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+     $Id: preface.sgml,v 1.2 2001/08/01 17:32:05 pete Exp $
 -->
 
 <preface id="preface">
@@ -44,3 +44,14 @@
  </sect1>
 </preface>
 
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "preface.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("book.sgml" "part" "preface")
+     End:
+-->
