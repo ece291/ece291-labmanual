@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.2 2001/08/02 08:04:14 pete Exp $
+     $Id: chapter.sgml,v 1.3 2001/08/14 16:55:23 pete Exp $
 -->
 
 <chapter id="libraries">
@@ -346,15 +346,199 @@ done:   call dosxit</programlisting>
   <example id="libraries-example-binasc">
    <title><function>binasc</function> code example</title>
 
-   <programlisting>
-</programlisting>
+   <programlisting>; binasc
+; By M. C. Loui, 31 Dec 1991
+; Converted to NASM by Peter Johnson, Nov 2000
+
+        GLOBAL binasc
+
+SEGMENT code
+
+; Subroutine binasc
+; Converts from binary to ASCII string ending in '$'
+; Inputs:  AX = 16-bit signed integer to be converted
+;          BX = Starting offset for a 7-byte buffer to hold the result
+; Outputs: BX = Offset of first nonblank character of the string
+;               (may be a minus sign)
+;          CL = Number of nonblank characters generated
+
+saveax  dw      0                       ; To save original input number AX
+ten     dw      10
+
+binasc:
+        push    si                      ; Save registers
+        push    dx
+        mov     [cs:saveax], ax
+
+        mov     cl, 0                   ; Initialize count to 0
+        mov     si, 5                   ; For SI from 5 downto 0 do
+
+.lp0:
+        mov     byte [bx+si], ' '       ;   Initialize output string
+        dec     si
+        jge     .lp0                    ; End for
+        mov     byte [bx+6], '$'        ; End of string
+
+        add     bx, 5                   ; Set BX to point to last char
+        cmp     ax, 0                   ; If AX < 0 then
+        jge     .lp1
+        neg     ax                      ;   Replace by absolute value
+
+.lp1:
+        mov     dx, 0                   ; Prepare for double word division
+        div     word [cs:ten]           ; Divide by 10
+        add     dl, 30h                 ; Convert remainder to ASCII
+        mov     [bx], dl
+        inc     cl                      ; Another digit
+
+        cmp     ax, 0                   ; AX has quotient
+        je      .check
+        dec     bx
+        jmp     .lp1
+
+        ; Check for negative number
+.check:
+        cmp     word [cs:saveax], 0
+        jge     .done
+        dec     bx                      ; If negative, then add minus sign
+        mov     byte [bx], '-'
+        add     cl, 1
+
+.done:
+        pop     dx                      ; Restore registers
+        pop     si
+        mov     ax, [cs:saveax]
+        ret</programlisting>
   </example>
 
   <example id="libraries-example-ascbin">
    <title><function>ascbin</function> code example</title>
 
-   <programlisting>
-</programlisting>
+   <programlisting>; ascbin
+; By M. C. Loui, 31 Dec 1991
+; Converted to NASM by Peter Johnson, Nov 2000
+
+        GLOBAL ascbin
+
+SEGMENT code
+
+; Subroutine ascbin
+; Converts from ASCII string to binary
+; Inputs:  BX = Starting offset of first char of ASCII string
+; Outputs: AX = Signed 16-bit number having value of ASCII string
+;          BX = Offset of first non-convertible character
+;          DL = Status of this call
+;               0 if no conversion errors
+;               1 if string had no valid digits
+;               2 if string had too many digits
+;               3 if overflow
+;               4 if underflow (too negative)
+;
+; Revised: 12/17/92 by Tom Maciukenas (ECE291 TA)
+
+ten     dw      10
+minus   db      0                       ; 1 if input is negative
+digits  db      0                       ; Counts number of digits
+status  db      0
+
+ascbin:
+        push    si                      ; Save registers
+        push    dx
+
+        ; Initialize
+        mov     ax, 0
+        mov     byte [cs:minus], 0      ; Assume nonnegative
+        mov     byte [cs:digits], 0
+
+        ; Skip leading spaces
+.spaces:
+        cmp byte [bx], ' '
+        jne     .signs
+        inc     bx
+        jmp     .spaces
+
+        ; Check for leading '+' or '-'
+.signs:
+        cmp     byte [bx], '+'          ; If '+', skip it
+        je      .incbx
+        cmp     byte [bx], '-'          ; If '-', set minus flag
+        jne     .scan                   ;   else scan the number
+        mov     byte [cs:minus], 1      ; Remember minus sign
+
+.incbx:
+        inc     bx
+
+        ; Scan string
+.scan:
+        mov     dl, [bx]                ; Check for valid digit
+        cmp     dl, '0'
+        jb      .end1
+        cmp     dl, '9'
+        ja      .end1
+        jmp     .case                   ; Valid digit -- process it
+
+.end1:
+        cmp     byte [cs:digits], 0     ; Check for no digits
+        jz      .error1
+        jmp     .endok
+
+.case:
+        inc     byte [cs:digits]        ; Keep track of number of digits
+        cmp     byte [cs:digits], 5     ; Check for too many digits
+        jg      .error2
+        mov     dh, 0                   ; Convert ASCII digit to number
+        sub     dx, '0'
+        mov     si, dx
+        imul    word [cs:ten]           ; Multiply AX by 10
+        jo      .error34
+        add     ax, si                  ; At this point DX = 0, ..., or 9
+        jo      .error34
+        inc     bx                      ; Go to next digit
+        jmp     .scan
+
+.endok:
+        mov     byte [cs:status], 0     ; Normal end
+        cmp     byte [cs:minus], 1      ; Negate if necessary
+        jne     .done
+        neg     ax
+        jmp     .done
+
+.error1:
+        mov     byte [cs:status], 1
+        jmp     .done
+
+.error2:
+        mov     byte [cs:status], 2
+        jmp     .done
+
+.error34:
+        cmp     byte [cs:minus], 1      ; Overflow or underflow?
+        je      .ck216
+        mov     byte [cs:status], 3
+        jmp     .done
+
+        ; Check for -2^16 before declaring underflow (error type 4)
+.ck216:
+        cmp     ax, 8000h               ; -2^16
+        jne     .error4
+        cmp     byte [bx+1], '0'        ; Check that next char
+        jb      .ok216                  ;  is not a digit
+        cmp     byte [bx+1], '9'
+        ja      .ok216
+        jmp     .error4
+
+.ok216:
+        mov     byte [cs:status], 0
+        jmp     .done
+
+.error4:
+        mov     byte [cs:status], 4
+
+.done:
+        pop     dx                      ; Restore registers
+        pop     si
+        mov     dl, [cs:status]
+        ret</programlisting>
   </example>
  </sect1>
 </chapter>
