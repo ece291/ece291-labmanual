@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.7 2001/07/03 17:32:41 pete Exp $
+     $Id: book.sgml,v 1.8 2001/07/03 17:57:30 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -151,5 +151,6 @@
      sgml-indent-step: 1
      sgml-omittag: nil
      sgml-always-quote-attributes: t
+     sgml-local-catalogs: ("../share/sgml/catalog")
      End:
 -->
