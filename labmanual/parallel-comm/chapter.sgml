@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.4 2001/07/26 09:26:33 pete Exp $
+     $Id: chapter.sgml,v 1.5 2001/08/02 21:34:40 pete Exp $
 -->
 
 <chapter id="parallel-comm">
@@ -10,7 +10,6 @@
  <sect1 id="parallel-comm-hardware">
   <title>Printer Adapter Hardware</title>
 
-  <!-- TODO: Fix Table references -->
   <para>The parallel interface provides the signals and hardware to
    transfer data one character at a time (8 bits in parallel) between
    the CPU and a device, usually a printer. The signals consist of 8
@@ -19,16 +18,129 @@
    signals, and logic to connect them to the internal data bus and to
    address them as I/O ports via the address bus) is located on a
    printer adapter  card that plugs into an I/O slot. The signals to
-   and from the printer, shown in Table I, are available on a 25-pin
-   female D-shell connector on the printer adapter. Up to 3 printer
-   adapters may be installed; the addresses available for the data,
-   status, and control ports of an adapter are shown in Table II. BIOS
-   determines during the restart initialization which addresses have
-   printer adapters installed; &reg.dx; = 0 to 2 is then used within
-   BIOS to refer to the printer adapters that were found to be
-   present.</para>
+   and from the printer, shown in <xref
+    linkend="parallel-comm-hardware-signals">, are available on a
+   25-pin female D-shell connector on the printer adapter. Up to 3
+   printer adapters may be installed; the addresses available for the
+   data, status, and control ports of an adapter are shown in <xref
+    linkend="parallel-comm-hardware-ports">. BIOS determines (during
+   the restart initialization) which addresses have printer adapters
+   installed; &reg.dx; = 0 to 2 is then used within BIOS to refer to
+   the printer adapters that were found to be present.</para>
 
-  <!-- TODO: Table I and II here -->
+  <table frame="all" id="parallel-comm-hardware-signals">
+   <title>Signals on 25-pin Printer Connector (pin numbers)</title>
+
+   <tgroup cols="6">
+    <colspec colname="data-name">
+    <colspec colname="data-pins">
+    <colspec colname="status-name">
+    <colspec colname="status-pins">
+    <colspec colname="control-name">
+    <colspec colname="control-pins">
+    <spanspec namest="data-name" nameend="data-pins" spanname="data">
+    <spanspec namest="status-name" nameend="status-pins" spanname="status">
+    <spanspec namest="control-name" nameend="control-pins" spanname="control">
+
+    <thead>
+     <row>
+      <entry spanname="data">Data Signals [to device]</entry>
+      <entry spanname="status">Status Signals [from device]</entry>
+      <entry spanname="control">Control Signals [to device]</entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row rowsep="0">
+      <entry colsep="0">Data 0-7</entry>
+      <entry align="right">(2-9)</entry>
+      <entry colsep="0">~Acknowledge</entry>
+      <entry align="right">(10)</entry>
+      <entry colsep="0">~Strobe</entry>
+      <entry align="right">(1)</entry>
+     </row>
+
+     <row rowsep="0">
+      <entry colsep="0">Ground</entry>
+      <entry align="right">(18-25)</entry>
+      <entry colsep="0">Busy</entry>
+      <entry align="right">(11)</entry>
+      <entry colsep="0">~Auto Feed</entry>
+      <entry align="right">(14)</entry>
+     </row>
+
+     <row rowsep="0">
+      <entry spanname="data"></entry>
+      <entry colsep="0">Out of Paper</entry>
+      <entry align="right">(12)</entry>
+      <entry colsep="0">~Initialize</entry>
+      <entry align="right">(16)</entry>
+     </row>
+
+     <row rowsep="0">
+      <entry spanname="data"></entry>
+      <entry colsep="0">Selected</entry>
+      <entry align="right">(13)</entry>
+      <entry colsep="0">~Select</entry>
+      <entry align="right">(17)</entry>
+     </row>
+
+     <row rowsep="0">
+      <entry spanname="data"></entry>
+      <entry colsep="0">~Error</entry>
+      <entry align="right">(15)</entry>
+      <entry spanname="control"></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <table frame="all" id="parallel-comm-hardware-ports">
+   <title>I/O Port Addresses (in hexadecimal) for Printer Adapter
+    Buffer Registers</title>
+
+   <tgroup cols="5" align="center">
+    <colspec colname="name1">
+    <colspec colname="name2">
+    <colspec colname="data-port">
+    <colspec colname="status-port">
+    <colspec colname="control-port">
+    <spanspec namest="name1" nameend="name2" spanname="name">
+
+    <thead>
+     <row>
+      <entry spanname="name"></entry>
+      <entry>Data Port</entry>
+      <entry>Status Port</entry>
+      <entry>Control Port</entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row rowsep="0">
+      <entry spanname="name" align="left">Monochrome Display / Printer
+       Adapter</entry>
+      <entry>03BC</entry>
+      <entry>03BD</entry>
+      <entry>03BE</entry>
+     </row>
+
+     <row rowsep="0">
+      <entry spanname="name" align="left">Primary Adapter</entry>
+      <entry>0378</entry>
+      <entry>0379</entry>
+      <entry>037A</entry>
+     </row>
+
+     <row>
+      <entry spanname="name" align="left">Secondary Adapter</entry>
+      <entry>0278</entry>
+      <entry>0279</entry>
+      <entry>027A</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
 
   <para>The printer is assumed to use the <quote>Centronics</quote>
    protocol, shown in <xref linkend="parallel-comm-fig-timing">. The
@@ -98,7 +210,37 @@
     <para>&reg.ah; = 2: Get printer status byte into &reg.ah;. The
      meaning (some of the signals have been inverted on the way from
      the connector) is:</para>
-    <!-- Informal table here -->
+
+    <informaltable frame="all">
+     <!-- FIXME: Should be align="center" but print stylesheet breaks -->
+     <tgroup cols="8">
+      <thead>
+       <row>
+	<entry align="center">Bit 7</entry>
+	<entry align="center">Bit 6</entry>
+	<entry align="center">Bit 5</entry>
+	<entry align="center">Bit 4</entry>
+	<entry align="center">Bit 3</entry>
+	<entry align="center">Bit 2</entry>
+	<entry align="center">Bit 1</entry>
+	<entry align="center">Bit 0</entry>
+       </row>
+      </thead>
+
+      <tbody valign="middle">
+       <row>
+	<entry>~Busy</entry>
+	<entry>Ack</entry>
+	<entry>Out of Paper</entry>
+	<entry>Selected</entry>
+	<entry>I/O Error</entry>
+	<entry><emphasis>unused</emphasis></entry>
+	<entry><emphasis>unused</emphasis></entry>
+	<entry>Timeout</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
    </listitem>
   </itemizedlist>
 
@@ -161,44 +303,173 @@
    </listitem>
 
    <listitem>
-    <!-- TODO: Fix table reference -->
     <para>Status signals from the printer are <literal>IN</literal>put
      into register &reg.al; via the Status In Buffer (bits 3-7 only).
-     Table III shows the meaning assigned to the various bits. Note
-     that some signals are complemented between the connector and the
-     In Buffer. (The status byte returned by BIOS call 17h register
-     &reg.ah; has a timeout indicator added in bit 0 and, for some
-     reason, has bits 3 and 6 complemented by software.</para>
+     <xref linkend="parallel-comm-asm-status-signals"> shows the
+     meaning assigned to the various bits. Note that some signals are
+     complemented between the connector and the In Buffer. (The status
+     byte returned by BIOS call 17h register &reg.ah; has a timeout
+     indicator added in bit 0 and, for some reason, has bits 3 and 6
+     complemented by software.)</para>
 
-    <!-- TODO: Add table III here -->
+    <table frame="all" id="parallel-comm-asm-status-signals">
+     <title>Register &reg.al; Bit Assignments for Printer Status
+      Signals</title>
+
+     <!-- FIXME: Should be align="center" but print stylesheet breaks -->
+     <tgroup cols="8">
+      <colspec colname="pin11">
+      <colspec colname="pin10">
+      <colspec colname="pin12">
+      <colspec colname="pin13">
+      <colspec colname="pin15">
+      <colspec colname="nc1">
+      <colspec colname="nc2">
+      <colspec colname="nc3">
+      <spanspec namest="nc1" nameend="nc3" spanname="nc">
+
+      <thead>
+       <row>
+	<entry align="center">Pin 11</entry>
+	<entry align="center">Pin 10</entry>
+	<entry align="center">Pin 12</entry>
+	<entry align="center">Pin 13</entry>
+	<entry align="center">Pin 15</entry>
+	<entry spanname="nc" rowsep="0"></entry>
+       </row>
+      </thead>
+
+      <tbody>
+       <row>
+	<entry>Busy</entry>
+	<entry>~Ack</entry>
+	<entry>Out of Paper</entry>
+	<entry>Selected</entry>
+	<entry>~I/O Error</entry>
+	<entry spanname="nc"></entry>
+       </row>
+      </tbody>
+     </tgroup>
+
+     <tgroup cols="8">
+      <thead>
+       <row>
+	<entry align="center">Bit 7</entry>
+	<entry align="center">Bit 6</entry>
+	<entry align="center">Bit 5</entry>
+	<entry align="center">Bit 4</entry>
+	<entry align="center">Bit 3</entry>
+	<entry align="center">Bit 2</entry>
+	<entry align="center">Bit 1</entry>
+	<entry align="center">Bit 0</entry>
+       </row>
+      </thead>
+
+      <tbody valign="middle">
+       <row>
+	<entry>~Busy</entry>
+	<entry>~Ack</entry>
+	<entry>Out of Paper</entry>
+	<entry>Selected</entry>
+	<entry>~I/O Error</entry>
+	<entry>n.c.</entry>
+	<entry>n.c.</entry>
+	<entry>n.c.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
    </listitem>
 
    <listitem>
-    <!-- TODO: Fix table reference -->
     <para>Control signals are sent to the printer by
      <literal>OUT</literal>putting register &reg.al; (bits 0-5 only)
-     to the Control Out Latch. Table IV shows the meaning assigned to
-     the various bits. Note that some signals are complemented between
-     the latch output and the connector. Bit 4 (IRQ ENABLE) is not
-     available at the connector; it is used to enable the ORing of the
-     ACKNOWLEDGE status signal to the IRQ7 input to the 8259 Interrupt
-     Controller (which will cause an interrupt 0Fh if not masked). Bit
-     5 is latched but not used further (see, however, the following
-     section).</para>
+     to the Control Out Latch.  <xref
+      linkend="parallel-comm-asm-control-signals"> shows the meaning
+     assigned to the various bits. Note that some signals are
+     complemented between the latch output and the connector. Bit 4
+     (IRQ ENABLE) is not available at the connector; it is used to
+     enable the ORing of the ACKNOWLEDGE status signal to the IRQ7
+     input to the 8259 Interrupt Controller (which will cause an
+     interrupt 0Fh if not masked). Bit 5 is latched but not used
+     further (see, however, the following section).</para>
    </listitem>
   </itemizedlist>
 
-  <!-- TODO: Fix table reference -->
   <para>The control signals at the connector may be read back into
    register &reg.al; (bits 0-4 only) via the Control In Buffer. There
    are corresponding complementations between the connector and the In
    buffer (and bit 4 is simply a copy of the Out latch bit 4) so that
-   Table IV can be used in reverse for input. Note that since the
-   Control Out Latch outputs are buffered, the control signal pins
-   corresponding to control bits 0-3 <emphasis>can</emphasis> be used
-   for input.</para>
+   <xref linkend="parallel-comm-asm-control-signals"> can be used in
+   reverse for input. Note that since the Control Out Latch outputs
+   are buffered, the control signal pins corresponding to control bits
+   0-3 <emphasis>can</emphasis> be used for input.</para>
 
-  <!-- TODO: Add Table IV here -->
+  <table frame="all" id="parallel-comm-asm-control-signals">
+   <title>Register &reg.al; Bit Assignments for Printer Control
+    Signals</title>
+
+   <!-- FIXME: Should be align="center" but print stylesheet breaks -->
+   <tgroup cols="8">
+    <thead>
+     <row>
+      <entry align="center">Bit 7</entry>
+      <entry align="center">Bit 6</entry>
+      <entry align="center">Bit 5</entry>
+      <entry align="center">Bit 4</entry>
+      <entry align="center">Bit 3</entry>
+      <entry align="center">Bit 2</entry>
+      <entry align="center">Bit 1</entry>
+      <entry align="center">Bit 0</entry>
+     </row>
+    </thead>
+
+    <tbody valign="middle">
+     <row>
+      <entry>n.c.</entry>
+      <entry>n.c.</entry>
+      <entry>n.c.</entry>
+      <entry>IRQ Enable</entry>
+      <entry>Select</entry>
+      <entry>~Initialize</entry>
+      <entry>Auto Feed</entry>
+      <entry>Strobe</entry>
+     </row>
+    </tbody>
+   </tgroup>
+
+   <tgroup cols="8">
+    <colspec colname="nc1">
+    <colspec colname="nc2">
+    <colspec colname="nc3">
+    <colspec colname="nc4">
+    <colspec colname="pin17">
+    <colspec colname="pin16">
+    <colspec colname="pin14">
+    <colspec colname="pin1">
+    <spanspec namest="nc1" nameend="nc4" spanname="nc">
+
+    <thead>
+     <row>
+      <entry spanname="nc" rowsep="0"></entry>
+      <entry align="center">Pin 17</entry>
+      <entry align="center">Pin 16</entry>
+      <entry align="center">Pin 14</entry>
+      <entry align="center">Pin 1</entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row>
+      <entry spanname="nc"></entry>
+      <entry>~Select</entry>
+      <entry>~Initialize</entry>
+      <entry>~Autofeed</entry>
+      <entry>~Strobe</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
 
   <para>To illustrate machine language control, a program fragment
    corresponding to subfunction 0 ("print the character in register
@@ -258,18 +529,18 @@
    printer adapter hardware or BIOS software, bits 2 and 1 will be
    low, and bit 0 will be set to the timeout flag value.</para>
 
-  <!-- TODO: Fix table references -->
   <para>Either the 5 status lines or the 4 control lines can be read
    into register &reg.al; with machine language instructions&mdash;see
-   Tables III and IV for the bit assignments and signal
-   complementations. The control lines can safely be used for input
-   since the Control Out Latch outputs are buffered properly.
-   Unconnected lines will float high.</para>
+   <xref linkend="parallel-comm-asm-status-signals"> and <xref
+    linkend="parallel-comm-asm-control-signals"> for the bit
+   assignments and signal complementations. The control lines can
+   safely be used for input since the Control Out Latch outputs are
+   buffered properly. Unconnected lines will float high.</para>
 
   <para>If 8-bit parallel input via the printer DATA lines is desired
    the adapter hardware must be modified so that the ~OE (OUTPUT
    ENABLE) input to the Data Out Latch is under program control. Bit 5
-   of the Control Out Latch can be used for this purpose; in face,
+   of the Control Out Latch can be used for this purpose; in fact,
    since bit 5 of the control byte is held low by the present version
    of BIOS this modification would not interefere with normal BIOS
    use. An improved adapter design would allow bit 5 of the Control
