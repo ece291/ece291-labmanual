@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/06/27 02:37:54 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/06/27 19:13:14 pete Exp $
 -->
 
 <chapter id="parallel-comm">
@@ -247,7 +247,7 @@
         iret</programlisting>
  </sect1>
 
- <sect1>
+ <sect1 id="parallel-comm-input">
   <title>Use of the Printer Adapter for Data Input</title>
 
   <para>If 5 bits are sufficient for input, BIOS call 17h, subfunction
