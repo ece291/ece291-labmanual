@@ -1,5 +1,5 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.33 2001/06/18 14:29:16 nik Exp $ -->
-<!-- $Id: ece291.dsl,v 1.1 2001/06/25 18:57:11 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.2 2001/06/26 22:44:53 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html          "IGNORE">
 <!ENTITY % output.html.images   "IGNORE">
@@ -81,6 +81,14 @@
 	(define %graphic-extensions%
           '("eps" "tex" "png"))
 
+        ;; TeX files should be in the preferred list of mediaobject
+        ;; formats and extensions; used for equations.
+        (define preferred-mediaobject-notations
+          (list "EPS" "TEX" "PNG"))
+
+        (define preferred-mediaobject-extensions
+          (list "eps" "tex" "png"))
+
         ;; When selecting a filename to use, don't append the default
         ;; extension, instead, just use the bare filename, and let TeX
         ;; work it out.  jadetex will use the .eps file, while pdfjadetex
@@ -93,29 +101,6 @@
                     (member ext %graphic-extensions%))
                  filename
                  (string-append filename "." %graphic-default-extension%))))
-
-        ;; Detect format=tex and append .tex (otherwise TeX won't find it)
-        (define ($graphic$ fileref 
-                           #!optional (display #f) (format #f) (scale #f) (align #f))
-          (let ((graphic-fileref
-                  (if (and tex-backend
-                           (equal? format (normalize "tex")))
-                      (string-append fileref "." "tex")
-                      fileref))
-                (graphic-format (if format format ""))
-	        (graphic-scale  (if scale (/  (string->number scale) 100) 1))
-	        (graphic-align  (cond ((equal? align (normalize "center"))
-                                       'center)
-                                      ((equal? align (normalize "right"))
-                                       'end)
-                                      (else
-                                       'start))))
-            (make external-graphic
-              entity-system-id: (graphic-file graphic-fileref)
-              notation-system-id: graphic-format
-              scale: graphic-scale
-              display?: display
-              display-alignment: graphic-align)))
 
       ]]>
 
