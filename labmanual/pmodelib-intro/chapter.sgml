@@ -383,7 +383,7 @@ GLOBAL _main
 SECTION .data
 
 ; String to print to screen
-str     db 'Hello, World!',13,10,'$'
+hello   db 'Hello, World!',13,10,'$'
 
 SECTION .text
 
@@ -400,7 +400,7 @@ _main
         mov     es, [<xref linkend="pmodelib-ref-transfer-buf">]     ; Put the selector into es.
         xor     ebx, ebx                ; Offset into string
 .loop:
-        mov     al, [str+ebx]   ; Copy from string
+        mov     al, [hello+ebx] ; Copy from string
         mov     [es:ebx], al    ; Into DOS memory area, starting at offset 0
         cmp     al, '$'         ; Stop at the '$' marker.
         jne     .loop
