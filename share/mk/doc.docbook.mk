@@ -151,6 +151,7 @@ TWO_SIDE=1
 JUSTIFY=1
 #WITH_FOOTNOTES=1
 #GEN_INDEX=1
+TEXCMDS+=	\def\TwoSideStartOnRight{1}
 .endif
 .if defined(JUSTIFY)
 TEXCMDS+=	\RequirePackage{url}
