@@ -49,6 +49,7 @@ SRCS+= sound/chapter.sgml
 
 SRCS+= pmodelib-ref/appendix.sgml
 SRCS+= inst-ref/appendix.sgml
+SRCS+= flags-xref/appendix.sgml
 SRCS+= ascii-code/appendix.sgml
 
 SRCS+= glossary.sgml

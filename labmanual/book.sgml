@@ -43,6 +43,7 @@
 
 <!ENTITY % chap.pmodelib-ref "IGNORE">
 <!ENTITY % chap.inst-ref "IGNORE">
+<!ENTITY % chap.flags-xref "IGNORE">
 <!ENTITY % chap.ascii-code "IGNORE">
 <!ENTITY % chap.glossary "IGNORE">
 <!ENTITY % chap.index "IGNORE">
@@ -285,6 +286,7 @@
 
   <![ %chap.pmodelib-ref;    [ &chap.pmodelib-ref;    ]]>
   <![ %chap.inst-ref;        [ &chap.inst-ref;        ]]>
+  <![ %chap.flags-xref;      [ &chap.flags-xref;      ]]>
   <![ %chap.ascii-code;      [ &chap.ascii-code;      ]]>
   <![ %chap.glossary;        [ &chap.glossary;        ]]>
   <![ %chap.index;           [ &chap.index;           ]]>

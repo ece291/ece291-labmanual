@@ -41,6 +41,7 @@
 <!-- Appendices -->
 <!ENTITY chap.pmodelib-ref          SYSTEM "pmodelib-ref/appendix.sgml">
 <!ENTITY chap.inst-ref              SYSTEM "inst-ref/appendix.sgml">
+<!ENTITY chap.flags-xref            SYSTEM "flags-xref/appendix.sgml">
 <!ENTITY chap.ascii-code            SYSTEM "ascii-code/appendix.sgml">
 
 <!-- Glossary and Index -->
