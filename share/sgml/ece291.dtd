@@ -71,6 +71,7 @@
 		|segment
 		|floating-point
 		|mmx
+		|xmm
 		|control
 		|debug
 		|test
