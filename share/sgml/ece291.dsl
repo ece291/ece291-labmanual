@@ -1,6 +1,6 @@
-<!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.43 2001/07/27 21:16:55 murray Exp $ -->
+<!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.8 2001/08/02 01:53:50 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.9 2001/08/03 01:19:48 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -104,10 +104,20 @@
 
       <!-- Print only ................................................... --> 
       <![ %output.print; [
+
+	(define %cals-cell-before-column-margin%
+	  3pt)
+
         (define (toc-depth nd)
           (if (string=? (gi nd) (normalize "book"))
               3
               1))
+
+	(define %default-quadding%
+	  'justify)
+
+	(define %hyphenation%
+	  #t)
 
         (element (primaryie ulink)
           (indexentry-link (current-node)))
@@ -144,7 +154,7 @@
       ;  level.
       ; The section titles are still bold, spaced away from the text, and
       ;  sized according to their nesting level.
-      (define minimal-section-labels #f)
+      (define minimal-section-labels #t)
       (define max-section-level-labels
         (if minimal-section-labels 3 10))
 
@@ -209,7 +219,7 @@
 
       <!-- More aesthetically pleasing chapter headers for print output -->
       <![ %output.print.niceheaders; [
-<!--
+
       (define ($component-title$)
 	(let* ((info (cond
 		((equal? (gi) (normalize "appendix"))
@@ -258,7 +268,7 @@
 	start-indent: 0pt
 	first-line-start-indent: 0pt
 	quadding: %component-title-quadding%
-	heading-level: (if %generate-heading-level% 1 0)
+;	heading-level: (if %generate-heading-level% 1 0)
 	keep-with-next?: #t
 
 	(if (string=? (element-label) "")
@@ -302,15 +312,24 @@
 	  (make sequence
 	    (process-node-list subtitles))))
 
-      (make rule
-	length: 475pt
-	display-alignment: 'start
-	space-before: (* (HSIZE 5) %head-before-factor%)
-	line-thickness: 0.5pt))))
+      (if (equal? (gi) (normalize "index"))
+       (empty-sosofo)
+       (make rule
+	 length: 475pt
+	 display-alignment: 'start
+	 space-before: (* (HSIZE 5) %head-before-factor%)
+	 line-thickness: 0.5pt)))))
 
-      (element authorgroup
-        (empty-sosofo))
--->
+      <!-- Disable info blocks until we can format them nicely -->
+      (element appendixinfo
+	(empty-sosofo))
+      (element chapterinfo
+	(empty-sosofo))
+      (element sect1info
+	(empty-sosofo))
+      (element sect2info
+	(empty-sosofo))
+
       ]]>
 
       <![ %output.print.pdf; [
