@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.11 2001/07/26 06:15:48 pete Exp $
+# $Id: Makefile,v 1.12 2001/07/26 18:44:35 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -65,6 +65,7 @@ IMAGES+= serial-comm/adapter.dia
 IMAGES+= serial-comm/plug9pins.dia
 IMAGES+= serial-comm/plug9pins-null.dia
 IMAGES+= parallel-comm/timing.dia
+IMAGES+= ascii-code/quickref.dia
 
 SYMLINKS= ${DESTDIR} index.html
 
