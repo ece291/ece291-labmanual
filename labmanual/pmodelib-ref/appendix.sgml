@@ -38,11 +38,7 @@
  </important>
 
  <para>The 32-bit C calling convention is described in much more
-  detail in <ulink
-   url="http://courses.ece.uiuc.edu/ece291/books/labmanual/c-prog.html">Chapter 
-   7</ulink> of the <ulink
-   url="http://courses.ece.uiuc.edu/ece291/books/labmanual/">ECE 291
-   Lab Manual</ulink>.  See <xref
+  detail in <xref linkend="c-prog">.  See <xref
    linkend="pmodelib-intro-proc-invoke"> to learn about the
   <literal>proc</literal> and <literal>invoke</literal> macros, which
   simplify both writing functions that use the C calling convention
