@@ -8795,7 +8795,7 @@ PMULLW mm1,mm2/m64            ; 0F D5 /r             [PENT,MMX]<![%inst-ref.sse2
 PMULHW xmm1,xmm2/m128         ; 66 0F E5 /r     [WILLAMETTE,SSE2]
 PMULLW xmm1,xmm2/m128         ; 66 0F D5 /r     [WILLAMETTE,SSE2]]]></screen>
 
-   <para><literal>PMULxW</literal> takes two packed unsigned 16-bit
+   <para><literal>PMULxW</literal> takes two packed signed 16-bit
     integer inputs, and multiplies the values in the inputs, forming
     doubleword results.</para>
 
