@@ -1,0 +1,626 @@
+<!--
+     ECE 291 Protected Mode Tutorial
+
+     $IdPath$
+-->
+
+<chapter id="realprot-diff">
+ <title>Differences Between Real Mode and Protected Mode</title>
+
+ <sect1 id="realprot-diff-source">
+  <title>Source Differences</title>
+
+  <para>Up to this point in ECE 291, the MP's have been written in
+   real mode, with a source design that reflects real mode
+   assumptions.  When writing code for protected mode, the source
+   organization will change, but only slightly.  The primary
+   differences are:</para>
+
+  <sect2 id="realprot-diff-source-section">
+   <title><literal>SEGMENT</literal> is Now
+    <literal>SECTION</literal></title>
+
+   <para>In protected mode, <literal>SEGMENT</literal> would be a bit
+    of a misnomer, as while segment registers are still used to
+    address memory, they hold selectors instead of segments (see <xref
+    linkend="realprot-diff-memory-segments"> for more information
+    about this). In NASM, <literal>SEGMENT</literal> and
+    <literal>SECTION</literal> are treated identically internally, so
+    this is just a semantic change, not a functional one.</para>
+  </sect2>
+
+  <sect2 id="realprot-diff-source-stack">
+   <title>No <literal>STACK</literal> Segment</title>
+
+   <para>Unlike the real mode MPs, the DJGPP platform used for writing
+    protected mode code in ECE 291 provides a stack, so there's no
+    need for the assembly source to provide one.</para>
+  </sect2>
+
+  <sect2 id="realprot-diff-source-main">
+   <title>Execution starts at <function>_main</function>, not at
+    <literal>..start</literal></title>
+
+   <para>As the assembly program is linked to the DJGPP startup code
+    also means the program execution doesn't begin at the
+    <literal>..start</literal> label as it did in real mode, but at
+    the C-style function <function>_main</function>.</para>
+
+   <tip>
+    <para><function>_main</function> is called in
+     <emphasis>exactly</emphasis> the same was as how it's called for
+     C programs. Those that are already familiar with C may know about
+     the two arguments passed (on the stack, using the C calling
+     convention) to this function: <literal>int argc</literal> and
+     <literal>char *argv[]</literal>, which can be used to retrieve
+     the command-line arguments passed to the program. See a C
+     reference for information on the meanings of these two parameters
+     and how to use them to read command-line arguments.</para>
+   </tip>
+  </sect2>
+
+  <sect2 id="realprot-diff-source-ds">
+   <title>Don't Set &reg.ds;=&reg.cs;</title>
+
+   <para>As <xref linkend="realprot-diff-memory-segments-cv32"> shows,
+    &reg.ds; and &reg.cs; actually do point to the same memory space
+    in protected mode, just as they did in real mode, but &reg.cs; and
+    &reg.ds; do <emphasis>not</emphasis> hold the same numerical
+    value.</para>
+
+   <caution>
+    <para>As &reg.cs; is set up to be read-only, if the program code
+     <emphasis>does</emphasis> set &reg.ds;=&reg.cs; at the beginning
+     of the program, the data segment becomes read only!</para>
+   </caution>
+  </sect2>
+
+  <sect2 id="realprot-diff-source-bss">
+   <title>The Uninitialized Data Section:
+    <literal>.bss</literal></title>
+
+   <para>This change is a conceptually major one: the addition of an
+    <emphasis>uninitialized</emphasis> data segment.  What does this
+    mean?  All data variables declared in the
+    <emphasis>initialized</emphasis> data section take up space in the
+    executable image on disk.  This data is then copied into memory
+    when the program is run, along with the program code.  Data placed
+    in the uninitialized section, on the other hand, does not take up
+    space on disk.  When the program is run, extra space is tacked
+    onto the end of the data segment (accessed with &reg.ds;) and
+    initialized to 0.</para>
+
+   <para>There are uninitialized equivalents to the
+    <literal>db</literal>, <literal>dw</literal>, etc. family of data
+    declarations that start with <quote><literal>res</literal></quote>
+    (reserve) instead of <quote><literal>d</literal></quote>
+    (declare), e.g. <literal>resb</literal>, <literal>resw</literal>,
+    etc.  These <quote>reserve</quote> equivalents just take a single
+    number: the number of data items of this size to reserve space
+    for.  Within the <literal>.bss</literal> section, these
+    equivalents must be used instead of <literal>db</literal> and the
+    like.</para>
+
+   <para>Use the <literal>.bss</literal> section instead of the
+    <literal>.data</literal> section for variables that can be 0 at
+    program startup.  Remember that the
+    <quote><literal>res</literal></quote> family takes the
+    <emphasis>number</emphasis> of items, so:</para>
+
+   <programlisting>SECTION .data
+
+a db 0
+b dw 0,0,0
+c dd 0,0</programlisting>
+
+   <para>Becomes:</para>
+
+   <programlisting>SECTION .bss
+
+a resb 1
+b resw 3
+c resd 2</programlisting>
+  </sect2>
+
+  <sect2 id="realprot-diff-source-naming">
+   <title><literal>CODE</literal> is now <literal>.text</literal>,
+    <literal>DATA</literal> is now <literal>.data</literal></title>
+
+   <para>The code segment is now called <literal>.text</literal> and
+    the data segment is called <literal>.data</literal>. The segments
+    changed names to match the segment names used by DJGPP.  These
+    names are also considered standard on the UNIX platform.</para>
+
+   <para>Why is the uninitialized section called
+    <literal>.bss</literal> and the code section called
+    <literal>.text</literal>?  Both names have a long history in UNIX,
+    but the history of <literal>.bss</literal> is perhaps <ulink
+     url="http://compilers.iecc.com/comparch/article/98-01-015">the
+     most interesting</ulink>.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="realprot-diff-memory">
+  <title>Memory Differences</title>
+
+  <sect2 id="realprot-diff-memory-addresses">
+   <title>Address are 32-bit</title>
+
+   <para>The address space is one, big, flat 32-bit space.  When
+    accessing memory, it needs to be accessed with 32-bit addresses.
+    <literal>[&reg.di;]</literal> is as meaningless as
+    <literal>[&reg.dl;]</literal> was in real mode.</para>
+
+   <caution>
+    <para>NASM will accept <literal>[&reg.di;]</literal> as a memory
+     address without warning about its use!  This can work, but only
+     if the address fits in &reg.di; (eg, is in the first 64k).  As
+     this is not usually the case (especially when doing operations
+     with large buffers), this doesn't usually work.  Make sure to use
+     the full 32-bit registers when doing address computations!</para>
+   </caution>
+  </sect2>
+
+  <sect2 id="realprot-diff-memory-regs">
+   <title>Any Register Can be Used to Access Memory</title>
+
+   <para>You can access memory like this [segment :
+    any_32-bit_register + any_other_32-bit_register*(1/2/4/8) +
+    constant]  This means that this is all legal:</para>
+
+   <programlisting>
+        mov al, [eax+4*ebx+12]       ; ds is the assumed segment
+        mov ax, [gs:ecx-99]          ; ds, es, fs, and gs are ALL segment registers.
+        mov edx, [myarray + ebx*4]   ; Locally multiply by four before to access array.</programlisting>
+  </sect2>
+
+  <sect2 id="realprot-diff-memory-segments">
+   <title>Segments are <emphasis>Completely</emphasis>
+    Different</title>
+
+   <para>If you have a picture in your head of how segments work in
+    real mode, great.  If you know about how to calculate a linear
+    address by multiplying the segment by 16 and adding the offset,
+    great.  You'll need this for the exam.  You won't need this for
+    protected mode.  The segment registers in protected mode are now
+    the selector registers.  A <firstterm>selector</firstterm> is an
+    index into a descriptor table.  In the case of a single
+    application program, it's an index into the Local Descriptor Table
+    (LDT).  The LDT is a table of (not suprisingly)
+    <firstterm>descriptors</firstterm>.  Descriptors hold information
+    about a sub-region of the 4 Gigabyte 32-bit physical address
+    space.  The reason we need this table is because in protected
+    mode, not every segment is the same size.  Enough of theory; time
+    to look at how this actually works, in the debugger.</para>
+
+   <sect3 id="realprot-diff-memory-segments-cv32">
+    <title>Using the Debugger to examine the LDT</title>
+
+    <orderedlist>
+     <listitem>
+      <para>Open some program in cv32 (like the
+       <command>basic</command> program covered in <xref
+	linkend="start-pmode-firstprog">.</para>
+     </listitem>
+
+     <listitem>
+      <para>The help (<keycombo>
+	<keycap>ALT</keycap>
+	<keycap>H</keycap>
+      </keycombo>) says that to look at the Local Descriptor Table,
+       type <keycombo>
+	<keycap>ALT</keycap>
+	<keycap>L</keycap>
+       </keycombo>, so do so.</para>
+     </listitem>
+
+     <listitem>
+      <para>Look at the Code Selector (&reg.cs;).  Remember that the
+       number here represents the Local Descriptor Table offset.
+       Scroll down to this offset in the Local Descriptor Table
+       window.</para>
+     </listitem>
+
+     <listitem>
+      <para>It should say that it is a code selector that is read
+       only. It probably starts at some huge linear starting address
+       (0x837e5000) and is pretty big (0x0001ffff).</para>
+     </listitem>
+
+     <listitem>
+      <para>Now look at the Default/Data Selector (&reg.ds;) and its
+       LDT entry.</para>
+     </listitem>
+
+     <listitem>
+      <para>Looking at the LDT entry for &reg.ds;, it should be 32-bit
+       data which is both readable and writeable.  It starts at the
+       same address and is the same size as the Code Selector,
+       strangely enough.  Of course in the past MPs in ECE 291, we've
+       set &reg.ds; to point to the same place as &reg.cs;.  Note that
+       the same thing is true here even though the selector registers
+       themselves have different values.</para>
+     </listitem>
+    </orderedlist>
+   </sect3>
+
+   <sect3 id="realprot-diff-memory-segments-access">
+    <title>How the Processor Handles Memory Accesses</title>
+
+    <para>To get the linear address for <literal>mov &reg.eax;, dword
+      [&reg.ds:&reg.ebx]</literal>, the processor looks in the Local
+     Descriptor Table for &reg.ds;'s linear starting address.  It then
+     adds the offset (in this case the value in &reg.ebx;) to get the
+     linear address.</para>
+
+    <para>While the processor is doing this, it checks the offset
+     against the segment length in the LDT.  If the offset is
+     <quote>out of range</quote> when it preforms the check, the
+     processor causes a General Protection Fault and calls interrupt
+     13h.  This interrupt goes to the operating system which promptly
+     terminates the program for trying to access memory that it
+     doesn't own.  (This is one of the ways memory is protected in
+     protected mode).  <quote>So why can't the program just go into
+      the Local Descriptor Table and give the segment a huge
+      length?</quote> Programs are never allowed to deal with the
+     Local Descriptor Table directly.  They must request additional
+     memory from the OS, and the OS changes the descriptor table.  The
+     OS also keeps track of what programs have what memory and shuts
+     down misbehaving programs.</para>
+
+    <tip>
+     <para>General Protection Faults are the primary cause of program
+      crashes when programming in protected mode.  When a fault occurs
+      outside of a debugger, the program is terminated and information
+      is printed to the screen that shows all the registers, the
+      segments and their limits, and a stack trace.  In a debugger,
+      the debugger halts the program, highlighting the line that
+      caused the error.</para>
+    </tip>
+
+    <para>Once the processor has the linear address and has verified
+     the offset is correct, it looks in the processor's Virtual Memory
+     Page Table to get the physical address, which is what actually
+     gets sent out on the bus.  If the Page table says that the
+     particular page required is not in physical memory, the processor
+     causes a <quote>Page Fault</quote> and the operating system (in
+     this case, Windows) will have to load it off of disk. (This
+     procedure is often called swapping).  Note that there are a few
+     more levels of abstraction here than there were in real mode. ECE
+     291 doesn't cover Virtual Memory or swapping, so this paragraph
+     really isn't that important to programming in ECE 291, except for
+     the following:</para>
+
+    <important>
+     <para>It's possible for memory areas accessible to the program to
+      not actually be in memory at the time.  This will be
+      particularly important when writing interrupt handlers (also
+      called interrupt service routines).  The details surrounding
+      ISRs in protected mode, using PModeLib, are covered in <xref
+       linkend="pmodelib-intro-interrupt">.</para>
+    </important>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="realprot-diff-interrupts">
+  <title>Using Interrupts in Protected Mode</title>
+
+  <para>Suprisingly enough, calling interrupts in protected mode under
+   DPMI is very similar to calling interrupts in real mode.  Even
+   though this isn't 16-bit DOS and DOS interrupt handlers are 16-bit
+   code, most interrupt calls get mirrored automatically by DPMI from
+   protected to real mode.  However, there are many situations for
+   which this automatic translation doesn't work. Keep reading for
+   details!</para>
+
+  <sect2 id="realprot-diff-interrupts-idt">
+   <title>The Interrupt Descriptor Table</title>
+
+   <para>Unlike in real mode, where the interrupt vector table is
+    always at address 00000h, in protected mode, the Interrupt
+    Descriptor Table can be anywhere in memory and is protected by the
+    processor and the OS.  Also unlike the real-mode interrupt vector
+    table, the IDT stores additional information about the various
+    handlers, but it is essentially still a <quote>jump table</quote>
+    indexed on the interrupt number.</para>
+  </sect2>
+
+  <sect2 id="realprot-diff-interrupts-dpmi">
+   <title>Calling Interrupts under DPMI</title>
+
+   <para>Under DPMI, the entries in the IDT point to DPMI's own
+    interrupt service routines.  For most of these, DPMI is kind
+    enough to just drop into real mode, call the corresponding
+    real-mode interrupt, and return to protected mode before returning
+    to the calling program.  Pretty complicated, but DPMI handles all
+    these extra steps automatically.</para>
+
+   <para>For interrupts that don't use segment registers, this
+    automatic translation works extremely well.  Interrupts that have
+    inputs or outputs in segment registers, however, need to be called
+    using a special DPMI function, because the segment registers
+    change when switching from protected to real mode and back.  Also,
+    even if the segment registers didn't change, in protected mode
+    setting a segment register to a real-mode segment value will
+    (usually) cause a General Protection Fault, because the segment
+    registers must hold a valid selector value while in protected
+    mode.  <dpmiref section="api" function="0300" name="Simulate Real
+     Mode Interrupt"></> allows the program to set
+    <emphasis>all</emphasis> registers that can be read by the
+    real-mode interrupt handler. After the interrupt returns, the
+    values of all the registers set by the real-mode interrupt handler
+    can be read back by the protected mode program.</para>
+  </sect2>
+
+  <sect2 id="realprot-diff-interrupts-data">
+   <title>Giving Data to Real Mode Interrupts</title>
+
+   <para>However, there's a more fundamental problem here!  Most
+    interrupts that take segment registers as inputs use them to point
+    to data, and they use the segment registers in real-mode fashion
+    (not as selectors).  How can a protected mode program give a
+    real-mode interrupt data if this is the case?</para>
+
+   <para>Unfortunately, the program can't just call a magic function
+    that translates a selector into a segment.  This is impossible
+    unless the selector is located in the 20-bit address space of real
+    mode and is less than 64k in length.  Even if it were possible,
+    the offset would still be limited to 64k.  Fortunately, DPMI
+    provides an alternative solution: providing a way for a protected
+    mode program to allocate a segment of memory that's guaranteed to
+    be accessible in real mode.  <dpmiref section="api"
+     function="0100" name="Allocate DOS Memory Block"></> allocates
+    space in the low 1 MB of RAM (the 20-bit address space visible to
+    real-mode programs), and returns <emphasis>both</emphasis> a
+    selector that can be used to access this memory from protected
+    mode and a segment that can be used to access this memory from
+    real mode.</para>
+
+   <para>Armed with the selector and segment values, a protected mode
+    program can copy the data it wants to give the real-mode interrupt
+    into this memory and give the real-mode segment to the interrupt.
+    The real-mode interrupt then reads the data, and everything works
+    great!</para>
+
+   <para>Naturally, the same process can work in reverse: the
+    real-mode interrupt writing into the memory and the protected mode
+    program reading out of it after the interrupt returns.</para>
+
+   <para>So how does this DPMI function actually work internally?  How
+    does it ensure the memory allocation is in the low 1 MB of RAM?
+    <dpmiref section="api" function="0100" name="Allocate DOS Memory
+     Block"></> has to go through a number of steps to accomplish
+    this:</para>
+
+   <orderedlist>
+    <listitem>
+     <para>Switch to real-mode.</para>
+    </listitem>
+
+    <listitem>
+     <para>Perform a DOS interrupt call to allocate the memory the DOS
+      is in charge of (below 1 MB).</para>
+    </listitem>
+
+    <listitem>
+     <para>Calculate the physical address of the memory DOS allocated
+      (by shifting the segment left by 4 and adding the
+      offset).</para>
+    </listitem>
+
+    <listitem>
+     <para>Allocate an LDT descriptor, and set its base address to the
+      calculated physical address and the length to the size of the
+      allocated memory.</para>
+    </listitem>
+
+    <listitem>
+     <para>Return the index of this LDT entry in &reg.dx;</para>
+    </listitem>
+   </orderedlist>
+
+   <para>Actually, all of these steps can be accomplished without too
+    much trouble by normal protected mode code.  However, it's far
+    easier just to use the DPMI interrupt.</para>
+
+   <para>Before exiting, <dpmiref section="api" function="0101"
+     name="Free DOS Memory Block"></> should be used to free the
+    memory allocated by <dpmiref section="api"
+     function="0100"></>.</para>
+  </sect2>
+
+  <sect2 id="realprot-diff-interrupts-examples">
+   <title>Examples</title>
+
+   <para>Now that the basics have been covered on how to call
+    interrupts from protected mode, it's time to look at some example
+    code!</para>
+
+   <sect3 id="realprot-diff-interrupts-examples-time">
+    <title>Getting the Time</title>
+
+    <para>The first example program takes advantage of the automatic
+     mirroring of interrupts into real mode by DPMI.  It gets the
+     current time using <ulink
+      url="http://www.ctyme.com/intr/rb-2703.htm">DOS interrupt 21h,
+      function 2Ch</ulink>.</para>
+
+    <example id="realprot-diff-interrupts-examples-time-example">
+     <title>Getting the Time in Protected Mode</title>
+
+     <programlisting>
+BITS 32
+
+GLOBAL _main
+
+_main:
+        mov ah, 2Ch     ; Function 2Ch
+        int 21h         ; Call DOS interrupt.
+                        ;  (Automatically mirrored by DPMI)
+; At this point all the return values should be in the protected mode
+; registers (CH, CL, DH, DL).
+
+        ret             ; Return to DOS</programlisting>
+    </example>
+
+    <para>Build this example program the same way <quote>basic</quote>
+     was built in <xref linkend="start-pmode-firstprog">.  Run it
+     under CV32 and look at the registers after the interrupt call to
+     make sure it did actually return the correct time.</para>
+   </sect3>
+
+   <sect3 id="realprot-diff-interrupts-examples-dspmsg">
+    <title>Output a String to the Screen</title>
+
+    <para>This example is going to perform a much more complex task
+     than the first.  Essentially it's the old LIB291
+     <function>dspmsg</function> in protected mode.  All
+     <function>dspmsg</function> did internally was call <ulink
+      url="http://www.ctyme.com/intr/rb-2562.htm">DOS interrupt 21h,
+      function 09h</ulink>.</para>
+
+    <para>The first thing to notice about function 09h is that one of
+     the inputs uses a segment register (&reg.ds;).  This should
+     immediately bring the discussion in <xref
+      linkend="realprot-diff-interrupts-dpmi"> to mind: we'll need to
+     use <dpmiref section="api" function="0300"></> to make the
+     interrupt call, as we can't set &reg.ds; without using it.</para>
+
+    <para>The second thing to notice is that the input takes a pointer
+     to data that the protected mode program needs to provide.  This
+     means the program will need to use the procedure detailed in
+     <xref linkend="realprot-diff-interrupts-data"> to put the string
+     someplace where DOS can get to it.</para>
+
+    <example id="realprot-diff-interrupts-examples-dspmsg-example">
+     <title>Protected Mode <quote>dspmsg</quote> Program</title>
+     <programlisting>BITS 32
+
+GLOBAL _main
+
+DOS_BUFFER_LEN  equ     128     ; DOS buffer length, in bytes
+
+SECTION .bss
+
+; DPMI Registers structure used by INT 31h, function 0300h
+DPMI_Regs
+DPMI_EDI        resd    1
+DPMI_ESI        resd    1
+DPMI_EBP        resd    1
+DPMI_RESO       resd    1
+DPMI_EBX        resd    1
+DPMI_EDX        resd    1
+DPMI_ECX        resd    1
+DPMI_EAX        resd    1
+DPMI_FLAGS      resw    1
+DPMI_ES         resw    1
+DPMI_DS         resw    1
+DPMI_FS         resw    1
+DPMI_GS         resw    1
+DPMI_IP         resw    1
+DPMI_CS         resw    1
+DPMI_SP         resw    1
+DPMI_SS         resw    1
+
+; These variables will hold the selector and segment of the DOS
+;  memory block allocated by DPMI.
+_Transfer_Buf   resw    1
+_Transfer_Buf_Seg resw  1
+
+SECTION .data
+
+; String to print to screen
+str     db 'Hello, World!',13,10,'$'
+
+SECTION .text
+
+_main
+
+        ; Allocate DOS Memory Block using DPMI
+        ; Note that BX=# of paragraphs, so must divide by 16.
+        mov     ax, 0100h
+        mov     bx, DOS_BUFFER_LEN/16
+        int     31h
+        ; Save the return info in the Transfer_Buf_* variables.
+        mov     [_Transfer_Buf], dx
+        mov     [_Transfer_Buf_Seg], ax
+
+        ; When debugging this program, look at the LDT for the
+        ;  selector in dx here.  It should be labeled as 16-bit
+        ;  data, the starting address should = ax << 4, and its
+        ;  length should be DOS_BUFFER_LEN-1.
+
+        ; Now that the memory has been allocated in DOS space,
+        ;  copy the string into it.  Note that while a loop is
+        ;  used here, for larger amounts data (or data of fixed
+        ;  size), it would probably make more sense to use a
+        ;  string instruction such as rep movsd here.
+        push    es
+        mov     es, dx          ; Put the selector into es.
+        xor     ebx, ebx        ; Offset into string
+.loop:
+        mov     al, [str+ebx]   ; Copy from string
+        mov     [es:ebx], al    ; Into DOS memory area, starting at offset 0
+        cmp     al, '$'         ; Stop at the '$' marker.
+        jne     .loop
+        pop     es
+
+        ; Set up the input registers for the DOS interrupt in the
+        ;  DPMI_Regs structure above.
+        mov     word [DPMI_EAX], 0900h  ; Neat trick: even though DPMI_EAX
+                                        ;  is a dword, thanks to little
+                                        ;  endian storing just a word works.
+                                        ; Note that AH=09h, not AL.
+                                        ; mov byte [DPMI_EAX+1], 09h would
+                                        ;  have worked here too.  Why? :)
+        mov     word [DPMI_EDX], 0      ; Again, only care about the low 16
+                                        ;  bits (DX).  Set to 0 because that's
+                                        ;  where the string was copied to!
+        mov     ax, [_Transfer_Buf_Seg] ; Put the real mode segment into
+        mov     word [DPMI_DS], ax      ;  the DS variable the DOS interrupt
+                                        ;  sees.
+
+        ; Now simulate the interrupt using DPMI function 0300h.
+        mov     ax, 0300h       ; DPMI function 0300h
+        mov     bl, 21h         ; Real mode interrupt number (DOS interrupt)
+        mov     bh, 0           ; No need to set any flags
+        mov     cx, 0           ; Don't copy any stack, not necessary
+        mov     dx, ds          ; Point ES:EDI at DPMI_Regs
+        mov     es, dx          ;  ES=our DS
+        mov     edi, DPMI_Regs  ;  EDI=offset to DPMI_Regs
+        int     31h             ; Call DPMI, which calls DOS, which prints
+                                ;  the string!
+
+        ; Free the DOS memory block before exiting.
+        mov     ax, 0101h
+        mov     dx, [_Transfer_Buf]     ; It needs the selector
+        int     31h
+
+        ; We're done, exit back to DOS.
+        ret</programlisting>
+    </example>
+
+    <para>Assemble and run the above code.  Run it under cv32, and
+     look at the LDT entry of the selector returned by <dpmiref
+      section="api" function="0100" name="Allocate DOS Memory
+      Block"></>.  Play with the code some (until it breaks, and then
+     figure out what's wrong with it)!  We'll come back to this code
+     later (in <xref linkend="pmodelib-intro-using-interrupts">), and
+     rewrite it so it uses PModeLib functions.</para>
+   </sect3>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

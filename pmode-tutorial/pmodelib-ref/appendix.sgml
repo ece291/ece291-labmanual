@@ -1,0 +1,5580 @@
+<!--
+     ECE 291 Lab Manual
+
+     $IdPath$
+-->
+
+<appendix id="pmodelib-ref">
+ <title>PModeLib Reference</title>
+
+ <para>All functions declared in C-style use the C calling convention
+  (parameters on stack; return value in &reg.eax;/&reg.ax;/&reg.al;;
+  &reg.eax;, &reg.ebx;, &reg.ecx;, and &reg.edx; may be clobbered) and
+  also have the function name prepended with a underscore ( _ ).
+  Parameters and return values specified in C format obey the
+  following size conventions:</para>
+
+ <itemizedlist>
+  <listitem>
+   <para>short, 16 bit integer (default signed)</para>
+  </listitem>
+
+  <listitem>
+   <para>int, 32-bit integer (default signed)</para>
+  </listitem>
+
+  <listitem>
+   <para>pointer (of any time), 32-bit</para>
+  </listitem>
+
+  <listitem>
+   <para>bool, 32-bit value: 1=true, 0=false</para>
+  </listitem>
+ </itemizedlist>
+
+ <important>
+  <para>Pointer parameters take the address of the variable, not the
+   contents.</para>
+ </important>
+
+ <para>The 32-bit C calling convention is described in much more
+  detail in <ulink
+   url="http://courses.ece.uiuc.edu/ece291/books/labmanual/c-prog.html">Chapter 
+   7</ulink> of the <ulink
+   url="http://courses.ece.uiuc.edu/ece291/books/labmanual/">ECE 291
+   Lab Manual</ulink>.  See <xref
+   linkend="pmodelib-intro-proc-invoke"> to learn about the
+  <literal>proc</literal> and <literal>invoke</literal> macros, which
+  simplify both writing functions that use the C calling convention
+  and calling PModeLib functions.</para>
+
+ <sect1 id="pmodelib-ref-global">
+  <title>Global Variables</title>
+
+  <para>There are a number of global variables defined by the library.
+   Some of these act as implicit inputs into functions such as <link
+    linkend="pmodelib-ref-dpmi-int"><function>DPMI_Int</function></link>.</para>
+
+  <variablelist>
+   <varlistentry id="pmodelib-ref-dpmi-regs" xreflabel="DPMI_Regs">
+    <term><literal>DPMI_Regs</literal></term>
+
+    <listitem>
+     <para>Not really a variable in and of itself, it's the offset of
+      the start of the entire DPMI Registers structure used by <link
+       linkend="pmodelib-ref-dpmi-int"><function>DPMI_Int</function></link>. 
+      The layout of <literal>DPMI_Regs</literal> is identical to the
+      layout described in the reference page for <dpmiref
+       section="api" function="0300"></>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-eax" xreflabel="DPMI_EAX">
+    <term>dword <literal>DPMI_EAX</literal></term>
+
+    <listitem>
+     <para>The EAX/AX/AL (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-ebx" xreflabel="DPMI_EBX">
+    <term>dword <literal>DPMI_EBX</literal></term>
+
+    <listitem>
+     <para>The EBX/BX/BL (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-ecx" xreflabel="DPMI_ECX">
+    <term>dword <literal>DPMI_ECX</literal></term>
+
+    <listitem>
+     <para>The ECX/CX/CL (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-edx" xreflabel="DPMI_EDX">
+    <term>dword <literal>DPMI_EDX</literal></term>
+
+    <listitem>
+     <para>The EDX/DX/DL (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-esi" xreflabel="DPMI_ESI">
+    <term>dword <literal>DPMI_ESI</literal></term>
+
+    <listitem>
+     <para>The ESI/SI (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-edi" xreflabel="DPMI_EDI">
+    <term>dword <literal>DPMI_EDI</literal></term>
+
+    <listitem>
+     <para>The EDI/DI (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-ebp" xreflabel="DPMI_EBP">
+    <term>dword <literal>DPMI_EBP</literal></term>
+
+    <listitem>
+     <para>The EBP/BP (depending on access size) member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-sp" xreflabel="DPMI_SP">
+    <term>word <literal>DPMI_SP</literal></term>
+
+    <listitem>
+     <para>The SP member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.  It's usually not necessary
+      to set this.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-ds" xreflabel="DPMI_DS">
+    <term>word <literal>DPMI_DS</literal></term>
+
+    <listitem>
+     <para>The DS <emphasis>segment</emphasis> member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
+       linkend="pmodelib-ref-transfer-buf-seg"> value in <link
+       linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-es" xreflabel="DPMI_ES">
+    <term>word <literal>DPMI_ES</literal></term>
+
+    <listitem>
+     <para>The ES <emphasis>segment</emphasis> member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
+       linkend="pmodelib-ref-transfer-buf-seg"> value in <link
+       linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-fs" xreflabel="DPMI_FS">
+    <term>word <literal>DPMI_FS</literal></term>
+
+    <listitem>
+     <para>The FS <emphasis>segment</emphasis> member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
+       linkend="pmodelib-ref-transfer-buf-seg"> value in <link
+       linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-gs" xreflabel="DPMI_GS">
+    <term>word <literal>DPMI_GS</literal></term>
+
+    <listitem>
+     <para>The GS <emphasis>segment</emphasis> member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
+       linkend="pmodelib-ref-transfer-buf-seg"> value in <link
+       linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-ss" xreflabel="DPMI_SS">
+    <term>word <literal>DPMI_SS</literal></term>
+
+    <listitem>
+     <para>The SS <emphasis>segment</emphasis> member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.  It's usually not necessary
+      to set this.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-transfer-buf" xreflabel="_Transfer_Buf">
+    <term>word <literal>_Transfer_Buf</literal></term>
+
+    <listitem>
+     <para>Protected mode selector of real mode transfer buffer.  See
+      <xref linkend="realprot-diff-interrupts-data"> for details on
+      why a transfer buffer is necessary.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-transfer-buf-seg" xreflabel="_Transfer_Buf_Seg">
+    <term>word <literal>_Transfer_Buf_Seg</literal></term>
+
+    <listitem>
+     <para>Real mode segment of real mode transfer buffer.  See
+      <xref linkend="realprot-diff-interrupts-data"> for details on
+      why a transfer buffer is necessary.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-scratchblock" xreflabel="_ScratchBlock">
+    <term><literal>_ScratchBlock</literal></term>
+
+    <listitem>
+     <para>Protected mode selector of 1 MB scratch buffer.  This
+      buffer is used by several library routines but is free for
+      temporary program use between library calls.  Don't expect the
+      contents of this block to be preserved over a library
+      call.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-nettransfersel" xreflabel="_NetTransferSel">
+    <term><literal>_NetTransferSel</literal></term>
+
+    <listitem>
+     <para>Protected mode selector of NetBIOS transfer area.  The
+      transfer area contains the RXBuffer and TXBuffer receive and
+      transmit buffers.  Used by the NetBIOS functions described in
+      <xref linkend="pmodelib-ref-netbios">.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-textsel" xreflabel="_textsel">
+    <term><literal>_textsel</literal></term>
+
+    <listitem>
+     <para>Protected mode selector of text mode video memory.</para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-constant">
+  <title>Global Constants and Limits</title>
+
+  <sect2 id="pmodelib-ref-constant-constants">
+   <title>Constants</title>
+
+   <para>There are a number of constant (<literal>equ</literal>)
+    values defined in library header files:</para>
+
+   <variablelist>
+    <varlistentry id="pmodelib-ref-txbuffer" xreflabel="TXBuffer">
+     <term><literal>TXBuffer</literal></term>
+
+     <listitem>
+      <para>Starting offset of NetBIOS transmit buffer.  The buffer is
+       located in the memory segment selected by <xref
+	linkend="pmodelib-ref-nettransfersel">.  The PModeLib NetBIOS
+       function <link
+	linkend="pmodelib-ref-sendpacket"><function>SendPacket()</function></link> 
+       reads the data to transmit from this buffer.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-constant-limits">
+   <title>Limits</title>
+
+   <para>Some library routines require the use of limited resources.
+    The following limits apply to those resources:</para>
+
+   <variablelist>
+    <varlistentry id="pmodelib-ref-constant-maxmemhandles" xreflabel="MAXMEMHANDLES">
+     <term>MAXMEMHANDLES</term>
+
+     <listitem>
+      <para>Currently 8.  Limits the number of allocations that can be
+       made at the same time using the <link
+	linkend="pmodelib-ref-allocselector"><function>AllocSelector()</function></link> 
+       function.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-constant-max-ints" xreflabel="MAX_INTS">
+     <term>MAX_INTS</term>
+
+     <listitem>
+      <para>Currently 8.  Limits the number of interrupts that can be
+       hooked at the same time using the <link
+	linkend="pmodelib-ref-install-int"><function>Install_Int()</function></link> 
+       function.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-constant-max-rmcb" xreflabel="MAX_RMCB">
+     <term>MAX_RMCB</term>
+
+     <listitem>
+      <para>Currently 4.  Limits the number of real-mode callbacks
+       that can be allocated using the <link
+	linkend="pmodelib-ref-get-rmcb"><function>Get_RMCB()</function></link> 
+       function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-init">
+  <title>Initialization and Shutdown</title>
+
+  <sect2 id="pmodelib-ref-libinit" xreflabel="_LibInit">
+   <title><function>LibInit()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LibInit</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Initializes static library components.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <important>
+       <para>Call this function before using any other library
+	routine.</para>
+      </important>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-libexit" xreflabel="_LibExit">
+   <title><function>LibExit()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void LibExit</funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Deinitializes library.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-libinit"><function>LibInit()</function></link> 
+       has been called.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-simulate">
+  <title>Simulate Real-Mode Interrupt</title>
+
+  <para>See <xref linkend="realprot-diff-interrupts-dpmi"> for more
+   details about why this functionality is required.</para>
+
+  <sect2 id="pmodelib-ref-dpmi-int" xreflabel="DPMI_Int">
+   <title><function>DPMI_Int</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <para><function>DPMI_Int</function></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Simulate a real-mode interrupt with the ability to set ALL
+       registers, including segments, without causing a General
+       Protection Fault.  Essentially just a wrapper around <dpmiref
+	section="api" function="0300"></>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><xref linkend="pmodelib-ref-dpmi-regs"> filled with
+       real-mode interrupt register inputs.</para>
+
+      <para>&reg.bx; = interrupt number to simulate.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><xref linkend="pmodelib-ref-dpmi-regs"> filled with
+       real-mode interrupt register outputs.</para>
+
+      <para>&flag.cf;=1, AX=error code (see <dpmiref section="api"
+	function=""></> for a list) if an error occurred, otherwise
+       &flag.cf;=0.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Clobbers &reg.cx;, &reg.dx;.</para>
+
+      <important>
+       <para>Doesn't use C calling convention.</para>
+      </important>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-memory">
+  <title>Memory Handling</title>
+
+  <sect2 id="pmodelib-ref-allocmem" xreflabel="_AllocMem">
+   <title><function>AllocMem()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void *<function>AllocMem</function></funcdef>
+	<paramdef>unsigned int <parameter>Size</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Allocates Size bytes of memory by extending
+       &reg.ds;.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Size</parameter>, the amount of memory (in
+       bytes) to allocate.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns starting offset of allocated memory, or -1 on
+       error.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>This function works by extending the limit of the &reg.ds;
+       selector by <parameter>Size</parameter> bytes and returning the
+       old limit.</para>
+
+      <para>There is no <function>FreeMem()</function> function; all
+       allocated memory is freed upon program exit.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-allocselector" xreflabel="_AllocSelector">
+   <title><function>AllocSelector()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned short
+	 <function>AllocSelector</function></funcdef>
+	<paramdef>unsigned int <parameter>Size</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Allocates a memory block of <parameter>Size</parameter>
+       bytes in a new selector.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Size</parameter>, the amount of memory to
+       allocate.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns new selector for the memory block, or -1 on
+       error.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Can only allocate a maximum of <xref
+	linkend="pmodelib-ref-constant-maxmemhandles"> memory
+       blocks.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-freeselector" xreflabel="_FreeSelector">
+   <title><function>FreeSelector()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>FreeSelector</function></funcdef>
+	<paramdef>unsigned short
+	 <parameter>Selector</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Frees a memory block allocated by <link
+	linkend="pmodelib-ref-allocselector"><function>AllocSelector()</function></link>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Selector</parameter>, the selector of the
+       memory block to free.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>No error checking on <parameter>Selector</parameter>
+       value.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-lockarea" xreflabel="_LockArea">
+   <title><function>LockArea()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LockArea</function></funcdef>
+	<paramdef>short <parameter>Selector</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>Offset</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>Length</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Locks an area of memory so it is safe for an interrupt
+       handler to access.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Selector</parameter>, selector of the area to
+       lock (e.g. &reg.ds;).</para>
+
+      <para><parameter>Offset</parameter>, offset from start of
+       segment of the beginning of the area to lock.</para>
+
+      <para><parameter>Length</parameter>, length of the area to
+       lock.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-getphysicalmapping" xreflabel="_GetPhysicalMapping">
+   <title><function>GetPhysicalMapping()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>GetPhysicalMapping</function></funcdef>
+	<paramdef>unsigned int
+	 *<parameter>LinearAddress</parameter></paramdef>
+	<paramdef>short *<parameter>Selector</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>PhysicalAddress</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Size</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Maps a physical memory region into linear (program) memory
+       space.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>PhysicalAddress</parameter>, the starting
+       address of the physical memory region to map.</para>
+
+      <para><parameter>Size</parameter>, size of the region, in
+       bytes.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>LinearAddress</parameter>, the linear address
+       of the mapped region.</para>
+
+      <para><parameter>Selector</parameter>, a selector that can be
+       used to access the region.</para>
+
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-freephysicalmapping" xreflabel="_FreePhysicalMapping">
+   <title><function>FreePhysicalMapping()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>FreePhysicalMapping</function></funcdef>
+	<paramdef>unsigned int
+	 *<parameter>LinearAddress</parameter></paramdef>
+	<paramdef>short *<parameter>Selector</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Frees the resources allocated by <link
+	linkend="pmodelib-ref-getphysicalmapping"><function>GetPhysicalMapping()</function></link>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>LinearAddress</parameter>, the linear address
+       of the mapping to free.</para>
+
+      <para><parameter>Selector</parameter>, the selector used to
+       point to mapped memory block.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>LinearAddress</parameter> and
+       <parameter>Selector</parameter> cleared to 0.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>This function takes the <emphasis>addresses</emphasis> of
+       <parameter>LinearAddress</parameter> and
+       <parameter>Selector</parameter>, not their
+       <emphasis>contents</emphasis>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-file">
+  <title>General File Handling</title>
+
+  <sect2 id="pmodelib-ref-openfile" xreflabel="_OpenFile">
+   <title><function>OpenFile()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>OpenFile</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>short <parameter>WriteTo</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Opens a file for reading or writing.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (path)name of the file to
+       read or write.</para>
+
+      <para><parameter>WriteTo</parameter>, 1 to create and open for
+       writing, 0 to open for reading.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns DOS handle for opened file, or -1 on error.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-closefile" xreflabel="_CloseFile">
+   <title><function>CloseFile()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>CloseFile</function></funcdef>
+	<paramdef>int <parameter>Handle</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Closes a file opened by <link
+	linkend="pmodelib-ref-openfile"><function>OpenFile()</function></>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Handle</parameter>, DOS handle of the file to
+       close.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-readfile" xreflabel="_ReadFile">
+   <title><function>ReadFile()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>ReadFile</function></funcdef>
+	<paramdef>int <parameter>Handle</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Count</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Reads from a file.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Handle</parameter>, DOS handle of the file to
+       read from.</para>
+
+      <para><parameter>Buffer</parameter>, starting address of the
+       buffer to read into.</para>
+
+      <para><parameter>Count</parameter>, (maximum) number of bytes to
+       read into buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns number of bytes actually read from the file into
+       the buffer.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-readfile-sel" xreflabel="_ReadFile_Sel">
+   <title><function>ReadFile_Sel()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>ReadFile_Sel</function></funcdef>
+	<paramdef>int <parameter>Handle</parameter></paramdef>
+	<paramdef>short <parameter>BufSel</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Count</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Handle</parameter>, DOS handle of the file to
+       read from.</para>
+
+      <para><parameter>BufSel</parameter>, selector of memory segment
+       in which buffer resides.</para>
+
+      <para><parameter>Buffer</parameter>, starting address (within
+       the memory segment selected by <parameter>BufSel</parameter>)
+       of the buffer to read into.</para>
+
+      <para><parameter>Count</parameter>, (maximum) number of bytes to
+       read into buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns number of bytes actually read from the file into
+       the buffer.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-writefile" xreflabel="_WriteFile">
+   <title><function>WriteFile()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>WriteFile</function></funcdef>
+	<paramdef>int <parameter>Handle</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Count</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Writes into a file.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Handle</parameter>, DOS handle of the file to
+       write into.</para>
+
+      <para><parameter>Buffer</parameter>, starting address of the
+       buffer to read from.</para>
+
+      <para><parameter>Count</parameter>, (maximum) number of bytes to
+       write into the file.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns number of bytes actually written into the file
+       from the buffer.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-writefile-sel" xreflabel="_WriteFile_Sel">
+   <title><function>WriteFile_Sel()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>WriteFile_Sel</function></funcdef>
+	<paramdef>int <parameter>Handle</parameter></paramdef>
+	<paramdef>short <parameter>BufSel</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Count</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Handle</parameter>, DOS handle of the file to
+       write into.</para>
+
+      <para><parameter>BufSel</parameter>, selector of memory segment
+       in which buffer resides.</para>
+
+      <para><parameter>Buffer</parameter>, starting address (within
+       the memory segment selected by <parameter>BufSel</parameter>)
+       of the buffer to read from.</para>
+
+      <para><parameter>Count</parameter>, (maximum) number of bytes to
+       write into the file.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns number of bytes actually written into the file
+       from the buffer.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-seekfile" xreflabel="_SeekFile">
+   <title><function>SeekFile()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>SeekFile</function></funcdef>
+	<paramdef>int <parameter>Handle</parameter></paramdef>
+	<paramdef>int <parameter>Count</parameter></paramdef>
+	<paramdef>short <parameter>From</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Moves current file position (the file position is where
+       reading or writing operations start at).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Handle</parameter>, DOS handle of the file to
+       seek within.</para>
+
+      <para><parameter>Count</parameter>, number of bytes to seek from
+       position specified by <parameter>From</parameter>.  May be
+       negative to seek backwards in the file.</para>
+
+      <para><parameter>From</parameter>, file position to seek from:
+       0=start of file, 1=current file position, 2=end of file</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns new file position (in bytes, from start of file),
+       or -1 on error.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-graphfile">
+  <title>Graphics File Handling</title>
+
+  <para>Different graphics file formats are best at handling different
+   types of images.  PNG's are the only format that has a built-in
+   alpha channel.  JPG's provide excellent compression for
+   photographic images.  BMP's don't have an alpha channel, and don't
+   have compression, so there's seldom any reason to use them except
+   perhaps for very tiny images.  Also, the image reading functions
+   provided by PModeLib are much more full-featured for PNG's and
+   JPG's than for BMP's.</para>
+
+  <para>However, the only format currently supported by PModeLib for
+   <emphasis>saving</emphasis> images is BMP.</para>
+
+  <sect2 id="pmodelib-ref-loadpng" xreflabel="_LoadPNG">
+   <title><function>LoadPNG()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LoadPNG</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+	<paramdef>int *<parameter>Width</parameter></paramdef>
+	<paramdef>int *<parameter>Height</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Reads a PNG (Portable Network Graphics) image into a 32
+       BPP (RGBA) buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (pathname) of the PNG
+       file.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address of 32
+       BPP image buffer to read image into.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>Width</parameter>, the width of the loaded
+       image, in pixels.</para>
+
+      <para><parameter>Height</parameter>, the height of the loaded
+       image, in pixels.</para>
+
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes destination image buffer is large enough to hold
+       entire loaded 32 BPP image.</para>
+
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.  If an output is not
+       desired, pass 0 as the address.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-loadpng-sel" xreflabel="_LoadPNG_Sel">
+   <title><function>LoadPNG_Sel()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LoadPNG_Sel</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>short <parameter>ImageSel</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+	<paramdef>int *<parameter>Width</parameter></paramdef>
+	<paramdef>int *<parameter>Height</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Reads a PNG (Portable Network Graphics) image into a 32
+       BPP (RGBA) buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (pathname) of the PNG
+       file.</para>
+
+      <para><parameter>ImageSel</parameter>, selector of memory
+       segment containing image buffer.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address (within
+       memory segment selected by <parameter>ImageSel</parameter>) of
+       32 BPP image buffer to read image into.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>Width</parameter>, the width of the loaded
+       image, in pixels.</para>
+
+      <para><parameter>Height</parameter>, the height of the loaded
+       image, in pixels.</para>
+
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes destination image buffer is large enough to hold
+       entire loaded 32 BPP image.</para>
+
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.  If an output is not
+       desired, pass 0 as the address.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-loadjpg" xreflabel="_LoadJPG">
+   <title><function>LoadJPG()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LoadJPG</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+	<paramdef>int *<parameter>Width</parameter></paramdef>
+	<paramdef>int *<parameter>Height</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Reads a JPG (or JPEG) image into a 32 BPP (RGBx)
+       buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (pathname) of the JPG
+       file.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address of 32
+       BPP image buffer to read image into.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>Width</parameter>, the width of the loaded
+       image, in pixels.</para>
+
+      <para><parameter>Height</parameter>, the height of the loaded
+       image, in pixels.</para>
+
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes destination image buffer is large enough to hold
+       entire loaded 32 BPP image.</para>
+
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.  If an output is not
+       desired, pass 0 as the address.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-loadbmp" xreflabel="_LoadBMP">
+   <title><function>LoadBMP()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LoadBMP</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Reads an 8-bits-per-pixel or 24 BPP BMP (Windows Bitmap)
+       image into a 32 BPP (RGBx) buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (pathname) of the BMP
+       file.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address of 32
+       BPP image buffer to read image into.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns nonzero on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes destination image buffer is large enough to hold
+       entire loaded 32 BPP image.</para>
+
+      <para>Doesn't return size of loaded image (e.g., width and
+       height).</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-loadbmp-sel" xreflabel="_LoadBMP_Sel">
+   <title><function>LoadBMP_Sel()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LoadBMP_Sel</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>short <parameter>ImageSel</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Reads an 8-bits-per-pixel or 24 BPP BMP (Windows Bitmap)
+       image into a 32 BPP (RGBx) buffer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (pathname) of the BMP
+       file.</para>
+
+      <para><parameter>ImageSel</parameter>, selector of memory
+       segment containing image buffer.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address (within
+       memory segment selected by <parameter>ImageSel</parameter>) of
+       32 BPP image buffer to read image into.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns nonzero on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes destination image buffer is large enough to hold
+       entire loaded 32 BPP image.</para>
+
+      <para>Doesn't return size of loaded image (e.g., width and
+       height).</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-savebmp" xreflabel="_SaveBMP">
+   <title><function>SaveBMP()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SaveBMP</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+	<paramdef>int <parameter>Width</parameter></paramdef>
+	<paramdef>int <parameter>Height</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Saves a 32 BPP (RGBx) image into a 24 BPP BMP (Windows
+       Bitmap) file.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (path)name of the BMP
+       file.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address of 32
+       BPP image buffer containing image to save.</para>
+
+      <para><parameter>Width</parameter>, the width of the image, in
+       pixels.</para>
+
+      <para><parameter>Height</parameter>, the height of the image, in
+       pixels.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns nonzero on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-savebmp-sel" xreflabel="_SaveBMP_Sel">
+   <title><function>SaveBMP_Sel()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SaveBMP_Sel</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+	<paramdef>short <parameter>ImageSel</parameter></paramdef>
+	<paramdef>void *<parameter>ImageBuf</parameter></paramdef>
+	<paramdef>int <parameter>Width</parameter></paramdef>
+	<paramdef>int <parameter>Height</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Saves a 32 BPP (RGBx) image into a 24 BPP BMP (Windows
+       Bitmap) file.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, (path)name of the BMP
+       file.</para>
+
+      <para><parameter>ImageSel</parameter>, selector of memory
+       segment containing image buffer.</para>
+
+      <para><parameter>ImageBuf</parameter>, starting address (within
+       memory segment selected by <parameter>ImageSel</parameter>) of
+       32 BPP image buffer containing image to save.</para>
+
+      <para><parameter>Width</parameter>, the width of the image, in
+       pixels.</para>
+
+      <para><parameter>Height</parameter>, the height of the image, in
+       pixels.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns nonzero on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-int">
+  <title>Interrupt, IRQ, and Callback Wrappers</title>
+
+  <sect2 id="pmodelib-ref-install-int" xreflabel="_Install_Int">
+   <title><function>Install_Int()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>Install_Int</function></funcdef>
+	<paramdef>int <parameter>IntNum</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>HandlerAddress</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Installs a interrupt handler for the specified interrupt,
+       allocating a wrapper function which will save registers and
+       handle the stack switching.  The passed function should return
+       zero (in &reg.eax;) to exit the interrupt with an iret
+       instruction, and non-zero to chain to the old handler.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>IntNum</parameter>, the interrupt number to
+       install the handler for.</para>
+
+      <para><parameter>HandlerAddress</parameter>, the address of the
+       handler function.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns -1 on error (unable to allocate a wrapper), 0 on
+       success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>A maximum of <xref
+	linkend="pmodelib-ref-constant-max-ints"> interrupts may be
+       hooked using this function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-remove-int" xreflabel="_Remove_Int">
+   <title><function>Remove_Int()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Remove_Int</function></funcdef>
+	<paramdef>int <parameter>IntNum</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Removes an interrupt handler installed by <link
+	linkend="pmodelib-ref-install-int"><function>Install_Int()</function></link>, 
+       restoring the old vector.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>IntNum</parameter>, the interrupt number to
+       uninstall the handler for.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-init-irq" xreflabel="_Init_IRQ">
+   <title><function>Init_IRQ()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Init_IRQ</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Saves the current IRQ masks as the default.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-exit-irq" xreflabel="_Exit_IRQ">
+   <title><function>Exit_IRQ()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Exit_IRQ</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Restores the default IRQ masks (the masks at the time
+       <link
+	linkend="pmodelib-ref-init-irq"><function>Init_IRQ()</function></link> 
+       was called).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-restore-irq" xreflabel="_Restore_IRQ">
+   <title><function>Restore_IRQ()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Restore_IRQ</function></funcdef>
+	<paramdef>int <parameter>IRQNum</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Restores default masking for a single IRQ.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>IRQNum</parameter>, the IRQ to restore to its
+       original masking.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-enable-irq" xreflabel="_Enable_IRQ">
+   <title><function>Enable_IRQ()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Enable_IRQ</function></funcdef>
+	<paramdef>int <parameter>IRQNum</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Enables (unmasks) a single IRQ.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>IRQNum</parameter>, the IRQ to enable
+       (unmask).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-disable-irq" xreflabel="_Disable_IRQ">
+   <title><function>Disable_IRQ()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Disable_IRQ</function></funcdef>
+	<paramdef>int <parameter>IRQNum</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Disables (masks) a single IRQ.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>IRQNum</parameter>, the IRQ to disable
+       (mask).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-get-rmcb" xreflabel="_Get_RMCB">
+   <title><function>Get_RMCB()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Get_RMCB</function></funcdef>
+	<paramdef>unsigned short
+	 *<parameter>RM_Segment</parameter></paramdef>
+	<paramdef>unsigned short
+	 *<parameter>RM_Offset</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>HandlerAddress</parameter></paramdef>
+	<paramdef>bool
+	 <parameter>ReturnTypeRETF</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets a real-mode callback handler for the specified
+       protected mode callback handler, allocating a wrapper function
+       which will save registers and handle the stack switching.  The
+       real-mode segment and offset to pass to the real-mode function
+       (eg, the mouse interrupt) are returned into the variables
+       pointed to by <parameter>RM_Segment</parameter> and
+       <parameter>RM_Offset</parameter>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>HandlerAddress</parameter>, the address of the
+       callback handler function.</para>
+
+      <para><parameter>ReturnTypeRETF</parameter>, the return type of
+       the handler (in real mode), 1=retf, 0=iret.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>RM_Segment</parameter>, the real-mode segment
+       of the real-mode callback.</para>
+
+      <para><parameter>RM_Offset</parameter>, the real-mode offset of
+       the real-mode callback.</para>
+
+      <para>Returns 1 on error (unable to allocate a wrapper), 0 on
+       success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>A maximum of <xref
+	linkend="pmodelib-ref-constant-max-rmcb"> wrappers may be
+       allocated using this function.</para>
+
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-free-rmcb" xreflabel="_Free_RMCB">
+   <title><function>Free_RMCB()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Free_RMCB</function></funcdef>
+	<paramdef>short <parameter>RM_Segment</parameter></paramdef>
+	<paramdef>short <parameter>RM_Offset</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Frees a real-mode callback wrapper allocated by <link
+	linkend="pmodelib-ref-get-rmcb"><function>Get_RMCB()</function></link>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>RM_Segment</parameter>, the real-mode segment
+       of the real-mode callback.</para>
+
+      <para><parameter>RM_Offset</parameter>, the real-mode offset of
+       the real-mode callback.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-textmode">
+  <title>Text Mode Functions</title>
+
+  <sect2 id="pmodelib-ref-setmodec80" xreflabel="_SetModeC80">
+   <title><function>SetModeC80()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>SetModeC80</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets 80x25 16-color text mode.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-textsetpage" xreflabel="_TextSetPage">
+   <title><function>TextSetPage()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>TextSetPage</function></funcdef>
+	<paramdef>short <parameter>PageNum</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets current visible text mode page.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>PageNum</parameter>, the page number to set
+       visible (0-7).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-textclearscreen" xreflabel="_TextClearScreen">
+   <title><function>TextClearScreen()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>TextClearScreen</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Clears the text mode screen (first page only).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes &reg.es;=[<xref
+	linkend="pmodelib-ref-textsel">].</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-textwritechar" xreflabel="_TextWriteChar">
+   <title><function>TextWriteChar</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>TextWriteChar</function></funcdef>
+	<paramdef>short <parameter>X</parameter></paramdef>
+	<paramdef>short <parameter>Y</parameter></paramdef>
+	<paramdef>short <parameter>Char</parameter></paramdef>
+	<paramdef>short <parameter>Attrib</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Writes a single character (with attribute) to the text
+       mode screen.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>X</parameter>, column at which to write the
+       character (0-79).</para>
+
+      <para><parameter>Y</parameter>, row at which to write the
+       character (0-24).</para>
+
+      <para><parameter>Char</parameter>, character to write to the
+       screen (0-255).</para>
+
+      <para><parameter>Attrib</parameter>, attribute with which to
+       draw the character.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes &reg.es;=[<xref
+	linkend="pmodelib-ref-textsel">].</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-textwritestring" xreflabel="_TextWriteString">
+   <title><function>TextWriteString</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>TextWriteString</function></funcdef>
+	<paramdef>short <parameter>X</parameter></paramdef>
+	<paramdef>short <parameter>Y</parameter></paramdef>
+	<paramdef>char *<parameter>String</parameter></paramdef>
+	<paramdef>short <parameter>Attrib</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Writes a string (with attribute) to the text mode
+       screen.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>X</parameter>, column at which to write the
+       first character (0-79).</para>
+
+      <para><parameter>Y</parameter>, row at which to write the first
+       character (0-24).</para>
+
+      <para><parameter>String</parameter>, starting address of the
+       0-terminated string to write to the screen.</para>
+
+      <para><parameter>Attrib</parameter>, attribute with which to
+       draw the string.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes &reg.es;=[<xref
+	linkend="pmodelib-ref-textsel">].</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-vbeaf">
+  <title>High-Resolution VBE/AF Graphics Functions</title>
+
+  <sect2 id="pmodelib-ref-loadgraphicsdriver" xreflabel="_LoadGraphicsDriver">
+   <title><function>LoadGraphicsDriver()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>LoadGraphicsDriver</function></funcdef>
+	<paramdef>char *<parameter>Filename</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Loads and initializes the specified VBE/AF graphics
+       driver.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Filename</parameter>, full pathname of the
+       driver to load.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>It is not necessary to call this function except when a
+       custom driver needs to be loaded.  <link
+	linkend="pmodelib-ref-initgraphics"><function>InitGraphics()</function></link> 
+       calls this function internally to find a driver if one has not
+       already been loaded.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-initgraphics" xreflabel="_InitGraphics">
+   <title><function>InitGraphics()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>InitGraphics</function></funcdef>
+	<paramdef>char *<parameter>kbINT</parameter></paramdef>
+	<paramdef>char *<parameter>kbIRQ</parameter></paramdef>
+	<paramdef>unsigned short
+	 *<parameter>kbPort</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Initializes VBE/AF graphics system, loading a driver if
+       necessary.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>kbINT</parameter>, keyboard interrupt (e.g.
+       9).</para>
+
+      <para><parameter>kbIRQ</parameter>, keyboard IRQ (e.g.
+       1).</para>
+
+      <para><parameter>kbPort</parameter>, keyboard I/O port (e.g.
+       60h).</para>
+
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>If no VBE/AF keyboard extension is provided by the loaded
+       VBE/AF driver, the kbINT, kbIRQ, and kbPort values are set to
+       the <quote>standard</quote> keyboard settings of 9, 1, and 60h
+       respectively.</para>
+
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-exitgraphics" xreflabel="_ExitGraphics">
+   <title><function>ExitGraphics()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>ExitGraphics</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Shuts down graphics driver.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-findgraphicsmode" xreflabel="_FindGraphicsMode">
+   <title><function>FindGraphicsMode()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>short <function>FindGraphicsMode</function></funcdef>
+	<paramdef>short <parameter>Width</parameter></paramdef>
+	<paramdef>short <parameter>Height</parameter></paramdef>
+	<paramdef>short <parameter>Depth</parameter></paramdef>
+	<paramdef>bool <parameter>Emulated</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Tries to find a graphics mode matching the desired
+       settings.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Width</parameter>, width of desired mode
+       resolution, in pixels.</para>
+
+      <para><parameter>Height</parameter>, height of desired mode
+       resolution, in pixels.</para>
+
+      <para><parameter>Depth</parameter>, bits per pixel of desired
+       mode (8, 16, 24, 32).</para>
+
+      <para><parameter>Emulated</parameter>, include driver-emulated
+       modes (only matters for EX291 driver)? (1=Yes, 0=No).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the mode number, or -1 if no matching mode was
+       found.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-setgraphicsmode" xreflabel="_SetGraphicsMode">
+   <title><function>SetGraphicsMode()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SetGraphicsMode</function></funcdef>
+	<paramdef>short <parameter>Mode</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets a new graphics mode.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Mode</parameter>, mode number returned by <link
+	linkend="pmodelib-ref-findgraphicsmode"><function>FindGraphicsMode()</function></link>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns nonzero on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-unsetgraphicsmode" xreflabel="_UnsetGraphicsMode">
+   <title><function>UnsetGraphicsMode()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>UnsetGraphicsMode</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets out the current graphics mode, returning to text
+       mode.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-copytoscreen" xreflabel="_CopyToScreen">
+   <title><function>CopyToScreen()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>CopyToScreen</function></funcdef>
+	<paramdef>void *<parameter>Source</parameter></paramdef>
+	<paramdef>int <parameter>SourcePitch</parameter></paramdef>
+	<paramdef>int <parameter>SourceLeft</parameter></paramdef>
+	<paramdef>int <parameter>SourceTop</parameter></paramdef>
+	<paramdef>int <parameter>Width</parameter></paramdef>
+	<paramdef>int <parameter>Height</parameter></paramdef>
+	<paramdef>int <parameter>DestLeft</parameter></paramdef>
+	<paramdef>int <parameter>DestTop</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Copies the specified portion of the source image to the
+       display memory.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Source</parameter>, starting address of source
+       linear bitmap image.</para>
+
+      <para><parameter>SourcePitch</parameter>, total width of source
+       image, in bytes.</para>
+
+      <para><parameter>SourceLeft</parameter>, X coordinate of the
+       upper left corner of source area to copy.</para>
+
+      <para><parameter>SourceTop</parameter>, Y coordinate of the
+       upper left corner of source area to copy.</para>
+
+      <para><parameter>Width</parameter>, width of area to copy, in
+       pixels.</para>
+
+      <para><parameter>Height</parameter>, height of area to copy, in
+       pixels.</para>
+
+      <para><parameter>DestLeft</parameter>, X coordinate of the upper
+       left corner of destination (display) area.</para>
+
+      <para><parameter>DestTop</parameter>, Y coordinate of the upper
+       left corner of destination (display) area.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Source image must have the same pixel format as the
+       current video mode (e.g. 32 BPP RGBx).</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-netbios">
+  <title>NetBIOS Networking</title>
+
+  <warning>
+   <para>NetBIOS does not work properly in Windows 2000.  Using the IP
+    <quote>sockets</quote> networking functions in <xref
+     linkend="pmodelib-ref-sockets"> instead is highly
+    recommended.</para>
+  </warning>
+
+  <sect2 id="pmodelib-ref-netinit" xreflabel="_NetInit">
+   <title><function>NetInit()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>char <function>NetInit</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>PostAddress</parameter></paramdef>
+	<paramdef>char *<parameter>GroupName</parameter></paramdef>
+	<paramdef>char *<parameter>MyName</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Initializes NetBIOS and sets up the receive callback
+       procedure.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>PostAddress</parameter>, address of receive
+       packet callback procedure.</para>
+
+      <para><parameter>GroupName</parameter>, starting address of
+       0-terminated 16 byte string containing the NetBIOS group name
+       to register under.</para>
+
+      <para><parameter>MyName</parameter>, starting address of
+       0-terminated 16 byte string containing the NetBIOS machine name
+       to register with.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns -1 on error.  On success, returns player number
+       assigned and changes string pointed to by
+       <parameter>MyName</parameter> to reflect the actual machine
+       name registered.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Callback procedure should use the C calling convention,
+       compatible with the following C declaration:</para>
+
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Callback</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>RXBuffer</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>Length</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+
+      <para><parameter>RXBuffer</parameter> is the starting address of
+       the received data within the memory segment selected by
+       <xref linkend="pmodelib-ref-nettransfersel">.</para>
+
+      <para><parameter>Length</parameter> is the length of the
+       received packet data, in bytes.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-netrelease" xreflabel="_NetRelease">
+   <title><function>NetRelease()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>NetRelease</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Releases NetBIOS name and resources.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-netinit"><function>NetInit()</function></link> 
+       has been called.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sendpacket" xreflabel="_SendPacket">
+   <title><function>SendPacket()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>SendPacket</function></funcdef>
+	<paramdef>int <parameter>Length</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Broadcasts a packet to the group using NetBIOS.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Length</parameter>, length of data to
+       transmit.</para>
+
+      <para>The data to trasmit should be in the memory segment
+       selected by <xref linkend="pmodelib-ref-nettransfersel">
+       starting at offset <xref
+	linkend="pmodelib-ref-txbuffer">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-netinit"><function>NetInit()</function></link> 
+       has been called.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-sockets">
+  <title>IP "Sockets" Networking (TCP/IP, UDP/IP)</title>
+
+  <para>As the IP networking functions (with a few exceptions) are
+   exact clones of identically-named WinSock functions, many
+   references and tutorials are available on their use.  Perhaps the
+   best function reference for WinSock is online at <ulink
+    url="http://www.sockets.com/winsock.htm"></>.</para>
+
+  <para>Also, as WinSock is based on the BSD socket design, almost all
+   UNIX systems have <ulink
+    url="http://www.freebsd.org/cgi/man.cgi">man pages</ulink>
+   describing these functions and their behavior.  However, as this
+   library is based on WinSock, there may be minor differences in
+   operation between the UNIX descriptions and the operation of these
+   functions.</para>
+
+  <para>The functions not reflected in WinSock or BSD sockets are
+   <link
+    linkend="pmodelib-ref-initsocket"><function>InitSocket()</function></link>, 
+   <link
+    linkend="pmodelib-ref-exitsocket"><function>ExitSocket()</function></link>, 
+   <link
+    linkend="pmodelib-ref-socket-setcallback"><function>Socket_SetCallback()</function></link>, 
+   and <link
+    linkend="pmodelib-ref-socket-addcallback"><function>Socket_AddCallback()</function></link>. 
+   <link
+    linkend="pmodelib-ref-initsocket"><function>InitSocket()</function></link> 
+   and <link
+    linkend="pmodelib-ref-exitsocket"><function>ExitSocket()</function></link> 
+   function similarly to the initialization and shutdown functions in
+   other modules of PModeLib. <link
+    linkend="pmodelib-ref-socket-addcallback"><function>Socket_AddCallback()</function></link> 
+   is essentially a mapping of WinSock's <ulink
+    url="http://www.sockets.com/winsock.htm#AsyncSelect">WSAAsyncSelect()</ulink> 
+   function into the DOS assembly environment.</para>
+
+  <sect2 id="pmodelib-ref-sockets-data">
+   <title>Data Structures</title>
+
+   <sect3 id="pmodelib-ref-sockets-data-sockaddr" xreflabel="SOCKADDR">
+    <title>SOCKADDR</title>
+
+    <programlisting>STRUC   SOCKADDR
+.Port           resw 1  ; Port number
+.Address        resd 1  ; 32-bit IP address
+ENDSTRUC</programlisting>
+   </sect3>
+
+   <sect3 id="pmodelib-ref-sockets-data-hostent" xreflabel="HOSTENT">
+    <title>HOSTENT</title>
+
+    <programlisting>STRUC   HOSTENT
+.Name           resd 1  ; Pointer to official name of host
+                        ;  (0-terminated string)
+.Aliases        resd 1  ; Pointer to 0-terminated array of pointers to
+                        ;  0-terminated alias name strings
+.AddrList       resd 1  ; Pointer to 0-terminated array of pointers to
+                        ;  32-bit IP addresses
+ENDSTRUC</programlisting>
+   </sect3>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sockets-constant">
+   <title>Constants</title>
+
+   <sect3 id="pmodelib-ref-sockets-constant-address">
+    <title>Addresses</title>
+
+    <variablelist>
+     <varlistentry id="pmodelib-ref-sockets-constant-address-inaddr-any" xreflabel="INADDR_ANY">
+      <term><literal>INADDR_ANY</literal></term>
+
+      <listitem>
+       <para>The <quote>any</quote> address (0.0.0.0).  Use this
+	address when it doesn't matter what address a socket
+	has.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-address-inaddr-loopback" xreflabel="INADDR_LOOPBACK">
+      <term><literal>INADDR_LOOPBACK</literal></term>
+
+      <listitem>
+       <para>The <quote>loopback</quote> address (127.0.0.1).  Also
+	called <quote>localhost</quote>, this address refers to the
+	local machine.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-address-inaddr-broadcast" xreflabel="INADDR_BROADCAST">
+      <term><literal>INADDR_BROADCAST</literal></term>
+
+      <listitem>
+       <para>The <quote>broadcast</quote> address (255.255.255.255).
+	This address refers to all reachable hosts on the local
+	network.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="pmodelib-ref-sockets-constant-type">
+    <title>Socket Types</title>
+
+    <variablelist>
+     <varlistentry id="pmodelib-ref-sockets-constant-type-sock-stream" xreflabel="SOCK_STREAM">
+      <term><literal>SOCK_STREAM</literal></term>
+
+      <listitem>
+       <para>A stream (TCP/IP) socket.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-type-sock-dgram" xreflabel="SOCK_DGRAM">
+      <term><literal>SOCK_DGRAM</literal></term>
+
+      <listitem>
+       <para>A datagram (UDP/IP) socket.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="pmodelib-ref-sockets-constant-event">
+    <title>Events</title>
+
+    <variablelist>
+     <varlistentry id="pmodelib-ref-sockets-constant-event-sockevent-read" xreflabel="SOCKEVENT_READ">
+      <term><literal>SOCKEVENT_READ</literal></term>
+
+      <listitem>
+       <para>Socket is ready for reading.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-event-sockevent-write" xreflabel="SOCKEVENT_WRITE">
+      <term><literal>SOCKEVENT_WRITE</literal></term>
+
+      <listitem>
+       <para>Socket is ready for writing.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-event-sockevent-oob" xreflabel="SOCKEVENT_OOB">
+      <term><literal>SOCKEVENT_OOB</literal></term>
+
+      <listitem>
+       <para>Socket received out-of-band data.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-event-sockevent-accept" xreflabel="SOCKEVENT_ACCEPT">
+      <term><literal>SOCKEVENT_ACCEPT</literal></term>
+
+      <listitem>
+       <para>Socket is ready to accept a new incoming connection.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-event-sockevent-connect" xreflabel="SOCKEVENT_CONNECT">
+      <term><literal>SOCKEVENT_CONNECT</literal></term>
+
+      <listitem>
+       <para>Socket completed connection process.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="pmodelib-ref-sockets-constant-event-sockevent-close" xreflabel="SOCKEVENT_CLOSE">
+      <term><literal>SOCKEVENT_CLOSE</literal></term>
+
+      <listitem>
+       <para>Socket closed (possibly by remote end).</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-initsocket" xreflabel="_InitSocket">
+   <title><function>InitSocket()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>InitSocket</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Initializes socket driver.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <important>
+       <para>Call this function before calling any other socket
+	routines!</para>
+      </important>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-exitsocket" xreflabel="_ExitSocket">
+   <title><function>ExitSocket()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>ExitSocket</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Shuts down socket driver.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-initsocket"><function>InitSocket()</function></link> 
+       has been called.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-setcallback" xreflabel="_Socket_SetCallback">
+   <title><function>Socket_SetCallback()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Socket_SetCallback</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>HandlerAddress</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets the callback function used for socket event
+       notification.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>HandlerAddress</parameter>, address of the
+       callback procedure.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Callback procedure should use the C calling convention,
+       compatible with the following C declaration:</para>
+
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Callback</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Event</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+
+      <para><parameter>Socket</parameter> is the socket that triggered
+       the event(s).</para>
+
+      <para><parameter>Event</parameter> is the
+       <emphasis>bitmask</emphasis> of the event(s) triggering the
+       callback.  The bitmask is an OR'ed combination of
+       <literal>SOCKEVENT_</literal> constants, listed in <xref
+	linkend="pmodelib-ref-sockets-constant-event">.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-addcallback" xreflabel="_Socket_AddCallback">
+   <title><function>Socket_AddCallback()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool
+	 <function>Socket_AddCallback</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>EventMask</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Requests event notification for a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, the socket to enable
+       notification events for.</para>
+
+      <para><parameter>EventMask</parameter>, bitmask designating
+       which events to call the callback for.  This should be an OR'ed
+       combination of <literal>SOCKEVENT_</literal> constants, listed
+       in <xref
+	linkend="pmodelib-ref-sockets-constant-event">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-socket-setcallback"><function>Socket_SetCallback()</function></link> 
+       has been called to set a socket callback handler.</para>
+
+      <para>If called more than once for a particular socket, only the
+       last call's <parameter>EventMask</parameter> is active. To
+       disable callbacks for a particular socket, call with
+       <parameter>EventMask</parameter>=0.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-accept" xreflabel="_Socket_accept">
+   <title><function>Socket_accept()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned int <function>Socket_accept</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>Name</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Accepts a connection on a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a socket which is listening
+       for connections after a <link
+	linkend="pmodelib-ref-socket-listen"><function>Socket_listen()</function></link>.</para>
+
+      <para><parameter>Name</parameter>, an optional (may be 0)
+       pointer to a <xref
+	 linkend="pmodelib-ref-sockets-data-sockaddr"> structure which
+       receives the network address of the connecting entity.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns -1 on error, otherwise returns the socket for the
+       accepted connection and fills the <xref
+	 linkend="pmodelib-ref-sockets-data-sockaddr"> structure
+       pointed to by <parameter>Name</parameter> (if
+       <parameter>Name</parameter> is not 0).</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-bind" xreflabel="_Socket_bind">
+   <title><function>Socket_bind()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Socket_bind</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>Name</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Associates a local address with a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, an unbound socket.</para>
+
+      <para><parameter>Name</parameter>, a pointer to a <xref
+	linkend="pmodelib-ref-sockets-data-sockaddr"> structure
+       containing the network address to assign to the socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-close" xreflabel="_Socket_close">
+   <title><function>Socket_close()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Socket_bind</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Closes a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, the socket to close.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-connect" xreflabel="_Socket_connect">
+   <title><function>Socket_connect()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Socket_connect</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>Name</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Establishes a connection to a peer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, an unconnected
+       socket.</para>
+
+      <para><parameter>Name</parameter>, a pointer to a <xref
+	linkend="pmodelib-ref-sockets-data-sockaddr"> structure
+       containing the network address of the peer to which the socket
+       is to be connected.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-create" xreflabel="_Socket_create">
+   <title><function>Socket_create()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned int
+	 <function>Socket_create</function></funcdef>
+	<paramdef>int <parameter>Type</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Creates a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Type</parameter>, the type of socket to create,
+       must be one of the types listed in <xref
+	linkend="pmodelib-ref-sockets-constant-type">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns -1 on error, or the created socket on
+       success.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-getpeername" xreflabel="_Socket_getpeername">
+   <title><function>Socket_getpeername()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool
+	 <function>Socket_getpeername</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>Name</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets the address of the peer to which a socket is
+       connected.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a connected socket.</para>
+
+      <para><parameter>Name</parameter>, a pointer to a <xref
+	linkend="pmodelib-ref-sockets-data-sockaddr"> structure which
+       will receive the network address of the remote peer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, otherwise returns 0 and fills the
+       <xref linkend="pmodelib-ref-sockets-data-sockaddr"> structure
+       pointed to by <parameter>Name</parameter>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-getsockname" xreflabel="_Socket_getsockname">
+   <title><function>Socket_getsockname()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool
+	 <function>Socket_getsockname</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>Name</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets the local address of a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a connected socket.</para>
+
+      <para><parameter>Name</parameter>, a pointer to a <xref
+	linkend="pmodelib-ref-sockets-data-sockaddr"> structure which
+       will receive the network address of the socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, otherwise returns 0 and fills the
+       <xref
+	 linkend="pmodelib-ref-sockets-data-sockaddr"> structure
+       pointed to by <parameter>Name</parameter>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-htonl" xreflabel="_Socket_htonl">
+   <title><function>Socket_htonl()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned int
+	 <function>Socket_htonl</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>HostVal</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts an unsigned int from host to network byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>HostVal</parameter>, a 32-bit number in host
+       byte order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the <parameter>HostVal</parameter> in network byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-ntohl" xreflabel="_Socket_ntohl">
+   <title><function>Socket_ntohl()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned int
+	 <function>Socket_ntohl</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>NetVal</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts an unsigned int from network to host byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>NetVal</parameter>, a 32-bit number in network
+       byte order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the <parameter>NetVal</parameter> in host byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-htons" xreflabel="_Socket_htons">
+   <title><function>Socket_htons()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned short
+	 <function>Socket_htons</function></funcdef>
+	<paramdef>unsigned short
+	 <parameter>HostVal</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts an unsigned short from host to network byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>HostVal</parameter>, a 16-bit number in host
+       byte order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the <parameter>HostVal</parameter> in network byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-ntohs" xreflabel="_Socket_ntohs">
+   <title><function>Socket_ntohs()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned short
+	 <function>Socket_ntohs</function></funcdef>
+	<paramdef>unsigned short
+	 <parameter>NetVal</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts an unsigned short from network to host byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>NetVal</parameter>, a 16-bit number in network
+       byte order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the <parameter>NetVal</parameter> in host byte
+       order.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-inet-addr" xreflabel="_Socket_inet_addr">
+   <title><function>Socket_inet_addr()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned int
+	 <function>Socket_inet_addr</function></funcdef>
+	<paramdef>char
+	 *<parameter>DottedAddress</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts a string containing a dotted address into a
+       32-bit address.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>DottedAddress</parameter>, pointer to
+       0-terminated string representing a number expressed in the
+       Internet standard <quote>.</quote> notation.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the Internet address corresponding to
+       <parameter>DottedAddress</parameter> in network byte order, or
+       0 if <parameter>DottedAddress</parameter> is invalid.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-inet-ntoa" xreflabel="_Socket_inet_ntoa">
+   <title><function>Socket_inet_ntoa()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>char *<function>Socket_inet_ntoa</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Address</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts a 32-bit network address into a string in dotted
+       decimal format.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Address</parameter>, Internet address, in
+       network byte order, to convert.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns pointer to a 0-terminated static string containing
+       the address in standard <quote>.</quote> notation.  This buffer
+       is overwritten on subsequent calls to this function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-listen" xreflabel="_Socket_listen">
+   <title><function>Socket_listen()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Socket_listen</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>int <parameter>BackLog</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Enables a socket to listen for incoming
+       connections.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a bound (using <link
+	linkend="pmodelib-ref-socket-bind"><function>Socket_bind()</function></link>), 
+       unconnected socket.</para>
+
+      <para><parameter>BackLog</parameter>, the maximum length to
+       which the queue of pending connections may grow.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para><parameter>BackLog</parameter> is silently limited to
+       between 1 and 5, inclusive.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-recv" xreflabel="_Socket_recv">
+   <title><function>Socket_recv()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>Socket_recv</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>int <parameter>MaxLen</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Flags</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Receives data from a connected socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a connected socket.</para>
+
+      <para><parameter>Buffer</parameter>, the starting address of the
+       buffer to be filled with the incoming data.</para>
+
+      <para><parameter>MaxLen</parameter>, the maximum number of bytes
+       to receive.</para>
+
+      <para><parameter>Flags</parameter>, bitmask specifying special
+       operation for the function:</para>
+
+      <itemizedlist>
+       <listitem>
+	<para>Bit 0 = PEEK: peek at the incoming data.  The data is
+	 copied into the buffer but is not removed from the input
+	 queue.</para>
+       </listitem>
+
+       <listitem>
+	<para>Bit 1 = OOB: get out-of-band data instead of normal
+	 data.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the number of bytes received, or 0 if the
+       connection has been closed, or -1 on error.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-recvfrom" xreflabel="_Socket_recvfrom">
+   <title><function>Socket_recvfrom()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>Socket_recvfrom</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>int <parameter>MaxLen</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Flags</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>From</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Receives a datagram and stores its source address.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a bound socket.</para>
+
+      <para><parameter>Buffer</parameter>, the starting address of the
+       buffer to be filled with the incoming data.</para>
+
+      <para><parameter>MaxLen</parameter>, the maximum number of bytes
+       to receive.</para>
+
+      <para><parameter>Flags</parameter>, bitmask specifying special
+       operation for the function:</para>
+
+      <itemizedlist>
+       <listitem>
+	<para>Bit 0 = PEEK: peek at the incoming data.  The data is
+	 copied into the buffer but is not removed from the input
+	 queue.</para>
+       </listitem>
+
+       <listitem>
+	<para>Bit 1 = OOB: get out-of-band data instead of normal
+	 data.</para>
+       </listitem>
+      </itemizedlist>
+
+      <para><parameter>From</parameter>, an optional (may be 0)
+       pointer to the <xref
+	linkend="pmodelib-ref-sockets-data-sockaddr"> structure which
+       is to receive the network address of the source.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns -1 on error, otherwise returns the number of bytes
+       received and fills the <xref
+	 linkend="pmodelib-ref-sockets-data-sockaddr"> structure
+       pointed to by <parameter>From</parameter> (if
+       <parameter>From</parameter> is not 0).</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-send" xreflabel="_Socket_send">
+   <title><function>Socket_send()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>Socket_send</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>int <parameter>Len</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Flags</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Transmits data on a connected socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a connected socket.</para>
+
+      <para><parameter>Buffer</parameter>, the starting address of the
+       buffer containing the data to be transmitted.</para>
+
+      <para><parameter>Len</parameter>, the maximum number of bytes to
+       transmit.</para>
+
+      <para><parameter>Flags</parameter>, bitmask specifying special
+       operation for the function:</para>
+
+      <itemizedlist>
+       <listitem>
+	<para>Bit 0 = OOB: send out-of-band data.  This is only valid
+	 for stream (TCP) sockets.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the number of bytes actually transmitted, or -1 on
+       error.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-sendto" xreflabel="_Socket_sendto">
+   <title><function>Socket_sendto()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int <function>Socket_sendto</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>void *<parameter>Buffer</parameter></paramdef>
+	<paramdef>int <parameter>Len</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Flags</parameter></paramdef>
+	<paramdef>SOCKADDR *<parameter>To</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sends a datagram to a specific destination address.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a socket.</para>
+
+      <para><parameter>Buffer</parameter>, the starting address of the
+       buffer containing the data to be transmitted.</para>
+
+      <para><parameter>Len</parameter>, the maximum number of bytes to
+       transmit.</para>
+
+      <para><parameter>Flags</parameter>, bitmask specifying special
+       operation for the function:</para>
+
+      <itemizedlist>
+       <listitem>
+	<para>Bit 0 = OOB: send out-of-band data.  This is only valid
+	 for stream (TCP) sockets.</para>
+       </listitem>
+      </itemizedlist>
+
+      <para><parameter>To</parameter>, a pointer to a <xref
+	 linkend="pmodelib-ref-sockets-data-sockaddr"> structure which
+       contains the network address of the destination.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the number of bytes actually transmitted, or -1 on
+       error.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-shutdown" xreflabel="_Socket_shutdown">
+   <title><function>Socket_shutdown()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>Socket_shutdown</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Socket</parameter></paramdef>
+	<paramdef>unsigned int <parameter>Flags</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Disables sends and/or receives on a socket.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Socket</parameter>, a socket.</para>
+
+      <para><parameter>Flags</parameter>, a bitmask specifying what to
+	disable:</para>
+
+      <itemizedlist>
+       <listitem>
+	<para>Bit 0 = subsequent receives on the socket will be
+	 disallowed.</para>
+       </listitem>
+
+       <listitem>
+	<para>Bit 1 = subsequent sends on the socket will be
+	 disallowed.  A FIN is sent for TCP stream sockets.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para><parameter>Flags</parameter>=0 has no effect.
+       <parameter>Flags</parameter>=3 (both bits set) disables both
+       sends and receives; however, the socket will not be closed and
+       resources used by the socket will not be freed until <link
+	linkend="pmodelib-ref-socket-close"><function>Socket_close()</function></link> 
+       is called.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-gethostbyaddr" xreflabel="_Socket_gethostbyaddr">
+   <title><function>Socket_gethostbyaddr()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>HOSTENT
+	 *<function>Socket_gethostbyaddr</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>Address</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets host information corresponding to an address.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Address</parameter>, the network address to
+       retrieve information about, in network byte order.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns a pointer to a static <xref
+	linkend="pmodelib-ref-sockets-data-hostent"> structure, or 0
+       on error.  This buffer is overwritten on subsequent calls to
+       this function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-gethostbyname" xreflabel="_Socket_gethostbyname">
+   <title><function>Socket_gethostbyname()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>HOSTENT
+	 *<function>Socket_gethostbyname</function></funcdef>
+	<paramdef>char * <parameter>Name</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets host information corresponding to a hostname.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Name</parameter>, pointer to a 0-terminated
+       string containing the name of the host.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns a pointer to a static <xref
+	linkend="pmodelib-ref-sockets-data-hostent"> structure, or 0
+       on error.  This buffer is overwritten on subsequent calls to
+       this function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-gethostname" xreflabel="_Socket_gethostname">
+   <title><function>Socket_gethostname()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool
+	 <function>Socket_gethostname</function></funcdef>
+	<paramdef>char * <parameter>Name</parameter></paramdef>
+	<paramdef>int <parameter>NameLen</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets the <quote>standard</quote> host name for the local
+       machine.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Name</parameter>, pointer to a buffer that will
+       receive the name of the host.</para>
+
+      <para><parameter>NameLen</parameter>, the length of the buffer
+       in bytes.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, otherwise returns 0 and fills the
+       buffer pointed to by <parameter>Name</parameter> with a
+       0-terminated string containing the name of the local
+       machine.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-socket-getlasterror" xreflabel="_Socket_GetLastError">
+   <title><function>Socket_GetLastError()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>int
+	 <function>Socket_GetLastError</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Get the error status for the last operation which
+       failed.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the error code.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-sound">
+  <title>Sound Programming</title>
+
+  <sect2 id="pmodelib-ref-sb16-init" xreflabel="_SB16_Init">
+   <title><function>SB16_Init()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_Init</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>HandlerAddress</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Initializes a SoundBlaster (or compatible) sound card.
+       Installs ISR handler.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>HandlerAddress</parameter>, address of the
+       callback procedure to be called on every sound
+       interrupt.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>This function must be called before any other SB16
+       function is called.</para>
+
+      <para>Must call <link
+	linkend="pmodelib-ref-sb16-exit"><function>SB16_Exit()</function></link> 
+       before program exit if successful call.</para>
+
+      <para>Callback procedure should use the C calling convention,
+       compatible with the following C declaration:</para>
+
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Callback</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-exit" xreflabel="_SB16_Exit">
+   <title><function>SB16_Exit()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_Exit</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Removes sound ISR and resets DSP.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-sb16-init"><function>SB16_Init()</function></link> 
+       has been called successfully.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-start" xreflabel="_SB16_Start">
+   <title><function>SB16_Start()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_Start</function></funcdef>
+	<paramdef>int <parameter>Size</parameter></paramdef>
+	<paramdef>bool <parameter>AutoInit</parameter></paramdef>
+	<paramdef>bool <parameter>Write</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Starts a sound playing, DSP side.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Size</parameter>, size, in bytes, to transfer
+       before generating interrupt.</para>
+
+      <para><parameter>AutoInit</parameter>, whether to keep going
+       after each interrupt (0 to stop after each interrupt).</para>
+
+      <para><parameter>Write</parameter>, whether to play the sound (0
+       to record).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>DMA buffer must already be filled with appropriate PCM
+       data to play, and the DMA transfer must already be started
+       (using <link
+	linkend="pmodelib-ref-dma-start"><function>DMA_Start()</function></link>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-stop" xreflabel="_SB16_Stop">
+   <title><function>SB16_Stop()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_Stop</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Stops a playing sound, DSP side.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Assumes <link
+	linkend="pmodelib-ref-sb16-start"><function>SB16_Start()</function></link> 
+       has been called.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-setcallback" xreflabel="_SB16_SetCallback">
+   <title><function>SB16_SetCallback()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>SB16_SetCallback</function></funcdef>
+	<paramdef>unsigned int
+	 <parameter>HandlerAddress</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Changes the callback handler after a <link
+	linkend="pmodelib-ref-sb16-init"><function>SB16_Init()</function></link>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>HandlerAddress</parameter>, address of the
+       callback procedure to be called on every sound
+       interrupt.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Callback procedure should use the C calling convention,
+       compatible with the following C declaration:</para>
+
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Callback</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-setformat" xreflabel="_SB16_SetFormat">
+   <title><function>SB16_SetFormat()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_SetFormat</function></funcdef>
+	<paramdef>int <parameter>Bits</parameter></paramdef>
+	<paramdef>int <parameter>SampleRate</parameter></paramdef>
+	<paramdef>bool <parameter>Stereo</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets the format for the sound sample to be played.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Bits</parameter>, number of bits per sample (8
+       or 16).  16 is currently unimplemented.</para>
+
+      <para><parameter>SampleRate</parameter>, in samples per second.
+       Common choices are 11025, 22050, and 44100.</para>
+
+      <para><parameter>Stereo</parameter>, whether stream is mono (0)
+       or stereo (1).  Stereo is currently unimplemented.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Not all formats have been tested.</para>
+
+      <para>16 bit and stereo support is currently unimplemented.
+       Adding stereo will require changes to <link
+	linkend="pmodelib-ref-sb16-start"><function>SB16_Start()</function></link> 
+       in addition to this function.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-sb16-setmixers" xreflabel="_SB16_SetMixers">
+   <title><function>SB16_SetMixers()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>SB16_SetMixers</function></funcdef>
+	<paramdef>short <parameter>Master</parameter></paramdef>
+	<paramdef>short <parameter>PCM</parameter></paramdef>
+	<paramdef>short <parameter>Line</parameter></paramdef>
+	<paramdef>short <parameter>Mic</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Sets the volume of various soundcard components.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Master</parameter>, overall volume.  Turns
+       speakers off if set to 0, or on otherwise.</para>
+
+      <para><parameter>PCM</parameter>, volume for PCM (digital wave)
+       playback.</para>
+
+      <para><parameter>Line</parameter>, volume for line input.</para>
+
+      <para><parameter>Mic</parameter>, volume for microphone
+       input.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns 1 on error, 0 on success.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Not all mixers have been tested.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-dma">
+  <title>DMA Functions</title>
+
+  <sect2 id="pmodelib-ref-dma-allocate-mem" xreflabel="_DMA_Allocate_Mem">
+   <title><function>DMA_Allocate_Mem()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>bool <function>DMA_Allocate_Mem</function></funcdef>
+	<paramdef>int <parameter>Size</parameter></paramdef>
+	<paramdef>short *<parameter>Selector</parameter></paramdef>
+	<paramdef>unsigned int
+	 *<parameter>LinearAddress</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Allocates the specified amount of conventional memory.
+       Ensures that the returned block doesn't cross a page
+       boundary.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Size</parameter>, size of DMA buffer to
+       allocate, in bytes.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><parameter>Selector</parameter>, the selector that should
+       be used to access and free the memory.</para>
+
+      <para><parameter>LinearAddress</parameter>, the linear address
+       of the memory (used when calling <link
+	linkend="pmodelib-ref-dma-start"><function>DMA_Start()</function></link>).</para>
+
+      <para>Returns 0 on success.  On error, returns 1 and sets
+       <parameter>Selector</parameter> and
+       <parameter>LinearAddress</parameter> to 0.</para>
+
+      <para>Some outputs are passed as parameters; pass the address of
+       a variable, and after a successful call, the variable will be
+       filled with the output information.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-dma-start" xreflabel="_DMA_Start">
+   <title><function>DMA_Start()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>DMA_Start</function></funcdef>
+	<paramdef>int <parameter>Channel</parameter></paramdef>
+	<paramdef>unsigned int
+	 <parameter>Address</parameter></paramdef>
+	<paramdef>int <parameter>Size</parameter></paramdef>
+	<paramdef>bool <parameter>AutoInit</parameter></paramdef>
+	<paramdef>bool <parameter>Write</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Starts the DMA controller for the specified channel,
+       transferring <parameter>Size</parameter> bytes from
+       <parameter>Address</parameter> (the memory transferred must not
+       cross a page boundary).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Channel</parameter>, DMA channel to start
+       controller on.</para>
+
+      <para><parameter>Address</parameter>, linear address to transfer
+       data to/from.</para>
+
+      <para><parameter>Size</parameter>, number of bytes to
+       transfer.</para>
+
+      <para><parameter>AutoInit</parameter>, if nonzero, use the
+       endless repeat DMA mode (repeats until <link
+	linkend="pmodelib-ref-dma-stop"><function>DMA_Stop()</function></link> 
+       is called on the channel).  If 0, only copies memory once, then
+       stops.</para>
+
+      <para><parameter>Write</parameter>, if nonzero, use write mode,
+       otherwise use read mode.  (Read mode transfers
+       <emphasis>into</emphasis> the memory starting at
+       <parameter>Address</parameter>, used for e.g. sound
+       input).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-dma-stop" xreflabel="_DMA_Stop">
+   <title><function>DMA_Stop()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>DMA_Stop</function></funcdef>
+	<paramdef>int <parameter>Channel</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Disables the specified DMA channel, stopping any ongoing
+       transfers.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Channel</parameter>, the DMA channel to
+       disable.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-dma-todo" xreflabel="_DMA_Todo">
+   <title><function>DMA_Todo()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>unsigned int <function>DMA_Todo</function></funcdef>
+	<paramdef>int <parameter>Channel</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Gets the current position in a DMA transfer.  Interrupts
+       should be disabled before calling this function.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><parameter>Channel</parameter>, the channel to get the
+       position of.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>Returns the current position in the selected
+       channel.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-dma-lock-mem" xreflabel="_DMA_Lock_Mem">
+   <title><function>DMA_Lock_Mem()</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>DMA_Lock_Mem</function></funcdef>
+	<void>
+       </funcprototype>
+      </funcsynopsis>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Locks the memory used by the DMA routines so they can be
+       safely called from an interrupt handler.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para><emphasis>None</emphasis></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="pmodelib-ref-util">
+  <title>Miscelleanous Utility Functions</title>
+
+  <sect2 id="pmodelib-ref-binasc" xreflabel="BinAsc">
+   <title><function>BinAsc</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <para><function>BinAsc</function></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts an integer into a decimal ASCII string.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para>&reg.ax;, 16-bit signed integer to be converted.</para>
+
+      <para>&reg.ebx;, starting offset of 7-byte buffer to hold the
+       result.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>&reg.ebx;, offset of first nonblank character of the
+       output string (may be a minus sign if &reg.ax; was
+       negative).</para>
+
+      <para>&reg.cl;, number of nonblank characters generated
+       (including minus sign).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Doesn't use C calling convention.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="pmodelib-ref-ascbin" xreflabel="AscBin">
+   <title><function>AscBin</function></title>
+
+   <variablelist>
+    <varlistentry>
+     <term>Usage</term>
+
+     <listitem>
+      <para><function>AscBin</function></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Purpose</term>
+
+     <listitem>
+      <para>Converts a decimal ASCII string into an integer.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <para>&reg.ebx;, starting offset of first character of input
+       string.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <para>&reg.ax;, signed 16-bit integer equivalent in value to
+       decimal input string.</para>
+
+      <para>&reg.ebx;, offset of first non-convertible character in
+       string.</para>
+
+      <para>&reg.dl;, status of this call:</para>
+
+      <itemizedlist>
+       <listitem>
+	<para>0 if no conversion errors</para>
+       </listitem>
+
+       <listitem>
+	<para>1 if string had no valid digits</para>
+       </listitem>
+
+       <listitem>
+	<para>2 if string had too many digits</para>
+       </listitem>
+
+       <listitem>
+	<para>3 if overflow (too positive)</para>
+       </listitem>
+
+       <listitem>
+	<para>4 if underflow (too negative)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Notes</term>
+
+     <listitem>
+      <para>Doesn't use C calling convention.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+</appendix>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../appendix.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "appendix")
+     End:
+-->

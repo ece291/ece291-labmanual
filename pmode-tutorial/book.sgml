@@ -79,7 +79,9 @@
  &chap.introduction;
  &chap.dev-env;
  &chap.start-pmode;
-
+ &chap.realprot-diff;
+ &chap.pmodelib-intro;
+ &chap.pmodelib-ref;
  &chap.index;
 </book>
 

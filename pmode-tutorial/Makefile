@@ -20,6 +20,9 @@ SRCS=  book.sgml
 SRCS+= introduction/chapter.sgml
 SRCS+= dev-env/chapter.sgml
 SRCS+= start-pmode/chapter.sgml
+SRCS+= realprot-diff/chapter.sgml
+SRCS+= pmodelib-intro/chapter.sgml
+SRCS+= pmodelib-ref/appendix.sgml
 
 # Entities
 SRCS+= chapters.ent
