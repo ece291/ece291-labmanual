@@ -1022,6 +1022,175 @@ OutNames
         ret</programlisting>
  </sect1>
 
+ <sect1 id="assembly-memory-addressing">
+  <title>Memory Addressing</title>
+
+  <para>The x86 instruction set architecture allows for a large number
+   of addressing modes to access individual BYTEs, WORDs, and DWORDs
+   of memory.  There are no alignment restrictions by default,
+   although aligned accesses are faster and alignment checking may be
+   turned on by the operating system.  Memory addresses may be formed
+   with either 16-bit or 32-bit registers.  Due to the way addresses
+   are encoded in the machine code, addressing with 16-bit registers
+   is much more restrictive in terms of register combinations that may
+   be used.</para>
+
+  <sect2 id="assembly-memory-addressing-16bit">
+   <title>Addressing with 16-bit Registers</title>
+
+   <para>The only 16-bit registers that may be used to address memory
+    are &reg.bx;, &reg.bp;, &reg.si;, and &reg.di;.  Only 0 or 1 of
+    each of (&reg.bx;, &reg.bp;) and (&reg.si;, &reg.di;), as well as
+    an integer displacement, may be used in the formation of an
+    address.  The default segment is &reg.ds; except when &reg.bp; is
+    one of the registers specified, in which case the default segment
+    is &reg.ss;.  <xref
+    linkend="assembly-memory-addressing-16bit-table"> enumerates all
+    possible combinations of 16-bit register addressing.</para>
+
+   <table id="assembly-memory-addressing-16bit-table">
+    <title>16-bit Register Addressing Modes</title>
+
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Address (<literal>disp</literal> is optional)</entry>
+       <entry>Default Segment</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>[&reg.bx;+&reg.si;+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.bx;+&reg.di;+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.bp;+&reg.si;+disp]</literal></entry>
+       <entry>&reg.ss;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.bp;+&reg.di;+disp]</literal></entry>
+       <entry>&reg.ss;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.si;+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.di;+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.bp;+disp]</literal></entry>
+       <entry>&reg.ss;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.bx;+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+      </row>
+
+      <row>
+       <entry><literal>[disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect2>
+
+  <sect2 id="assembly-memory-addressing-32bit">
+   <title>Addressing with 32-bit Registers</title>
+
+   <para>When 32-bit registers are used in an address, many more
+    combinations of registers are allowed.  Any register may be used
+    as a base register and added to any register, except for
+    &reg.esp;, as an index with a constant multiplier of 1, 2, 4, or
+    8, which is then added to an integer displacement.  The default
+    segment is &reg.ds; except when &reg.ebp; or &reg.esp; is used as
+    the base register, in which case the default segment is &reg.ss;.
+    <xref linkend="assembly-memory-addressing-32bit-table"> gives some
+    examples of valid 32-bit addresses.</para>
+
+   <table id="assembly-memory-addressing-32bit-table">
+    <title>Examples of Valid 32-bit Register Addresses</title>
+
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Address (<literal>disp</literal> is optional)</entry>
+       <entry>Default Segment</entry>
+       <entry>Notes</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>[&reg.ecx;+&reg.ebp;*1+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+       <entry>&reg.ebp; is the index register, but the base register
+        is &reg.ecx;, so the default segment is &reg.ds;.</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.ebp;+&reg.ecx;*1+disp]</literal></entry>
+       <entry>&reg.ss;</entry>
+       <entry>&reg.ebp; is the base register, so the default segment
+        is &reg.ss;.</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.esi;+&reg.edi;*4+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+       <entry></entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.esp;+&reg.eax;*8+disp]</literal></entry>
+       <entry>&reg.ss;</entry>
+       <entry></entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.ebp;+disp]</literal></entry>
+       <entry>&reg.ss;</entry>
+       <entry></entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.ebp;*2+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+       <entry>&reg.ebp; is the index register, so the default segment
+        is &reg.ds;.</entry>
+      </row>
+
+      <row>
+       <entry><literal>[&reg.edx;+disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+       <entry></entry>
+      </row>
+
+      <row>
+       <entry><literal>[disp]</literal></entry>
+       <entry>&reg.ds;</entry>
+       <entry></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect2>
+ </sect1>
+
  <sect1 id="assembly-string-inst">
   <title>String Instructions</title>
 
