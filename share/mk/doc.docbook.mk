@@ -1,6 +1,6 @@
 #
 # $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.42 2001/07/28 03:00:03 murray Exp $
-# $Id: doc.docbook.mk,v 1.7 2001/08/07 07:02:01 pete Exp $
+# $Id: doc.docbook.mk,v 1.8 2001/08/15 06:01:08 pete Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -56,6 +56,8 @@
 #			that you may find more aesthetically pleasing.	Note
 #			that this option only effects print output formats for
 #			Enlish language books.
+#
+#	TWO_SIDED	If defined, print output will be double-sided.
 #
 #       MIN_SECT_LABELS If defined, do not display the section number for 4th
 #                       and 5th level section titles.  This would change 
@@ -118,6 +120,9 @@ PRINTOPTS?=    -ioutput.print
 
 .if defined(NICE_HEADERS)
 PRINTOPTS+=    -ioutput.print.niceheaders
+.endif
+.if defined(TWO_SIDED)
+PRINTOPTS+=    -ioutput.print.twosided
 .endif
 .if defined(MIN_SECT_LABELS)
 PRINTOPTS+=    -V minimal-section-labels

@@ -1,12 +1,13 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.20 2001/08/14 19:47:31 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.21 2001/08/15 06:01:08 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
 <!ENTITY % output.print             "IGNORE">
 <!ENTITY % output.print.niceheaders "IGNORE">
 <!ENTITY % output.print.pdf         "IGNORE">
+<!ENTITY % output.print.twosided    "IGNORE">
 <![ %output.html; [
 <!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN" CDATA DSSSL>
 ]]>
@@ -402,6 +403,15 @@
 
       (define %generate-heading-level%
         #t)
+
+      ]]>
+
+      <!-- Print two-sided ............................................. --> 
+
+      <![ %output.print.twosided; [
+
+	(define %two-side%
+	  #t)
 
       ]]>
 

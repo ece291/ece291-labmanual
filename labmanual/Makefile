@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.19 2001/08/14 18:27:47 pete Exp $
+# $Id: Makefile,v 1.20 2001/08/15 06:01:08 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -11,6 +11,7 @@ DOC?= book
 FORMATS?= html-split pdf
 
 NICE_HEADERS?= 1
+TWO_SIDED?= 1
 
 #GEN_INDEX?= 1
 
