@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.14 2001/08/07 22:46:29 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.15 2001/08/13 06:15:39 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -350,17 +350,8 @@
 	 length: 475pt
 	 display-alignment: 'start
 	 space-before: (* (HSIZE 5) %head-before-factor%)
+	 space-after: (* (HSIZE 1) %head-after-factor%)
 	 line-thickness: 0.5pt)))))
-
-      <!-- Disable info blocks until we can format them nicely -->
-      (element appendixinfo
-	(empty-sosofo))
-      (element chapterinfo
-	(empty-sosofo))
-      (element sect1info
-	(empty-sosofo))
-      (element sect2info
-	(empty-sosofo))
 
       ]]>
 
@@ -389,40 +380,84 @@
         "    ")
 
       <!-- Slightly deeper customisations -->
-<!--
+
+      <!-- We would like the author attributions to show up in line
+	   with the section they refer to.  Authors who made the same
+	   contribution should be listed in a single <authorgroup> and 
+	   only one of the <author> elements should contain a <contrib>
+	   element that describes what the whole authorgroup was
+	   responsible for.  For example:
+
+	   <chapterinfo>
+	    <authorgroup>
+	     <author>
+	      <firstname>Bob</firstname>
+	      <surname>Jones</surname>
+	      <contrib>Contributed by </contrib>
+	     </author>
+	     <author>
+	      <firstname>Sarah</firstname>
+	      <surname>Lee</surname>
+	     </author>
+	    </authorgroup>
+	   </chapterinfo>
+
+	   Would show up as "Contributed by Bob Jones and Sarah Lee".  Each
+	   authorgroup shows up as a seperate sentence. -->
+
+      (element appendixinfo 
+        (process-children))
       (element chapterinfo 
         (process-children))
       (element sect1info 
         (process-children))
       (element sect2info 
         (process-children))
-      (element (chapterinfo authorgroup author)
-        (make sequence
-          (process-node-list (select-elements (descendants (current-node))
-                                (normalize "contrib")))
-          (literal (author-list-string))))
-      (element (sect1info authorgroup author)
-        (make sequence
-          (process-node-list (select-elements (descendants (current-node))
-                                (normalize "contrib")))
-          (literal (author-list-string))))
-      (element (sect2info authorgroup author)
-        (make sequence
-          (process-node-list (select-elements (descendants (current-node))
-                                (normalize "contrib")))
-          (literal (author-list-string))))
-      (element (chapterinfo authorgroup)
+      (element sect3info 
         (process-children))
-      (element (sect1info authorgroup)
+      (element sect4info 
         (process-children))
-      (element (sect2info authorgroup)
+      (element sect5info 
         (process-children))
 
-      (element (author contrib)
-        (make sequence
-          (process-children)
-          (literal " by ")))
--->
+      (element (appendixinfo authorgroup author)
+        (literal (author-list-string)))
+      (element (chapterinfo authorgroup author)
+        (literal (author-list-string)))
+      (element (sect1info authorgroup author)
+        (literal (author-list-string)))
+      (element (sect2info authorgroup author)
+        (literal (author-list-string)))
+      (element (sect3info authorgroup author)
+        (literal (author-list-string)))
+      (element (sect4info authorgroup author)
+        (literal (author-list-string)))
+      (element (sect5info authorgroup author)
+        (literal (author-list-string)))
+
+      (define (custom-authorgroup)
+        ($italic-seq$
+          (make sequence
+            (process-node-list (select-elements (descendants (current-node))
+                                  (normalize "contrib")))
+            (process-children)
+            (literal ".  "))))
+
+      (element (appendixinfo authorgroup)
+        (custom-authorgroup))
+      (element (chapterinfo authorgroup)
+        (custom-authorgroup))
+      (element (sect1info authorgroup)
+        (custom-authorgroup))
+      (element (sect2info authorgroup)
+        (custom-authorgroup))
+      (element (sect3info authorgroup)
+        (custom-authorgroup))
+      (element (sect4info authorgroup)
+        (custom-authorgroup))
+      (element (sect5info authorgroup)
+        (custom-authorgroup))
+
       <!-- John Fieber's 'instant' translation specification had 
            '<command>' rendered in a mono-space font, and '<application>'
            rendered in bold. 

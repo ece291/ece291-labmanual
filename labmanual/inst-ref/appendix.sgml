@@ -1,21 +1,19 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: appendix.sgml,v 1.3 2001/07/31 01:11:13 pete Exp $
+     $Id: appendix.sgml,v 1.4 2001/08/13 06:15:39 pete Exp $
 -->
 
 <appendix id="inst-ref">
  <appendixinfo>
   <authorgroup>
-   <corpauthor>NASM Development Group</corpauthor>
-
    <author>
     <firstname>Julian</firstname>
     <surname>Hall</surname>
     <affiliation>
      <address><email>jules@acris.co.uk</email></address>
     </affiliation>
-    <contrib>Original co-author of NASM</contrib>
+    <contrib>Originally written by </contrib>
    </author>
 
    <author>
@@ -24,38 +22,29 @@
     <affiliation>
      <address><email>anakin@pobox.com</email></address>
     </affiliation>
-    <contrib>Original co-author of NASM</contrib>
    </author>
-
+  </authorgroup>
+<![%inst-ref.now3d;[
+  <authorgroup>
    <author>
     <firstname>Frank</firstname>
     <surname>Kotler</surname>
     <affiliation>
      <address><email>fbkotler@nettaxi.com</email></address>
     </affiliation>
-    <contrib>"KATMAI" and "3DNow!" instructions</contrib>
-   </author>
+    <contrib><![%inst-ref.katmai;[<quote>KATMAI</quote> and
+     ]]><quote>3DNow!</quote> instructions added by </contrib>
+ </author>
 
    <author>
-    <firstname>Stephen</firstname>
-    <surname>Silver</surname>
-    <affiliation>
-     <address><email>nasm@argentum.freeserve.co.uk</email></address>
-    </affiliation>
-    <contrib>"3DNow!" instructions and misc.</contrib>
+   <firstname>Stephen</firstname>
+   <surname>Silver</surname>
+   <affiliation>
+    <address><email>nasm@argentum.freeserve.co.uk</email></address>
+   </affiliation>
    </author>
-
-   <othercredit>
-    <firstname>Peter</firstname>
-    <othername>L. B.</othername>
-    <surname>Johnson</surname>
-    <affiliation>
-     <address><email>johnsonp@bilogic.org</email></address>
-    </affiliation>
-    <contrib>Converted to DocBook</contrib>
-   </othercredit>
   </authorgroup>
- </appendixinfo>
+]]> </appendixinfo>
 
  <title>Intel x86 Instruction Reference</title>
 
