@@ -166,6 +166,32 @@
       <!-- Print only ................................................... --> 
       <![ %output.print; [
 
+	(element ulink 
+	  (make sequence
+	    (if (node-list-empty? (children (current-node)))
+		(make formatting-instruction data:
+		  (string-append "\\url{"
+				 (attribute-string (normalize "url"))
+				 "}"))
+		(make sequence
+		  ($charseq$)
+		  (if %footnote-ulinks%
+		      ($ss-seq$ + (literal (footnote-number (current-node))))
+		      (if (and %show-ulinks% 
+			       (not (equal? (attribute-string (normalize "url"))
+					    (data-of (current-node)))))
+			  (make sequence
+			    (literal " (")
+			    (if %hyphenation%
+				(make formatting-instruction data:
+				      (string-append "\\url{"
+						     (attribute-string
+						       (normalize "url"))
+						     "}"))
+				(literal (attribute-string (normalize "url"))))
+			    (literal ")"))
+			  (empty-sosofo)))))))
+
 	(define (book-titlepage-verso-elements)
 	  (list (normalize "title") 
 		(normalize "corpauthor") 
@@ -180,6 +206,9 @@
 
  	(define %cals-cell-before-column-margin%
 	  3pt)
+
+	(define %body-start-indent%
+	  0pi)
 
         (define (toc-depth nd)
           (if (string=? (gi nd) (normalize "book"))
@@ -446,6 +475,138 @@
 	(define %two-side%
 	  #t)
 
+	;; From an email by Ian Castle to the DocBook-apps list
+
+	(define ($component$)
+	  (make simple-page-sequence
+	    page-n-columns: %page-n-columns%
+	    page-number-restart?: (or %page-number-restart% 
+;			        (book-start?) 
+				      (first-chapter?))
+	    page-number-format: ($page-number-format$)
+	    use: default-text-style
+	    left-header:   ($left-header$)
+	    center-header: ($center-header$)
+	    right-header:  ($right-header$)
+	    left-footer:   ($left-footer$)
+	    center-footer: ($center-footer$)
+	    right-footer:  ($right-footer$)
+	    start-indent: %body-start-indent%
+	    input-whitespace-treatment: 'collapse
+	    quadding: %default-quadding%
+	    (make sequence
+	      ($component-title$)
+	      (process-children))
+	    (make-endnotes)))
+
+	;; From an email by Ian Castle to the DocBook-apps list
+
+	(define (first-part?)
+	  (let* ((book (ancestor (normalize "book")))
+		 (nd   (ancestor-member (current-node)
+					(append
+					 (component-element-list)
+					 (division-element-list))))
+		 (bookch (children book)))
+	  (let loop ((nl bookch))
+	    (if (node-list-empty? nl)
+		#f
+		(if (equal? (gi (node-list-first nl)) (normalize "part"))
+		    (if (node-list=? (node-list-first nl) nd)
+			#t
+			#f)
+		    (loop (node-list-rest nl)))))))
+
+
+	;; From an email by Ian Castle to the DocBook-apps list
+
+	(define (first-chapter?)
+	;; Returns #t if the current-node is in the first chapter of a book
+	  (if (has-ancestor-member? (current-node) (division-element-list))
+	    #f
+	   (let* ((book (ancestor (normalize "book")))
+		  (nd   (ancestor-member (current-node)
+					 (append (component-element-list)
+						 (division-element-list))))
+		  (bookch (children book))
+		  (bookcomp (expand-children bookch (list (normalize "part")))))
+	     (let loop ((nl bookcomp))
+	       (if (node-list-empty? nl)
+		   #f
+		   (if (equal? (gi (node-list-first nl)) (normalize "chapter"))
+		       (if (node-list=? (node-list-first nl) nd)
+			   #t
+			   #f)
+		       (loop (node-list-rest nl))))))))
+
+
+	; By default, the Part I title page will be given a roman numeral,
+	; which is wrong so we have to fix it
+
+	(define (part-titlepage elements #!optional (side 'recto))
+	  (let ((nodelist (titlepage-nodelist 
+			  (if (equal? side 'recto)
+			      (part-titlepage-recto-elements)
+			      (part-titlepage-verso-elements))
+			  elements))
+	       ;; partintro is a special case...
+	       (partintro (node-list-first
+			   (node-list-filter-by-gi elements (list (normalize "partintro"))))))
+	    (if (part-titlepage-content? elements side)
+		(make simple-page-sequence
+		  page-n-columns: %titlepage-n-columns%
+		  ;; Make sure that page number format is correct.
+		  page-number-format: ($page-number-format$)
+		  ;; Make sure that the page number is set to 1 if this is the
+		  ;; first part in the book
+		  page-number-restart?: (first-part?)
+		  input-whitespace-treatment: 'collapse
+		  use: default-text-style
+
+		  ;; This hack is required for the RTF backend. If an
+		  ;; external-graphic is the first thing on the page,
+		  ;; RTF doesn't seem to do the right thing (the graphic
+		  ;; winds up on the baseline of the first line of the
+		  ;; page, left justified).  This "one point rule" fixes
+		  ;; that problem.
+
+		  (make paragraph
+		    line-spacing: 1pt
+		    (literal ""))
+
+		  (let loop ((nl nodelist) (lastnode (empty-node-list)))
+		    (if (node-list-empty? nl)
+			(empty-sosofo)
+			(make sequence
+			  (if (or (node-list-empty? lastnode)
+				  (not (equal? (gi (node-list-first nl))
+					       (gi lastnode))))
+			      (part-titlepage-before (node-list-first nl) side)
+			      (empty-sosofo))
+			  (cond
+			   ((equal? (gi (node-list-first nl)) (normalize "subtitle"))
+			    (part-titlepage-subtitle (node-list-first nl) side))
+			   ((equal? (gi (node-list-first nl)) (normalize "title"))
+			    (part-titlepage-title (node-list-first nl) side))
+			   (else
+			    (part-titlepage-default (node-list-first nl) side)))
+			  (loop (node-list-rest nl) (node-list-first nl)))))
+		  (if (and %generate-part-toc%
+			   %generate-part-toc-on-titlepage%
+			   (equal? side 'recto))
+		      (make display-group
+			(build-toc (current-node)
+				   (toc-depth (current-node))))
+		      (empty-sosofo))
+
+		  ;; PartIntro is a special case
+		  (if (and (equal? side 'recto)
+			   (not (node-list-empty? partintro))
+			   %generate-partintro-on-titlepage%)
+		      ($process-partintro$ partintro #f)
+		      (empty-sosofo)))
+	       (empty-sosofo))))
+
       ]]>
 
       <!-- Print with justification .................................... -->
@@ -457,6 +618,44 @@
 
 	(define %hyphenation%
 	  #t)
+
+	;; The url.sty package is making all of the links purple/pink.
+	;; Someone please fix this!
+
+	(define (urlwrap)
+	  (let ((%factor% (if %verbatim-size-factor% 
+			      %verbatim-size-factor% 
+			      1.0)))
+	  (make sequence
+	    font-family-name: %mono-font-family%
+	    font-size: (* (inherited-font-size) %factor%)
+	    (make formatting-instruction data:
+		  (string-append
+		   "\\url|"
+		   (data (current-node))
+		   "|")))))
+
+	(define (pathwrap)
+	  (let ((%factor% (if %verbatim-size-factor% 
+			      %verbatim-size-factor% 
+			      1.0)))
+	  (make sequence
+	    font-family-name: %mono-font-family%
+	    font-size: (* (inherited-font-size) %factor%)
+	    (make formatting-instruction data:
+		  (string-append
+		   "\\path|"
+		   (data (current-node))
+		   "|")))))
+
+	;; Some others may check the value of %hyphenation% and be
+	;; specified below
+
+	(element filename
+	  (pathwrap))
+
+	(element varname
+	  (pathwrap))
 
       ]]>
 
