@@ -20,7 +20,7 @@ my ($my_name, $my_version) = $RCS_Id =~ /: (.+).pl,v ([\d.]+)/;
 $my_version .= '*' if length('$Locker:  $ ') > 12;
 
 use vars qw($VERSION);
-( $VERSION ) = '$Revision: 1.4 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.5 $ ' =~ /\$Revision:\s+([^\s]+)/;
 
 ################ Program parameters ################
 
@@ -225,7 +225,7 @@ sub handle_options {
 			     'verbose'	   => \$verbose,
 			     'antialias=i' => \$antialias,
 			     'scale=f'     => \$scale,
-			     'output=s'    => \$output,
+			     'output|o=s'    => \$output,
 			     'png'	   => \&set_out_type,
 			     'pngmono'	   => \&set_out_type,
 			     'pnggray'	   => \&set_out_type,
