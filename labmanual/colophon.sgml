@@ -8,15 +8,51 @@
  <para>The contents of this manual are a compilation of various
   references, guides, and tutorials taken from many sources and
   written by several independent authors, collectively referred to as
-  <quote>The ECE 291 Documentation Project.</quote>  The text is
-  authored in SGML according to the DocBook DTD and is formatted from
-  SGML into many different presentation formats using
-  <application>OpenJade</application>, an open source DSSSL engine.
-  Norm Walsh's DSSSL stylesheets were used with an additional
+  <quote>The ECE 291 Documentation Project.</quote>  Thanks and
+  appreciation to the following individuals for the use of their
+  material in this manual:</para>
+
+  <simplelist type=vert columns=3>
+   <member>Professor Gernot Metze</member>
+   <member>Professor Michael C. Loui</member>
+   <member>Professor W. Kent Fuchs</member>
+   <member>Professor John W. Lockwood</member>
+   <member>Tom Maciukenas</member>
+   <member>Eric S. Meidel</member>
+   <member>David Eprim Pearah</member>
+   <member>Michael Thiems</member>
+   <member>Doug Stirrett</member>
+   <member>Allan M. Krol</member>
+   <member>Brandon Long</member>
+   <member>Jeff Stahl</member>
+   <member>Joseph Gebis</member>
+   <member>Peter L. B. Johnson</member>
+   <member>Jason Gallicchio</member>
+   <member>Julian Hall</member>
+   <member>Simon Tantham</member>
+   <member>Frank Kotler</member>
+   <member>Stephen Silver</member>
+  </simplelist>
+
+  <para>Indeed this list is not extensive, as some of the material
+  comes from authors unknown at the time of printing of this manual.
+  It is hoped that those individuals who have not been mentioned but
+  have contributed will feel equally appreciated as those listed
+  above.</para>
+
+  <para>The text is authored in SGML according to the DocBook DTD and
+  is formatted from SGML into many different presentation formats
+  using <application>OpenJade</application>, an open source DSSSL
+  engine. Norm Walsh's DSSSL stylesheets were used with an additional
   customization layer to provide the presentation instructions for
-  <application>OpenJade</application>.  The printed version was
-  produced using the PDF capabilities of
-  <application>JadeTeX</application>.</para>
+  <application>OpenJade</application>.  The printed version of this
+  manual would not be possible without Donald Knuth's
+  <application>TeX</application> typesetting language, Leslie
+  Lamport's <application>LaTeX</application>, or Sebastian Rahtz's
+  <application>JadeTeX</application> macro package.  The Makefile
+  build system and customized DSSSL stylesheets used for this manual
+  were heavily based on the ones used by the FreeBSD Documentation
+  Project.</para>
 </colophon>
 
 <!--

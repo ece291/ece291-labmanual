@@ -1,11 +1,11 @@
 <!--
-     ECE 291 Protected Mode Tutorial
+     ECE 291 Lab Manual
 
      $IdPath$
 -->
 
-<chapter id="dev-env">
- <title>Development Environment</title>
+<chapter id="djgpp">
+ <title>DJGPP Development Environment</title>
 
  <para>The development environment used for this tutorial and for the
   protected mode MPs in ECE 291 is different from all of the other
@@ -17,7 +17,7 @@
    url="http://courses.ece.uiuc.edu/ece291/resources/djgpp.zip"></ulink> 
   for those that want to install it at home.</para>
 
- <sect1 id="dev-env-djgpp">
+ <sect1 id="djgpp-about">
   <title>About DJGPP</title>
 
   <para><ulink url="http://www.delorie.com/djgpp/">DJGPP</ulink> is a
@@ -31,7 +31,7 @@
    license or royalties.</para>
  </sect1>
 
- <sect1 id="dev-env-dpmi">
+ <sect1 id="djgpp-dpmi">
   <title>About DPMI</title>
 
   <para><firstterm>DPMI</firstterm> is the DOS Protected Mode
@@ -69,7 +69,7 @@
    easier-to-use library functions.</para>
  </sect1>
 
- <sect1 id="dev-env-setting-up-djgpp">
+ <sect1 id="djgpp-setting-up">
   <title>Setting Up DJGPP</title>
 
   <para>Normally setting up DJGPP requires the downloading of numerous

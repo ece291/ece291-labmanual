@@ -1,13 +1,13 @@
 <!--
-     ECE 291 Protected Mode Tutorial
+     ECE 291 Lab Manual
 
      $IdPath$
 -->
 
-<chapter id="introduction">
+<chapter id="pmode-intro">
  <title>Introduction</title>
 
- <sect1 id="introduction-howto">
+ <sect1 id="pmode-intro-howto">
   <title>How to Do this Tutorial</title>
 
   <para>Instead of having a huge reference section, and then a huge
@@ -28,7 +28,7 @@
    begin&ndash;at the end.</para>
  </sect1>
 
- <sect1 id="introduction-goal">
+ <sect1 id="pmode-intro-goal">
   <title>The Goal</title>
 
   <para>The Goal is to learn the basics of protected mode to prepare
@@ -59,7 +59,7 @@
   </itemizedlist>
  </sect1>
 
- <sect1 id="introduction-finalproject">
+ <sect1 id="pmode-intro-finalproject">
   <title>Protected Mode and the Final Project</title>
 
   <para>Advantages:</para>

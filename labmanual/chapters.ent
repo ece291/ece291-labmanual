@@ -23,10 +23,18 @@
 <!ENTITY chap.graphics              SYSTEM "graphics/chapter.sgml">
 <!ENTITY chap.serial-comm           SYSTEM "serial-comm/chapter.sgml">
 <!ENTITY chap.parallel-comm         SYSTEM "parallel-comm/chapter.sgml">
+<!ENTITY chap.sound                 SYSTEM "sound/chapter.sgml">
+<!ENTITY chap.pmode-intro           SYSTEM "pmode-intro/chapter.sgml">
+<!ENTITY chap.djgpp                 SYSTEM "djgpp/chapter.sgml">
+<!ENTITY chap.start-pmode           SYSTEM "start-pmode/chapter.sgml">
+<!ENTITY chap.realprot-diff         SYSTEM "realprot-diff/chapter.sgml">
+<!ENTITY chap.pmodelib-intro        SYSTEM "pmodelib-intro/chapter.sgml">
+
 
 <!-- Appendices -->
-<!ENTITY chap.ascii-code            SYSTEM "ascii-code/appendix.sgml">
+<!ENTITY chap.pmodelib-ref          SYSTEM "pmodelib-ref/appendix.sgml">
 <!ENTITY chap.inst-ref              SYSTEM "inst-ref/appendix.sgml">
+<!ENTITY chap.ascii-code            SYSTEM "ascii-code/appendix.sgml">
 
 <!-- Glossary and Index -->
 <!ENTITY chap.glossary              SYSTEM "glossary.sgml">

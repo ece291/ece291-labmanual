@@ -11,7 +11,7 @@ DOC?= book
 FORMATS?= html-split pdf
 
 #BOOK_OUTPUT= 1
-#GEN_INDEX= 1
+HAS_INDEX= true
 
 OPENJADE?= yes
 
@@ -22,7 +22,6 @@ OPENJADE?= yes
 
 # SGML content
 SRCS=  book.sgml
-SRCS+= preface.sgml
 SRCS+= introduction/chapter.sgml
 SRCS+= using-pc/chapter.sgml
 SRCS+= text-editors/chapter.sgml
@@ -36,8 +35,15 @@ SRCS+= io-devices/chapter.sgml
 SRCS+= graphics/chapter.sgml
 SRCS+= serial-comm/chapter.sgml
 SRCS+= parallel-comm/chapter.sgml
-SRCS+= ascii-code/appendix.sgml
+SRCS+= sound/chapter.sgml
+SRCS+= pmode-intro/chapter.sgml
+SRCS+= djgpp/chapter.sgml
+SRCS+= start-pmode/chapter.sgml
+SRCS+= realprot-diff/chapter.sgml
+SRCS+= pmodelib-intro/chapter.sgml
+SRCS+= pmodelib-ref/appendix.sgml
 SRCS+= inst-ref/appendix.sgml
+SRCS+= ascii-code/appendix.sgml
 SRCS+= glossary.sgml
 SRCS+= colophon.sgml
 
@@ -77,6 +83,8 @@ IMAGES+= serial-comm/plug9pins.dia
 IMAGES+= serial-comm/plug9pins-null.dia
 IMAGES+= parallel-comm/timing.dia
 IMAGES+= parallel-comm/logic.dia
+IMAGES+= sound/dma.dia
+IMAGES+= sound/dma1.dia
 IMAGES+= ascii-code/quickref.dia
 
 SYMLINKS= ${DESTDIR} index.html

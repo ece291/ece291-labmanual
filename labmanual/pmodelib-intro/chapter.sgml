@@ -1,5 +1,5 @@
 <!--
-     ECE 291 Protected Mode Tutorial
+     ECE 291 Lab Manual
 
      $IdPath$
 -->
@@ -27,12 +27,8 @@
 
   <para>PModeLib uses the 32-bit C calling convention.  See the first
    page of the PModeLib Reference (<xref linkend="pmodelib-ref">) for
-   a quick overview, or <ulink
-    url="http://courses.ece.uiuc.edu/ece291/books/labmanual/c-prog.html">Chapter 
-    7</ulink> of the <ulink
-    url="http://courses.ece.uiuc.edu/ece291/books/labmanual/">ECE 291
-    Lab Manual</ulink> for a more detailed look at how this calling
-   convention works.</para>
+   a quick overview, or <xref linkend="c-prog"> for a more detailed
+   look at how this calling convention works.</para>
 
   <para>Because some of the functions in PModeLib can take many
    parameters, a set of macros which implement the C calling

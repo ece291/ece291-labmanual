@@ -17,7 +17,6 @@
 <!ENTITY % inst-ref.undoc "IGNORE">
 
 <!-- Chapter entities to allow building of individual chapters -->
-<!ENTITY % chap.preface "IGNORE">
 <!ENTITY % chap.introduction "IGNORE">
 <!ENTITY % chap.using-pc "IGNORE">
 <!ENTITY % chap.text-editors "IGNORE">
@@ -27,13 +26,21 @@
 <!ENTITY % chap.c-prog "IGNORE">
 <!ENTITY % chap.libraries "IGNORE">
 <!ENTITY % chap.data-structures "IGNORE">
+<!ENTITY % chap.pmode-intro "IGNORE">
+<!ENTITY % chap.djgpp "IGNORE">
+<!ENTITY % chap.start-pmode "IGNORE">
+<!ENTITY % chap.realprot-diff "IGNORE">
+<!ENTITY % chap.pmodelib-intro "IGNORE">
 <!ENTITY % chap.io-devices "IGNORE">
 <!ENTITY % chap.graphics "IGNORE">
 <!ENTITY % chap.serial-comm "IGNORE">
 <!ENTITY % chap.parallel-comm "IGNORE">
-<!ENTITY % chap.ascii-code "IGNORE">
+<!ENTITY % chap.sound "IGNORE">
+<!ENTITY % chap.pmodelib-ref "IGNORE">
 <!ENTITY % chap.inst-ref "IGNORE">
+<!ENTITY % chap.ascii-code "IGNORE">
 <!ENTITY % chap.glossary "IGNORE">
+<!ENTITY % chap.index "IGNORE">
 
 ]>
 
@@ -120,6 +127,13 @@
     <revremark>Complete revision for NASM, new class organization, lab
      computers, and tools.  Converted to DocBook format.</revremark>
    </revision>
+
+   <revision>
+    <revnumber>6</revnumber>
+    <date>2001</date>
+    <authorinitials>PLBJ</authorinitials>
+    <revremark>Added protected mode material.</revremark>
+   </revision>
   </revhistory>
 
   <abstract>
@@ -138,27 +152,50 @@
   </abstract>
  </bookinfo>
 
- <![ %chap.preface;         [ &chap.preface;         ]]>
- <![ %chap.introduction;    [ &chap.introduction;    ]]>
- <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
- <![ %chap.text-editors;    [ &chap.text-editors;    ]]>
- <![ %chap.debugging;       [ &chap.debugging;       ]]>
- <![ %chap.assembly;        [ &chap.assembly;        ]]>
- <![ %chap.nasm;            [ &chap.nasm;            ]]>
- <![ %chap.c-prog;          [ &chap.c-prog;          ]]>
- <![ %chap.libraries;       [ &chap.libraries;       ]]>
- <![ %chap.data-structures; [ &chap.data-structures; ]]>
- <![ %chap.io-devices;      [ &chap.io-devices;      ]]>
- <![ %chap.graphics;        [ &chap.graphics;        ]]>
- <![ %chap.serial-comm;     [ &chap.serial-comm;     ]]>
- <![ %chap.parallel-comm;   [ &chap.parallel-comm;   ]]>
+ <part>
+  <title>Getting Started</title>
 
- <![ %chap.inst-ref;        [ &chap.inst-ref;        ]]>
- <![ %chap.ascii-code;      [ &chap.ascii-code;      ]]>
+  <![ %chap.introduction;    [ &chap.introduction;    ]]>
+  <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
+  <![ %chap.text-editors;    [ &chap.text-editors;    ]]>
+  <![ %chap.debugging;       [ &chap.debugging;       ]]>
+  <![ %chap.assembly;        [ &chap.assembly;        ]]>
+  <![ %chap.nasm;            [ &chap.nasm;            ]]>
+  <![ %chap.c-prog;          [ &chap.c-prog;          ]]>
+  <![ %chap.libraries;       [ &chap.libraries;       ]]>
+  <![ %chap.data-structures; [ &chap.data-structures; ]]>
+ </part>
 
- <![ %chap.glossary;        [ &chap.glossary;        ]]>
+ <part>
+  <title>Interfacing With the World</title>
 
- &chap.index;
+  <![ %chap.io-devices;      [ &chap.io-devices;      ]]>
+  <![ %chap.graphics;        [ &chap.graphics;        ]]>
+  <![ %chap.serial-comm;     [ &chap.serial-comm;     ]]>
+  <![ %chap.parallel-comm;   [ &chap.parallel-comm;   ]]>
+  <![ %chap.sound;           [ &chap.sound;           ]]>
+ </part>
+
+ <part>
+  <title>Protected Mode</title>
+
+  <![ %chap.pmode-intro;     [ &chap.pmode-intro;     ]]>
+  <![ %chap.djgpp;           [ &chap.djgpp;           ]]>
+  <![ %chap.start-pmode;     [ &chap.start-pmode;     ]]>
+  <![ %chap.realprot-diff;   [ &chap.realprot-diff;   ]]>
+  <![ %chap.pmodelib-intro;  [ &chap.pmodelib-intro;  ]]>
+ </part>
+
+ <part>
+  <title>Appendices</title>
+
+  <![ %chap.pmodelib-ref;    [ &chap.pmodelib-ref;    ]]>
+  <![ %chap.inst-ref;        [ &chap.inst-ref;        ]]>
+  <![ %chap.ascii-code;      [ &chap.ascii-code;      ]]>
+  <![ %chap.glossary;        [ &chap.glossary;        ]]>
+  <![ %chap.index;           [ &chap.index;           ]]>
+ </part>
+
  &chap.colophon;
 </book>
 
