@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.4 2001/08/14 19:03:04 pete Exp $
+     $Id: chapter.sgml,v 1.5 2001/08/15 01:55:36 pete Exp $
 -->
 
 <chapter id="c-prog">
@@ -199,8 +199,8 @@ _Sum
     <para>It is interesting to note several things. First, the
      assembly code returns the value of the result to the C program
      through &reg.eax; implicitly. Second, a simple
-     <literal>RET</literal> statement is all that is necessary when
-     returning from the procedure. This is due to the fact that C
+     <instruction>RET</instruction> statement is all that is necessary
+     when returning from the procedure. This is due to the fact that C
      takes care of removing the passed parameters from the
      stack.</para>
 
@@ -381,10 +381,12 @@ _main
 
   <para>However, in a multi-segment 16-bit program, addresses and
    references are still 32-bit: a 16-bit segment and a 16-bit offset.
-   When multiple code segments are used, <literal>FAR CALL</literal>
-   must be used instead of <literal>CALL</literal>, which offsets
-   stack parameters by an additional 2 bytes because of &reg.cs; being
-   pushed on the stack.</para>
+   When multiple code segments are used, <instruction>FAR
+    CALL</instruction> must be used instead of
+   <instruction>CALL</instruction>, which offsets stack parameters by
+   an additional 2 bytes because of &reg.cs; being pushed on the stack
+   (also, <instruction>RETF</instruction> must be used instead of
+   <instruction>RET</instruction>).</para>
 
   <para>While 8-bit and 16-bit values are still returned in &reg.al;
    and &reg.ax; in the 16-bit C calling convention, 32-bit values must
