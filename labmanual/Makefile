@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.3 2001/06/27 22:34:56 pete Exp $
+# $Id: Makefile,v 1.4 2001/07/02 23:54:36 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -20,6 +20,7 @@ SRCS=  book.sgml
 SRCS+= preface.sgml
 SRCS+= introduction/chapter.sgml
 SRCS+= using-pc/chapter.sgml
+SRCS+= c-prog/chapter.sgml
 SRCS+= libraries/chapter.sgml
 SRCS+= data-structures/chapter.sgml
 SRCS+= io-devices/chapter.sgml

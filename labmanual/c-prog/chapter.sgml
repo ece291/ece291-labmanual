@@ -1,0 +1,345 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/07/02 23:54:36 pete Exp $
+-->
+
+<chapter id="c-prog">
+ <title>C Programming</title>
+
+ <sect1 id="c-prog-intro">
+  <title>Introduction to the C Programming Language</title>
+
+  <para>C is a <firstterm>high-level language</firstterm>, meaning its
+   statements are oftentimes far-removed from the final machine
+   encoding of the program. C statements provide a more intuitive
+   means of communicating a programmer's wishes to the machine, in
+   contrast to assembly &ndash; a <firstterm>low-level
+    language</firstterm>, where the programmer must spell out to the
+   machine even the most minute detail of a program. This chapter will
+   serve as a brief introduction to the C programming language; a
+   primer for those who know very little or none, and a reference for
+   those who are familiar. However, this is not meant as an extensive
+   introduction, as there are numerous books devoted to the C
+   programming language. This chapter also attempts to illustrate the
+   similarities between assembly and C, as well as demonstrating
+   techniques of mixing the two languages together.</para>
+
+  <sect2 id="c-prog-intro-gcc">
+   <title>GNU C Compiler</title>
+
+   <para>The remaining discussion assumes the use of the GNU C
+    compiler version 2.95, which is similar to compilers offered from
+    other major sources, but does contain some unique features and
+    syntaxes.</para>
+
+   <para>Just as the NASM assembler generates machine code from
+    assembly statements, the GNU C compiler generates machine code
+    from C statements.  To compile a program using GNU C, use the
+    following command at the DOS prompt:</para>
+
+   <!-- TODO: GCC command line, useful options -->
+
+   <para>Compiling with the -c option creates an object file only,
+    which must be linked using the <command>ld</command> utility to
+    the appropriate libraries or other object files to create the
+    final executable. This will be necessary when creating
+    mixed-language programs such as those with both assembly and
+    C.</para>
+
+   <para>As the GNU C compiler generates 32-bit machine code, the
+    assembly code linked with its object files needs to use 32-bit
+    registers and instructions.  The final executable will be a 32-bit
+    program.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="c-prog-mixing">
+  <title>Mixing Assembly and C</title>
+
+  <para>Often it is a good idea to link assembly language programs or
+   routines with high-level programs which may contain resources
+   unavailable to you through direct assembly programming &ndash; such
+   as using C's built in graphics library functions or
+   string-processing functions. Conversely, it is often necessary to
+   include short assembly routines in a compiled high-level program to
+   take advantage of the speed of machine language.</para>
+
+  <para>All high-level languages have specific calling conventions
+   which allow one language to communicate to the other; i.e., to send
+   variables, values, etc. The assembly-language program that is
+   written in conjunction with the high-level language must also
+   reflect these conventions if the two are to be successfully
+   integrated. Usually high-level languages pass parameters to
+   subroutines by utilizing the stack. This is also the case for
+   C.</para>
+
+  <sect2 id="c-prog-mixing-using-asm">
+   <title>Using Assembly Procedures in C Functions</title>
+
+   <sect3 id="c-prog-mixing-using-asm-procedure-setup">
+    <title>Procedure Setup</title>
+
+    <para>In order to ensure that the assembly language procedure and
+     the C program will combine and be compatible, the following steps
+     should be followed:</para>
+
+    <itemizedlist>
+     <listitem>
+      <para>Declare the procedure label global by using the
+       <literal>GLOBAL</literal> directive. In addition, also declare
+       global any data that will be used.</para>
+     </listitem>
+
+     <listitem>
+      <para>Use the <literal>EXTERN</literal> directive to declare
+       global data and procedures as external. It is best to place the
+       <literal>EXTERN</literal> statement outside the segment
+       definitions and to place near data inside the data
+       segment.</para>
+     </listitem>
+
+     <listitem>
+      <para>Follow the C naming conventions &ndash; i.e., precede all
+       names (both procedures and data) with underscores.</para>
+     </listitem>
+    </itemizedlist>
+   </sect3>
+
+   <sect3 id="c-prog-mixing-using-asm-stack-setup">
+    <title>Stack Setup</title>
+
+    <para>Whenever entering a procedure, it is necessary to set up a
+     stack frame on which to pass parameters. Of course, if the
+     procedure doesn't use the stack, then it is not necessary. To
+     accomplish the stack setup, include the following code in the
+     procedure:</para>
+
+    <programlisting>
+        push    ebp
+        mov     ebp, esp</programlisting>
+
+    <para>&reg.ebp; allows us to use this pointer as an index into the
+     stack, and should not be altered throughout the procedure unless
+     caution is taken. Each parameter passed to the procedure can now
+     be accessed as an offset from &reg.ebp;. This is commonly known
+     as a <quote>standard stack frame.</quote></para>
+   </sect3>
+
+   <sect3 id="c-prog-mixing-using-asm-preserve-regs">
+    <title>Preserving Registers</title>
+
+    <para>It is necessary that the procedure preserve the contents of
+     the registers &reg.esi;, &reg.edi;, &reg.ebp;, and all segment
+     registers.  If these registers are corrupted, it is possible that
+     the computer will produce errors when returning to the calling C
+     program.</para>
+   </sect3>
+
+   <sect3 id="c-prog-mixing-using-asm-c-param-pass">
+    <title>Passing Parameters in C to the Procedure</title>
+
+    <para>C passes arguments to procedures on the stack. For example,
+     consider the following statements from a C main program:</para>
+
+    <programlisting>
+           |
+extern int Sum();
+           |
+int a1, a2, x;
+           |
+x = Sum(a1, a2);</programlisting>
+
+    <para>When C executes the function call to
+     <function>Sum</function>, it pushes the input arguments onto the
+     stack in <emphasis>reverse</emphasis> order, then executes a call
+     to <function>Sum</function>. Upon entering
+     <function>Sum</function>, the stack would contain the
+     following:</para>
+
+    <informalfigure>
+     <mediaobject>
+      <imageobject>
+       <imagedata fileref="c-prog/enterstack-value" format=eps>
+      </imageobject>
+     </mediaobject>
+    </informalfigure>
+
+    <para>Since a1 and a2 are declared as int variables, each takes up
+     one word on the stack. The above method of passing input
+     arguments is called <firstterm>passing by value</firstterm>. The
+     code for <function>Sum</function>, which outputs the sum of the
+     input arguments via register &reg.eax;, might look like the
+     following:</para>
+
+    <programlisting>
+_Sum
+        push    ebp             ; create stack frame
+        mov     ebp, esp
+        mov     eax, [ebp+8]    ; grab the first argument
+        mov     ecx, [ebp+12]   ; grab the second argument
+        add     eax, ecx        ; sum the arguments
+        pop     ebp             ; restore the base pointer
+        ret</programlisting>
+
+    <para>It is interesting to note several things. First, the
+     assembly code returns the value of the result to the C program
+     through &reg.eax; implicitly. Second, a simple
+     <literal>RET</literal> statement is all that is necessary when
+     returning from the procedure. This is due to the fact that C
+     takes care of removing the passed parameters from the
+     stack.</para>
+
+    <para>Unfortunately, passing by value has the drawback that we can
+     only return one output value. What if <function>Sum</function>
+     must output several values, or if <function>Sum</function> must
+     modify one of the input variables?  To accomplish this, we must
+     pass arguments by reference. In this method of argument
+     transmission, the addresses of the arguments are passed, not
+     their values.  The address may be just an offset, or both an
+     offset and a segment.  For example, suppose
+     <function>Sum</function> wishes to modify a2 directly &ndash;
+     perhaps storing the result in a2 such that a2 = a1 + a2. The
+     following function call from C could be used:</para>
+
+    <programlisting>Sum(a1, &amp;a2);</programlisting>
+
+    <para>The first argument is still passed by value (i.e., only its
+     value is placed on the stack), but the second argument is passed
+     by reference (its <emphasis>address</emphasis> is placed on the
+     stack).  The <quote>&amp;</quote> prefix means <quote>address
+      of.</quote> We say that &amp;a2 is a <quote>pointer</quote> to
+     the variable a2.  Using the above statement, the stack would
+     contain the following upon entering
+     <function>Sum</function>:</para>
+
+    <informalfigure>
+     <mediaobject>
+      <imageobject>
+       <imagedata fileref="c-prog/enterstack-ref" format=eps>
+      </imageobject>
+     </mediaobject>
+    </informalfigure>
+
+    <para>Note that the address of a2 is pushed on the stack, not its
+     value.  With this information, <function>Sum</function> can
+     access the variable a2 directly.  (Hint: use an index register to
+     hold the offset, then use a memory access to access the
+     variable).</para>
+   </sect3>
+
+   <sect3 id="c-prog-mixing-using-asm-return-value">
+    <title>Returning a Value from the Procedure</title>
+
+    <para>Assembly can return values to the C calling program using
+     only the &reg.eax; register.  If the returned value is only four
+     bytes or less, the result is returned in register &reg.eax;. If
+     the item is larger than four bytes, a pointer is returned in
+     &reg.eax; which points to the item.  Here is a short table of the
+     C variable types and how they are returned by the assembly
+     code:</para>
+
+    <segmentedlist>
+     <segtitle>Data Type</segtitle>
+     <segtitle>Register</segtitle>
+
+     <seglistitem>
+      <seg>char</seg>
+      <seg>&reg.al;</seg>
+     </seglistitem>
+
+     <seglistitem>
+      <seg>short</seg>
+      <seg>&reg.ax;</seg>
+     </seglistitem>
+
+     <seglistitem>
+      <seg>int, long, *</seg>
+      <seg>&reg.eax;</seg>
+     </seglistitem>
+    </segmentedlist>
+   </sect3>
+
+   <sect3 id="c-prog-mixing-using-asm-local-data">
+    <title>Allocating Local Data Space on the Stack</title>
+
+    <para>Temporary storage space for local variables or data can be
+     created by decreasing the contents of &reg.esp; just after
+     setting up a stack frame at the beginning of the procedure.  It
+     is important to restore the stack space at the end of the
+     procedure.  The following code fragment illustrates the basic
+     idea:</para>
+
+    <programlisting>
+        push    ebp             ; Save caller's stack frame
+        mov     ebp, esp        ; Establish new stack frame
+        sub     esp, 4          ; Allocate local data space of
+                                ;  4 bytes
+        push    esi             ; Save critical registers
+        push    edi
+        ...
+        pop     edi             ; Restore critical registers
+        pop     esi
+        mov     esp, ebp        ; Restore the stack
+        pop     ebp             ; Restore the frame
+        ret                     ; Return to caller</programlisting>
+   </sect3>
+  </sect2>
+
+  <sect2 id="c-prog-mixing-using-c">
+   <title>Using C Functions in Assembly Procedures</title>
+
+   <para>In most cases, calling C library routines or functions from
+    an assembly program is more complex than calling assembly programs
+    from C. An example of how to call the <function>printf</function>
+    library function from within an assembly program is shown next,
+    followed by comments on how it actually works.</para>
+
+   <programlisting>
+global  _main
+
+extern  _printf
+
+section .data
+
+text    db      "291 is the best!", 10, 0
+strformat db    "%s", 0
+
+section .code
+
+_main
+        push    dword text
+        push    dword strformat
+        call    _printf
+        add     esp, 8
+        ret</programlisting>
+
+   <para>Notice that the procedure is declared global, and its name
+    must be <function>_main</function>, which is the starting point of
+    all C code.</para>
+
+   <para>Since C pushes its arguments onto the stack in reverse order,
+    the offset of the string is pushed first, followed by the offset
+    of the format string.  The C function can then be called, but care
+    must be taken to restore the stack once it has completed.</para>
+
+   <para>When linking the assembly code, include the standard C
+    library (or the library containing the functions you use) in the
+    link.  For a more detailed (and perhaps more accurate) description
+    of the procedures involved in calling C functions, refer to
+    another text on the subject.</para>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
