@@ -1124,7 +1124,7 @@
     typically reset automatically, as indicated in the description of
     the Interrupt ID Register.  However, the 8259 Interrupt Controller
     must also be reset, by sending an End-of-Interrupt command byte
-    (20h) to port 20h before returning form the interrupt service
+    (20h) to port 20h before returning from the interrupt service
     routine.</para>
 
    <para>Unfortunately, the behavior of some versions of the UART is
