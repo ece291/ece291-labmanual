@@ -27,7 +27,7 @@
  <sect1 id="ascii-code-table">
   <title>ASCII Codes in Hex, Octal, and Decimal</title>
 
-  <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
+  <informaltable frame="none" colsep="0" rowsep="1" pgwide="1">
    <tgroup cols="5">
     <colspec colname="chara">
     <colspec colname="charb">
