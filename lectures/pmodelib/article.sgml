@@ -23,7 +23,7 @@
    </author>
   </authorgroup>
 
-  <pubdate>11 July 2001</pubdate>
+  <pubdate>23 October 2001</pubdate>
 
   <copyright>
    <year>2001</year>
@@ -34,7 +34,12 @@
    <para>This lecture introduces PModeLib, the protected mode standard
     library for ECE 291.  It covers general use, memory allocation,
     file I/O, protected mode interrupt handlers, and high-resolution
-    graphics.</para>
+    graphics.  This lecture is a summary of the material available in
+    <ulink
+     url="http://courses.ece.uiuc.edu/ece291/books/pmode-tutorial/pmodelib-intro.html">Chapter 
+     5</ulink> of the <ulink
+     url="http://courses.ece.uiuc.edu/ece291/books/pmode-tutorial/">Protected 
+     Mode Tutorial</ulink>.</para>
   </abstract>
  </articleinfo>
 
