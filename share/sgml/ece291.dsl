@@ -347,6 +347,12 @@
 	    keep-with-next?: #t
 	    (process-children)))
 
+	(define part-titlepage-recto-style
+	  (style
+	      heading-level: (if %generate-heading-level% 1 0)
+	      font-family-name: %title-font-family%
+	      font-weight: 'bold
+	      font-size: (HSIZE 1)))
       ]]>
 
       <!-- More aesthetically pleasing chapter headers for print output -->
