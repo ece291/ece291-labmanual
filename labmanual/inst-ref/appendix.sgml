@@ -4220,10 +4220,10 @@ MOVSW                         ; o16 A5               [8086]
 MOVSD                         ; o32 A5               [386]</screen>
 
   <para><literal>MOVSB</literal> copies the byte at
-   <literal>[&reg.es;:DI]</literal> or
-   <literal>[&reg.es;:&reg.edi;]</literal> to
    <literal>[&reg.ds;:&reg.si;]</literal> or
-   <literal>[&reg.ds;:&reg.esi;]</literal>. It then increments or
+   <literal>[&reg.ds;:&reg.esi;]</literal> to
+   <literal>[&reg.es;:&reg.di;]</literal> or
+   <literal>[&reg.es;:&reg.edi;]</literal>. It then increments or
    decrements (depending on the direction flag: increments if the flag
    is clear, decrements if it is set) &reg.si; and &reg.di; (or
    &reg.esi; and &reg.edi;).</para>
