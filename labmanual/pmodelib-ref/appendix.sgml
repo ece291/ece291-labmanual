@@ -73,8 +73,8 @@
     <term>dword <literal>DPMI_EAX</literal></term>
 
     <listitem>
-     <para>The EAX/AX/AL (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.eax;/&reg.ax;/&reg.al; (depending on access size)
+      member of <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -82,8 +82,8 @@
     <term>dword <literal>DPMI_EBX</literal></term>
 
     <listitem>
-     <para>The EBX/BX/BL (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.ebx;/&reg.bx;/&reg.bl; (depending on access size)
+      member of <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -91,8 +91,8 @@
     <term>dword <literal>DPMI_ECX</literal></term>
 
     <listitem>
-     <para>The ECX/CX/CL (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.ecx;/&reg.cx;/&reg.cl; (depending on access size)
+      member of <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -100,8 +100,8 @@
     <term>dword <literal>DPMI_EDX</literal></term>
 
     <listitem>
-     <para>The EDX/DX/DL (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.edx;/&reg.dx;/&reg.dl; (depending on access size)
+      member of <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -109,8 +109,8 @@
     <term>dword <literal>DPMI_ESI</literal></term>
 
     <listitem>
-     <para>The ESI/SI (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.esi;/&reg.si; (depending on access size) member of
+      <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -118,8 +118,8 @@
     <term>dword <literal>DPMI_EDI</literal></term>
 
     <listitem>
-     <para>The EDI/DI (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.edi;/&reg.di; (depending on access size) member of
+      <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -127,8 +127,8 @@
     <term>dword <literal>DPMI_EBP</literal></term>
 
     <listitem>
-     <para>The EBP/BP (depending on access size) member of <xref
-       linkend="pmodelib-ref-dpmi-regs">.</para>
+     <para>The &reg.ebp;/&reg.bp; (depending on access size) member of
+      <xref linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -136,9 +136,18 @@
     <term>word <literal>DPMI_SP</literal></term>
 
     <listitem>
-     <para>The SP member of <xref
+     <para>The &reg.sp; member of <xref
        linkend="pmodelib-ref-dpmi-regs">.  It's usually not necessary
       to set this.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="pmodelib-ref-dpmi-flags" xreflabel="DPMI_FLAGS">
+    <term>word <literal>DPMI_FLAGS</literal></term>
+
+    <listitem>
+     <para>The processor flags member of <xref
+       linkend="pmodelib-ref-dpmi-regs">.</para>
     </listitem>
    </varlistentry>
 
@@ -146,7 +155,7 @@
     <term>word <literal>DPMI_DS</literal></term>
 
     <listitem>
-     <para>The DS <emphasis>segment</emphasis> member of <xref
+     <para>The &reg.ds; <emphasis>segment</emphasis> member of <xref
        linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
        linkend="pmodelib-ref-transfer-buf-seg"> value in <link
        linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
@@ -157,7 +166,7 @@
     <term>word <literal>DPMI_ES</literal></term>
 
     <listitem>
-     <para>The ES <emphasis>segment</emphasis> member of <xref
+     <para>The &reg.es; <emphasis>segment</emphasis> member of <xref
        linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
        linkend="pmodelib-ref-transfer-buf-seg"> value in <link
        linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
@@ -168,7 +177,7 @@
     <term>word <literal>DPMI_FS</literal></term>
 
     <listitem>
-     <para>The FS <emphasis>segment</emphasis> member of <xref
+     <para>The &reg.fs; <emphasis>segment</emphasis> member of <xref
        linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
        linkend="pmodelib-ref-transfer-buf-seg"> value in <link
        linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
@@ -179,7 +188,7 @@
     <term>word <literal>DPMI_GS</literal></term>
 
     <listitem>
-     <para>The GS <emphasis>segment</emphasis> member of <xref
+     <para>The &reg.gs; <emphasis>segment</emphasis> member of <xref
        linkend="pmodelib-ref-dpmi-regs">.  Set to <xref
        linkend="pmodelib-ref-transfer-buf-seg"> value in <link
        linkend="pmodelib-ref-libinit"><function>LibInit()</function></link>.</para>
@@ -190,7 +199,7 @@
     <term>word <literal>DPMI_SS</literal></term>
 
     <listitem>
-     <para>The SS <emphasis>segment</emphasis> member of <xref
+     <para>The &reg.ss; <emphasis>segment</emphasis> member of <xref
        linkend="pmodelib-ref-dpmi-regs">.  It's usually not necessary
       to set this.</para>
     </listitem>
@@ -259,6 +268,151 @@
     values defined in library header files:</para>
 
    <variablelist>
+    <varlistentry id="pmodelib-ref-dpmi-eax-off" xreflabel="DPMI_EAX_off">
+     <term><literal>DPMI_EAX_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.eax;/&reg.ax;/&reg.al; (depending
+       on access size) member within a structure with the same
+       organization as <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-ebx-off" xreflabel="DPMI_EBX_off">
+     <term><literal>DPMI_EBX_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.ebx;/&reg.bx;/&reg.bl; (depending
+       on access size) member within a structure with the same
+       organization as <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-ecx-off" xreflabel="DPMI_ECX_off">
+     <term><literal>DPMI_ECX_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.ecx;/&reg.cx;/&reg.cl; (depending
+       on access size) member within a structure with the same
+       organization as <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-edx-off" xreflabel="DPMI_EDX_off">
+     <term><literal>DPMI_EDX_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.edx;/&reg.dx;/&reg.dl; (depending
+       on access size) member within a structure with the same
+       organization as <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-esi-off" xreflabel="DPMI_ESI_off">
+     <term><literal>DPMI_ESI_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.esi;/&reg.si; (depending on access
+       size) member within a structure with the same organization as
+       <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-edi-off" xreflabel="DPMI_EDI_off">
+     <term><literal>DPMI_EDI_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.edi;/&reg.di; (depending on access
+       size) member within a structure with the same organization as
+       <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-ebp-off" xreflabel="DPMI_EBP_off">
+     <term><literal>DPMI_EBP_off</literal></term>
+
+     <listitem>
+      <para>The offset of the &reg.ebp;/&reg.bp; (depending on access
+       size) member within a structure with the same organization as
+       <xref linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-sp-off" xreflabel="DPMI_SP_off">
+     <term><literal>DPMI_SP_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized &reg.sp; member within a
+       structure with the same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-flags-off" xreflabel="DPMI_FLAGS_off">
+     <term><literal>DPMI_FLAGS_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized processor flags member within
+       a structure with the same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-ds-off" xreflabel="DPMI_DS_off">
+     <term>word <literal>DPMI_DS_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized &reg.ds;
+       <emphasis>segment</emphasis> member within a structure with the
+       same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-es-off" xreflabel="DPMI_ES_off">
+     <term>word <literal>DPMI_ES_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized &reg.es;
+       <emphasis>segment</emphasis> member within a structure with the
+       same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-fs-off" xreflabel="DPMI_FS_off">
+     <term>word <literal>DPMI_FS_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized &reg.fs;
+       <emphasis>segment</emphasis> member within a structure with the
+       same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-gs-off" xreflabel="DPMI_GS_off">
+     <term>word <literal>DPMI_GS_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized &reg.gs;
+       <emphasis>segment</emphasis> member within a structure with the
+       same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="pmodelib-ref-dpmi-ss-off" xreflabel="DPMI_SS_off">
+     <term>word <literal>DPMI_SS_off</literal></term>
+
+     <listitem>
+      <para>The offset of the word-sized &reg.ss;
+       <emphasis>segment</emphasis> member within a structure with the
+       same organization as <xref
+	linkend="pmodelib-ref-dpmi-regs">.</para>
+     </listitem>
+    </varlistentry>
+
     <varlistentry id="pmodelib-ref-txbuffer" xreflabel="TXBuffer">
      <term><literal>TXBuffer</literal></term>
 
@@ -2101,6 +2255,43 @@
       <para>A maximum of <xref
 	linkend="pmodelib-ref-constant-max-rmcb"> wrappers may be
        allocated using this function.</para>
+
+      <para>Callback procedure should use the C calling convention,
+       compatible with the following C declaration:</para>
+
+      <funcsynopsis>
+       <funcprototype>
+	<funcdef>void <function>Callback</function></funcdef>
+	<paramdef>DPMI_Regs *<parameter>Regs</parameter></paramdef>
+       </funcprototype>
+      </funcsynopsis>
+
+      <para>The <parameter>Regs</parameter> parameter is the starting
+       address of a structure that's organized the same as the <xref
+	linkend="pmodelib-ref-dpmi-regs"> global structure (e.g., the
+       same as the structure in <dpmiref section="api"
+	function="0300"></dpmiref>.  However, it does
+       <emphasis>not</emphasis> point at the global <xref
+	linkend="pmodelib-ref-dpmi-regs"> structure, so don't attempt
+       to access the &reg.eax; value by looking at the <xref
+	linkend="pmodelib-ref-dpmi-eax"> global variable.  Rather, use
+       the DPMI_*_off constants (such as <xref
+	linkend="pmodelib-ref-dpmi-eax-off">) to offset from the
+       address in the <parameter>Regs</parameter> parameter within the
+       &reg.es; selector, using code like the following:</para>
+
+      <programlisting>proc _Callback
+.Regs   arg     4
+
+        mov     ebx, [ebp+.Regs]
+        mov     eax, [es:ebx+<xref linkend="pmodelib-ref-dpmi-eax-off">] ; Get eax value
+        ret
+endproc</programlisting>
+
+      <para>The values the DPMI_Regs structure pointed to by
+       <parameter>Regs</parameter> contains are the real-mode register
+       values set at the time the real mode side of the real mode
+       callback was called (e.g., by the mouse driver).</para>
 
       <para>Some outputs are passed as parameters; pass the address of
        a variable, and after a successful call, the variable will be
