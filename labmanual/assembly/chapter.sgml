@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.3 2001/08/14 15:36:16 pete Exp $
+     $Id: chapter.sgml,v 1.4 2001/08/14 15:43:02 pete Exp $
 -->
 
 <chapter id="assembly">
@@ -473,8 +473,8 @@ clrmem5:
     directive; complete subprocedures are best assembled separately
     and kept in an .OBJ file from which the linker (TLINK) can extract
     the required subprocedures and combine them with the program into
-    one .EXE file&mdash;that is in fact a linker's main raison
-    d'etre.</para>
+    one .EXE file&mdash;that is in fact a linker's main
+    <emphasis>raison d'etre</emphasis>.</para>
   </sect2>
 
   <sect2 id="assembly-modular-include">
@@ -603,7 +603,7 @@ clrmem5:
 
    <programlisting>GLOBAL  <replaceable>name</replaceable>[, ...]</programlisting>
 
-   <para>Note that the names appearing in the EXTRN directive of this
+   <para>Note that the names appearing in the EXTERN directive of this
     module are listed in the PUBLIC directive of the external module,
     and vice versa.</para>
 
@@ -771,7 +771,7 @@ b:              pop ax
 ;
 ; This boring program illustrates good programming style. The user
 ; types a list of names separated by carriage returns; if the user
-; presses ESC before the return, then that name is cancelled. The
+; presses ESC before the return, then that name is canceled. The
 ; program uses the extremely inefficient bubble sort algorithm to
 ; sort the names into lexicographic order and prints them out.
 
