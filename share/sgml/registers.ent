@@ -1,7 +1,7 @@
 <!--
      Names of x86 registers
 
-     $Id: registers.ent,v 1.6 2001/08/03 03:54:10 pete Exp $
+     $Id: registers.ent,v 1.7 2001/09/12 22:14:46 pete Exp $
 -->
 
 <!-- 8 bit -->
@@ -88,6 +88,8 @@
 <!ENTITY reg.tr7               "<register role=test>TR7</register>">
 
 <!-- flags -->
+<!ENTITY flag.nt               "<register role=flag>NT</register>">
+<!ENTITY flag.iopl             "<register role=flag>IOPL</register>">
 <!ENTITY flag.of               "<register role=flag>OF</register>">
 <!ENTITY flag.df               "<register role=flag>DF</register>">
 <!ENTITY flag.if               "<register role=flag>IF</register>">

@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.4 2001/08/14 15:43:02 pete Exp $
+     $Id: chapter.sgml,v 1.5 2001/09/12 22:14:46 pete Exp $
 -->
 
 <chapter id="assembly">
@@ -29,7 +29,9 @@
     </mediaobject>
    </informalfigure>
 
-   <simplelist columns="2">
+   <simplelist columns="3">
+    <member>&flag.nt; &mdash; Nested Task flag (286+)</member>
+    <member>&flag.iopl; &mdash; I/O Privilege Level (286+)</member>
     <member>&flag.of; &mdash; Overflow Flag</member>
     <member>&flag.df; &mdash; Direction Flag</member>
     <member>&flag.if; &mdash; Interrupt-Enable Flag</member>
