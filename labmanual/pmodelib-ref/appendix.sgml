@@ -5567,13 +5567,13 @@ ENDSTRUC</programlisting>
 
      <listitem>
       <para><parameter>Bits</parameter>, number of bits per sample (8
-       or 16).  16 is currently unimplemented.</para>
+       or 16).</para>
 
       <para><parameter>SampleRate</parameter>, in samples per second.
        Common choices are 11025, 22050, and 44100.</para>
 
       <para><parameter>Stereo</parameter>, whether stream is mono (0)
-       or stereo (1).  Stereo is currently unimplemented.</para>
+       or stereo (1).</para>
      </listitem>
     </varlistentry>
 
@@ -5590,11 +5590,6 @@ ENDSTRUC</programlisting>
 
      <listitem>
       <para>Not all formats have been tested.</para>
-
-      <para>16 bit and stereo support is currently unimplemented.
-       Adding stereo will require changes to <link
-	linkend="pmodelib-ref-sb16-start"><function>SB16_Start()</function></link> 
-       in addition to this function.</para>
      </listitem>
     </varlistentry>
    </variablelist>
