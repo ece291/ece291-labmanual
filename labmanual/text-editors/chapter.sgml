@@ -732,7 +732,7 @@
 
    <para>The Visual Studio development suite has a built-in editor
     that can be used to edit assembly language programs.  However,
-    although it does preform limited syntax highlighting, it's written
+    although it does perform limited syntax highlighting, it's written
     for MASM syntax, not the NASM syntax we use in ECE 291.</para>
   </sect2>
  </sect1>
