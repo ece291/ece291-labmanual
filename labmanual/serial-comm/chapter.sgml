@@ -639,8 +639,8 @@
    IRQ4 are assigned to the primary (COM1) adapter, I/O ports 2F8h to
    2FEh and interrupt request line IRQ3 to the secondary (COM2)
    adapter; a jumper on the Adapter card is used to configure it as
-   COM1 or COM2.  COM3 and COM4 share IRQ4 and IRQ3 with COM1 and
-   COM2, but use different I/O ports.</para>
+   COM1 or COM2.  COM1 and COM3 share IRQ4, and COM2 and COM4 share
+   IRQ3, but each COM port uses a different set of I/O ports.</para>
 
   <para>The internal registers of the 8250 ACE that are accessible via
    I/O port addresses are shown in <xref
