@@ -57,6 +57,7 @@
 <!ENTITY reg.st7               "<register role=floating-point>ST7</register>">
 
 <!-- MMX -->
+<!ENTITY reg.mmx               "<register role=mmx>MMX</register>">
 <!ENTITY reg.mm0               "<register role=mmx>MM0</register>">
 <!ENTITY reg.mm1               "<register role=mmx>MM1</register>">
 <!ENTITY reg.mm2               "<register role=mmx>MM2</register>">
