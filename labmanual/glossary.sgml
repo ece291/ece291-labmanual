@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: glossary.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+     $Id: glossary.sgml,v 1.2 2001/07/26 00:31:30 pete Exp $
 -->
 
 <glossary id="glossary">
@@ -108,7 +108,7 @@
    <glossterm>Execution Time</glossterm>
 
    <glossdef>
-    <para>The time at which the linked-together code isactually being
+    <para>The time at which the linked-together code is actually being
      executed by the computer (as opposed to assembly time, when the
      program is being translated into machine code).</para>
    </glossdef>
