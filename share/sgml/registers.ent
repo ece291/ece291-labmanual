@@ -47,6 +47,7 @@
 <!ENTITY reg.eip               "<register role=reg32>EIP</register>">
 
 <!-- floating point -->
+<!ENTITY reg.fpu               "<register role=floating-point>FPU</register>">
 <!ENTITY reg.st0               "<register role=floating-point>ST0</register>">
 <!ENTITY reg.st1               "<register role=floating-point>ST1</register>">
 <!ENTITY reg.st2               "<register role=floating-point>ST2</register>">
