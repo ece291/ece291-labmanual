@@ -8,9 +8,7 @@
 <!ENTITY % registers PUBLIC "-//ECE291//ENTITIES DocBook Register Entities//EN"> %registers;
 <!ENTITY % chapters SYSTEM "chapters.ent"> %chapters;
 
-<!-- Instruction groups to exclude/include.  It isn't safe to include any of
-     these except for inst-ref.undoc because not all of them have been
-     SGMLized yet. -->
+<!-- Instruction groups to exclude/include. -->
 <!ENTITY % inst-ref.sse2 "IGNORE">
 <!ENTITY % inst-ref.undoc "IGNORE">
 

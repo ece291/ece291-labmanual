@@ -1791,8 +1791,8 @@ DEC r/m32                     ; o32 FF /1            [386]</screen>
     linkend="inst-ref-sub">).  See also <literal>INC</literal> (<xref
     linkend="inst-ref-inc">).</para>
 
-   <para>This instruction can be used with a \c{LOCK} prefix to allow
-    atomic execution.</para>
+   <para>This instruction can be used with a <literal>LOCK</literal>
+    prefix to allow atomic execution.</para>
 
    <para>See also <literal>INC</literal> (<xref
     linkend="inst-ref-inc">).</para>
@@ -4812,8 +4812,8 @@ PREFETCHT2 m8                 ; 0F 18 /3        [KATMAI]</screen>
 
    <para>The <literal>PREFETCHh</literal> instructions fetch the line
     of data from memory that contains the specified byte. It is placed
-    in the cache according to rules specified by locality hints
-    \c{h}:</para>
+    in the cache according to rules specified by locality hint
+    <literal>h</literal>:</para>
 
    <para>The hints are:</para>
 
@@ -5218,7 +5218,7 @@ ROR r/m32,imm8                ; o32 C1 /1 ib         [386]</screen>
    <para><literal>SAHF</literal> sets the low byte of the flags word
     according to the contents of the &reg.ah; register.</para>
 
-   <para>The operation of \c{SAHF} is:</para>
+   <para>The operation of <literal>SAHF</literal> is:</para>
 
    <screen>AH --> SF:ZF:0:AF:0:PF:1:CF</screen>
 
@@ -6870,363 +6870,537 @@ CMPORDPS xmm1,xmm2/mem128     ; 0F C2 /r 07     [KATMAI,SSE]</screen>
    </informaltable>
   </sect2>
 <![%inst-ref.sse2;[
-\H{insCVTDQ2PD} \i\c{CVTDQ2PD}:
-Packed Signed INT32 to Packed Double-Precision FP Conversion
+  <sect2 id="inst-ref-cvtdq2pd">
+   <title><literal>CVTDQ2PD</literal>: Packed Signed INT32 to Packed
+    Double-Precision FP Conversion</title>
 
-\c CVTDQ2PD xmm1,xmm2/mem64      ; F3 0F E6 /r     [WILLAMETTE,SSE2] 
+   <indexterm>
+    <primary><literal>CVTDQ2PD</literal></primary>
+   </indexterm>
 
-\c{CVTDQ2PD} converts two packed signed doublewords from the source
-operand to two packed double-precision FP values in the destination
-operand.
+   <screen>CVTDQ2PD xmm1,xmm2/mem64      ; F3 0F E6 /r     [WILLAMETTE,SSE2]</screen>
 
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the
-source is a register, the packed integers are in the low quadword.
+   <para><literal>CVTDQ2PD</literal> converts two packed signed
+    doublewords from the source operand to two packed double-precision
+    FP values in the destination operand.</para>
 
-\H{insCVTDQ2PS} \i\c{CVTDQ2PS}:
-Packed Signed INT32 to Packed Single-Precision FP Conversion
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 64-bit memory location.
+    If the source is a register, the packed integers are in the low
+    quadword.</para>
+  </sect2>
 
-\c CVTDQ2PS xmm1,xmm2/mem128     ; 0F 5B /r        [WILLAMETTE,SSE2] 
+  <sect2 id="inst-ref-cvtdq2ps">
+   <title><literal>CVTDQ2PS</literal>: Packed Signed INT32 to Packed
+    Single-Precision FP Conversion</title>
 
-\c{CVTDQ2PS} converts four packed signed doublewords from the source
-operand to four packed single-precision FP values in the destination
-operand.
+   <indexterm>
+    <primary><literal>CVTDQ2PS</literal></primary>
+   </indexterm>
 
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
+   <screen>CVTDQ2PS xmm1,xmm2/mem128     ; 0F 5B /r        [WILLAMETTE,SSE2]</screen>
 
-For more details of this instruction, see the Intel Processor manuals.
+   <para><literal>CVTDQ2PS</literal> converts four packed signed
+    doublewords from the source operand to four packed
+    single-precision FP values in the destination operand.</para>
 
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
 
-\H{insCVTPD2DQ} \i\c{CVTPD2DQ}:
-Packed Double-Precision FP to Packed Signed INT32 Conversion
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
 
-\c CVTPD2DQ xmm1,xmm2/mem128     ; F2 0F E6 /r     [WILLAMETTE,SSE2]
+  <sect2 id="inst-ref-cvtpd2pq">
+   <title><literal>CVTPD2DQ</literal>: Packed Double-Precision FP to
+    Packed Signed INT32 Conversion</title>
 
-\c{CVTPD2DQ} converts two packed double-precision FP values from the
-source operand to two packed signed doublewords in the low quadword
-of the destination operand. The high quadword of the destination is
-set to all 0s.
+   <indexterm>
+    <primary><literal>CVTPD2PQ</literal></primary>
+   </indexterm>
 
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
+   <screen>CVTPD2DQ xmm1,xmm2/mem128     ; F2 0F E6 /r     [WILLAMETTE,SSE2]</screen>
 
-For more details of this instruction, see the Intel Processor manuals.
+   <para><literal>CVTPD2DQ</literal> converts two packed
+    double-precision FP values from the source operand to two packed
+    signed doublewords in the low quadword of the destination operand.
+    The high quadword of the destination is set to all 0s.</para>
 
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
 
-\H{insCVTPD2PI} \i\c{CVTPD2PI}:
-Packed Double-Precision FP to Packed Signed INT32 Conversion
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
 
-\c CVTPD2PI mm,xmm/mem128        ; 66 0F 2D /r     [WILLAMETTE,SSE2]
+  <sect2 id="inst-ref-cvtpd2pi">
+   <title><literal>CVTPD2PI</literal>: Packed Double-Precision FP to
+    Packed Signed INT32 Conversion</title>
 
-\c{CVTPD2PI} converts two packed double-precision FP values from the
-source operand to two packed signed doublewords in the destination
-operand.
+   <indexterm>
+    <primary><literal>CVTPD2PI</literal></primary>
+   </indexterm>
 
-The destination operand is an \c{MMX} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
+   <screen>CVTPD2PI mm,xmm/mem128        ; 66 0F 2D /r     [WILLAMETTE,SSE2]</screen>
 
-For more details of this instruction, see the Intel Processor manuals.
+   <para><literal>CVTPD2PI</literal> converts two packed
+    double-precision FP values from the source operand to two packed
+    signed doublewords in the destination operand.</para>
 
-\H{insCVTPD2PS} \i\c{CVTPD2PS}:
-Packed Double-Precision FP to Packed Single-Precision FP Conversion
+   <para>The destination operand is an &reg.mmx; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
 
-\c CVTPD2PS xmm1,xmm2/mem128     ; 66 0F 5A /r     [WILLAMETTE,SSE2]
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
 
-\c{CVTPD2PS} converts two packed double-precision FP values from the
-source operand to two packed single-precision FP values in the low
-quadword of the destination operand. The high quadword of the
-destination is set to all 0s.
+  <sect2 id="inst-ref-cvtpd2ps">
+   <title><literal>CVTPD2PS</literal>: Packed Double-Precision FP to
+    Packed Single-Precision FP Conversion</title>
 
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
+   <indexterm>
+    <primary><literal>CVTPD2PS</literal></primary>
+   </indexterm>
 
-For more details of this instruction, see the Intel Processor manuals.
+   <screen>CVTPD2PS xmm1,xmm2/mem128     ; 66 0F 5A /r     [WILLAMETTE,SSE2]</screen>
 
-\H{insCVTPI2PD} \i\c{CVTPI2PD}:
-Packed Signed INT32 to Packed Double-Precision FP Conversion
+   <para><literal>CVTPD2PS</literal> converts two packed
+    double-precision FP values from the source operand to two packed
+    single-precision FP values in the low quadword of the destination
+    operand. The high quadword of the destination is set to all
+    0s.</para>
 
-\c CVTPI2PD xmm,mm/mem64         ; 66 0F 2A /r     [WILLAMETTE,SSE2]
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
 
-\c{CVTPI2PD} converts two packed signed doublewords from the source
-operand to two packed double-precision FP values in the destination
-operand.
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
 
-The destination operand is an \c{XMM} register. The source can be
-either an \c{MMX} register or a 64-bit memory location.
+  <sect2 id="inst-ref-cvtpi2pd">
+   <title><literal>CVTPI2PD</literal>: Packed Signed INT32 to Packed
+    Double-Precision FP Conversion</title>
 
-For more details of this instruction, see the Intel Processor manuals.
+   <indexterm>
+    <primary><literal>CVTPI2PD</literal></primary>
+   </indexterm>
 
-\H{insCVTPI2PS} \i\c{CVTPI2PS}:
-Packed Signed INT32 to Packed Single-FP Conversion
+   <screen>CVTPI2PD xmm,mm/mem64         ; 66 0F 2A /r     [WILLAMETTE,SSE2]</screen>
 
-\c CVTPI2PS xmm,mm/mem64         ; 0F 2A /r        [KATMAI,SSE] 
+   <para><literal>CVTPI2PD</literal> converts two packed signed
+    doublewords from the source operand to two packed double-precision
+    FP values in the destination operand.</para>
 
-\c{CVTPI2PS} converts two packed signed doublewords from the source
-operand to two packed single-precision FP values in the low quadword
-of the destination operand. The high quadword of the destination
-remains unchanged.
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.mmx; register or a 64-bit memory
+    location.</para>
 
-The destination operand is an \c{XMM} register. The source can be
-either an \c{MMX} register or a 64-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-\H{insCVTPS2DQ} \i\c{CVTPS2DQ}:
-Packed Single-Precision FP to Packed Signed INT32 Conversion
-
-\c CVTPS2DQ xmm1,xmm2/mem128     ; 66 0F 5B /r     [WILLAMETTE,SSE2]
-
-\c{CVTPS2DQ} converts four packed single-precision FP values from the
-source operand to four packed signed doublewords in the destination operand.
-
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-\H{insCVTPS2PD} \i\c{CVTPS2PD}:
-Packed Single-Precision FP to Packed Double-Precision FP Conversion
-
-\c CVTPS2PD xmm1,xmm2/mem64      ; 0F 5A /r        [WILLAMETTE,SSE2]
-
-\c{CVTPS2PD} converts two packed single-precision FP values from the
-source operand to two packed double-precision FP values in the destination
-operand.
-
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the source
-is a register, the input values are in the low quadword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTPS2PI} \i\c{CVTPS2PI}:
-Packed Single-Precision FP to Packed Signed INT32 Conversion
-
-\c CVTPS2PI mm,xmm/mem64         ; 0F 2D /r        [KATMAI,SSE] 
-
-\c{CVTPS2PI} converts two packed single-precision FP values from
-the source operand to two packed signed doublewords in the destination
-operand.
-
-The destination operand is an \c{MMX} register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the
-source is a register, the input values are in the low quadword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTSD2SI} \i\c{CVTSD2SI}:
-Scalar Double-Precision FP to Signed INT32 Conversion
-
-\c CVTSD2SI reg32,xmm/mem64      ; F2 0F 2D /r     [WILLAMETTE,SSE2]
-
-\c{CVTSD2SI} converts a double-precision FP value from the source
-operand to a signed doubleword in the destination operand.
-
-The destination operand is a general purpose register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the
-source is a register, the input value is in the low quadword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTSD2SS} \i\c{CVTSD2SS}:
-Scalar Double-Precision FP to Scalar Single-Precision FP Conversion
-
-\c CVTSD2SS xmm1,xmm2/mem64      ; F2 0F 5A /r     [KATMAI,SSE] 
-
-\c{CVTSD2SS} converts a double-precision FP value from the source
-perand to a single-precision FP value in the low doubleword of the
-estination operand. The upper 3 doublewords are left unchanged.
-
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the
-source is a register, the input value is in the low quadword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTSI2SD} \i\c{CVTSI2SD}:
-Signed INT32 to Scalar Double-Precision FP Conversion
-
-\c CVTSI2SD xmm,r/m32            ; F2 0F 2A /r     [WILLAMETTE,SSE2]
-
-\c{CVTSI2SD} converts a signed doubleword from the source operand to
-a double-precision FP value in the low quadword of the destination
-operand. The high quadword is left unchanged.
-
-The destination operand is an \c{XMM} register. The source can be either
-a general purpose register or a 32-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTSI2SS} \i\c{CVTSI2SS}:
-Signed INT32 to Scalar Single-Precision FP Conversion
-
-\c CVTSI2SS xmm,r/m32            ; F3 0F 2A /r     [KATMAI,SSE]
-
-\c{CVTSI2SS} converts a signed doubleword from the source operand to a
-single-precision FP value in the low doubleword of the destination operand.
-The upper 3 doublewords are left unchanged.
-
-The destination operand is an \c{XMM} register. The source can be either
-a general purpose register or a 32-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTSS2SD} \i\c{CVTSS2SD}:
-Scalar Single-Precision FP to Scalar Double-Precision FP Conversion
-
-\c CVTSS2SD xmm1,xmm2/mem32      ; F3 0F 5A /r     [WILLAMETTE,SSE2]
-
-\c{CVTSS2SD} converts a single-precision FP value from the source operand
-to a double-precision FP value in the low quadword of the destination
-operand. The upper quadword is left unchanged.
-
-The destination operand is an \c{XMM} register. The source can be either
-an \c{XMM} register or a 32-bit memory location. If the source is a
-register, the input value is contained in the low doubleword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTSS2SI} \i\c{CVTSS2SI}:
-Scalar Single-Precision FP to Signed INT32 Conversion
-
-\c CVTSS2SI reg32,xmm/mem32      ; F3 0F 2D /r     [KATMAI,SSE] 
-
-\c{CVTSS2SI} converts a single-precision FP value from the source
-operand to a signed doubleword in the destination operand.
-
-The destination operand is a general purpose register. The source can be
-either an \c{XMM} register or a 32-bit memory location. If the
-source is a register, the input value is in the low doubleword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTTPD2DQ} \i\c{CVTTPD2DQ}:
-Packed Double-Precision FP to Packed Signed INT32 Conversion with Truncation
-
-\c CVTTPD2DQ xmm1,xmm2/mem128    ; 66 0F E6 /r     [WILLAMETTE,SSE2]
-
-\c{CVTTPD2DQ} converts two packed double-precision FP values in the source
-operand to two packed single-precision FP values in the destination operand.
-If the result is inexact, it is truncated (rounded toward zero). The high
-quadword is set to all 0s.
-
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTTPD2PI} \i\c{CVTTPD2PI}:
-Packed Double-Precision FP to Packed Signed INT32 Conversion with Truncation
-
-\c CVTTPD2PI mm,xmm/mem128        ; 66 0F 2C /r     [WILLAMETTE,SSE2]
-
-\c{CVTTPD2PI} converts two packed double-precision FP values in the source
-operand to two packed single-precision FP values in the destination operand.
-If the result is inexact, it is truncated (rounded toward zero).
-
-The destination operand is an \c{MMX} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTTPS2DQ} \i\c{CVTTPS2DQ}:
-Packed Single-Precision FP to Packed Signed INT32 Conversion with Truncation
-
-\c CVTTPS2DQ xmm1,xmm2/mem128    ; F3 0F 5B /r     [WILLAMETTE,SSE2]
-
-\c{CVTTPS2DQ} converts four packed single-precision FP values in the source
-operand to four packed signed doublewords in the destination operand.
-If the result is inexact, it is truncated (rounded toward zero).
-
-The destination operand is an \c{XMM} register. The source can be
-either an \c{XMM} register or a 128-bit memory location.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTTPS2PI} \i\c{CVTTPS2PI}:
-Packed Single-Precision FP to Packed Signed INT32 Conversion with Truncation
-
-\c CVTTPS2PI mm,xmm/mem64         ; 0F 2C /r       [KATMAI,SSE] 
-
-\c{CVTTPS2PI} converts two packed single-precision FP values in the source
-operand to two packed signed doublewords in the destination operand.
-If the result is inexact, it is truncated (rounded toward zero). If
-the source is a register, the input values are in the low quadword.
-
-The destination operand is an \c{MMX} register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the source
-is a register, the input value is in the low quadword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTTSD2SI} \i\c{CVTTSD2SI}:
-Scalar Double-Precision FP to Signed INT32 Conversion with Truncation
-
-\c CVTTSD2SI reg32,xmm/mem64      ; F2 0F 2C /r    [WILLAMETTE,SSE2]
-
-\c{CVTTSD2SI} converts a double-precision FP value in the source operand
-to a signed doubleword in the destination operand. If the result is
-inexact, it is truncated (rounded toward zero).
-
-The destination operand is a general purpose register. The source can be
-either an \c{XMM} register or a 64-bit memory location. If the source is a
-register, the input value is in the low quadword.
-
-For more details of this instruction, see the Intel Processor manuals.
-
-
-\H{insCVTTSS2SI} \i\c{CVTTSS2SI}:
-Scalar Single-Precision FP to Signed INT32 Conversion with Truncation
-
-\c CVTTSD2SI reg32,xmm/mem32      ; F3 0F 2C /r    [KATMAI,SSE] 
-
-\c{CVTTSS2SI} converts a single-precision FP value in the source operand
-to a signed doubleword in the destination operand. If the result is
-inexact, it is truncated (rounded toward zero).
-
-The destination operand is a general purpose register. The source can be
-either an \c{XMM} register or a 32-bit memory location. If the source is a
-register, the input value is in the low doubleword.
-
-For more details of this instruction, see the Intel Processor manuals.
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
 ]]>
+  <sect2 id="inst-ref-cvtpi2ps">
+   <title><literal>CVTPI2PS</literal>: Packed Signed INT32 to Packed
+    Single-FP Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTPI2PS</literal></primary>
+   </indexterm>
+
+   <screen>CVTPI2PS xmm,mm/mem64         ; 0F 2A /r        [KATMAI,SSE]</screen>
+
+   <para><literal>CVTPI2PS</literal> converts two packed signed
+    doublewords from the source operand to two packed single-precision
+    FP values in the low quadword of the destination operand. The high
+    quadword of the destination remains unchanged.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.mmx; register or a 64-bit memory
+    location.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
 <![%inst-ref.sse2;[
- <sect2 id="inst-ref-divpd">
-  <title><literal>DIVPD</literal>: Packed Double-Precision FP
-   Divide</title>
+  <sect2 id="inst-ref-cvtps2dq">
+   <title><literal>CVTPS2DQ</literal>: Packed Single-Precision FP to
+    Packed Signed INT32 Conversion</title>
 
-  <indexterm>
-   <primary><literal>DIVPD</literal></primary>
-  </indexterm>
+   <indexterm>
+    <primary><literal>CVTPS2DQ</literal></primary>
+   </indexterm>
 
-  <screen>DIVPD xmm1,xmm2/mem128        ; 66 0F 5E /r     [WILLAMETTE,SSE2]</screen>
+   <screen>CVTPS2DQ xmm1,xmm2/mem128     ; 66 0F 5B /r     [WILLAMETTE,SSE2]</screen>
 
-  <para><literal>DIVPD</literal> divides the two packed
-   double-precision FP values in the destination operand by the two
-   packed double-precision FP values in the source operand, and stores
-   the packed double-precision results in the destination
-   register.</para>
+   <para><literal>CVTPS2DQ</literal> converts four packed
+    single-precision FP values from the source operand to four packed
+    signed doublewords in the destination operand.</para>
 
-  <para>The destination is an &reg.xmm; register. The source operand
-   can be either an &reg.xmm; register or a 128-bit memory
-   location.</para>
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
 
-  <screen>   dst[0-63]   := dst[0-63]   / src[0-63],
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-cvtps2pd">
+   <title><literal>CVTPS2PD</literal>: Packed Single-Precision FP to
+    Packed Double-Precision FP Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTPS2PD</literal></primary>
+   </indexterm>
+
+   <screen>CVTPS2PD xmm1,xmm2/mem64      ; 0F 5A /r        [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTPS2PD</literal> converts two packed
+    single-precision FP values from the source operand to two packed
+    double-precision FP values in the destination operand.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 64-bit memory location.
+    If the source is a register, the input values are in the low
+    quadword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-cvtps2pi">
+   <title><literal>CVTPS2PI</literal>: Packed Single-Precision FP to
+    Packed Signed INT32 Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTPS2PI</literal></primary>
+   </indexterm>
+
+   <screen>CVTPS2PI mm,xmm/mem64         ; 0F 2D /r        [KATMAI,SSE]</screen>
+
+   <para><literal>CVTPS2PI</literal> converts two packed
+    single-precision FP values from the source operand to two packed
+    signed doublewords in the destination operand.</para>
+
+   <para>The destination operand is an &reg.mmx; register. The source
+    can be either an &reg.xmm; register or a 64-bit memory location.
+    If the source is a register, the input values are in the low
+    quadword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-cvtsd2si">
+   <title><literal>CVTSD2SI</literal>: Scalar Double-Precision FP to
+    Signed INT32 Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTSD2SI</literal></primary>
+   </indexterm>
+
+   <screen>CVTSD2SI reg32,xmm/mem64      ; F2 0F 2D /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTSD2SI</literal> converts a double-precision FP
+    value from the source operand to a signed doubleword in the
+    destination operand.</para>
+
+   <para>The destination operand is a general purpose register. The
+    source can be either an &reg.xmm; register or a 64-bit memory
+    location. If the source is a register, the input value is in the
+    low quadword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-cvtsd2ss">
+   <title><literal>CVTSD2SS</literal>: Scalar Double-Precision FP to
+    Scalar Single-Precision FP Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTSD2SS</literal></primary>
+   </indexterm>
+
+   <screen>CVTSD2SS xmm1,xmm2/mem64      ; F2 0F 5A /r     [KATMAI,SSE]</screen>
+
+   <para><literal>CVTSD2SS</literal> converts a double-precision FP
+    value from the source perand to a single-precision FP value in the
+    low doubleword of the estination operand. The upper 3 doublewords
+    are left unchanged.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 64-bit memory location.
+    If the source is a register, the input value is in the low
+    quadword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-cvtsi2sd">
+   <title><literal>CVTSI2SD</literal>: Signed INT32 to Scalar
+    Double-Precision FP Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTSI2SD</literal></primary>
+   </indexterm>
+
+   <screen>CVTSI2SD xmm,r/m32            ; F2 0F 2A /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTSI2SD</literal> converts a signed doubleword from
+    the source operand to a double-precision FP value in the low
+    quadword of the destination operand. The high quadword is left
+    unchanged.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either a general purpose register or a 32-bit memory
+    location.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-cvtsi2ss">
+   <title><literal>CVTSI2SS</literal>: Signed INT32 to Scalar
+    Single-Precision FP Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTSI2SS</literal></primary>
+   </indexterm>
+
+   <screen>CVTSI2SS xmm,r/m32            ; F3 0F 2A /r     [KATMAI,SSE]</screen>
+
+   <para><literal>CVTSI2SS</literal> converts a signed doubleword from
+    the source operand to a single-precision FP value in the low
+    doubleword of the destination operand. The upper 3 doublewords are
+    left unchanged.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either a general purpose register or a 32-bit memory
+    location.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-cvtss2sd">
+   <title><literal>CVTSS2SD</literal>: Scalar Single-Precision FP to
+    Scalar Double-Precision FP Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTSS2SD</literal></primary>
+   </indexterm>
+
+   <screen>CVTSS2SD xmm1,xmm2/mem32      ; F3 0F 5A /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTSS2SD</literal> converts a single-precision FP
+    value from the source operand to a double-precision FP value in
+    the low quadword of the destination operand. The upper quadword is
+    left unchanged.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 32-bit memory location.
+    If the source is a register, the input value is contained in the
+    low doubleword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-cvtss2si">
+   <title><literal>CVTSS2SI</literal>: Scalar Single-Precision FP to
+    Signed INT32 Conversion</title>
+
+   <indexterm>
+    <primary><literal>CVTSS2SI</literal></primary>
+   </indexterm>
+
+   <screen>CVTSS2SI reg32,xmm/mem32      ; F3 0F 2D /r     [KATMAI,SSE]</screen>
+
+   <para><literal>CVTSS2SI</literal> converts a single-precision FP
+    value from the source operand to a signed doubleword in the
+    destination operand.</para>
+
+   <para>The destination operand is a general purpose register. The
+    source can be either an &reg.xmm; register or a 32-bit memory
+    location. If the source is a register, the input value is in the
+    low doubleword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-cvttpd2dq">
+   <title><literal>CVTTPD2DQ</literal>: Packed Double-Precision FP to
+    Packed Signed INT32 Conversion with Truncation</title>
+
+   <indexterm>
+    <primary><literal>CVTTPD2DQ</literal></primary>
+   </indexterm>
+
+   <screen>CVTTPD2DQ xmm1,xmm2/mem128    ; 66 0F E6 /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTTPD2DQ</literal> converts two packed
+    double-precision FP values in the source operand to two packed
+    single-precision FP values in the destination operand. If the
+    result is inexact, it is truncated (rounded toward zero). The high
+    quadword is set to all 0s.</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-cvttpd2pi">
+   <title><literal>CVTTPD2PI</literal>: Packed Double-Precision FP to
+    Packed Signed INT32 Conversion with Truncation</title>
+
+   <indexterm>
+    <primary><literal>CVTTPD2PI</literal></primary>
+   </indexterm>
+
+   <screen>CVTTPD2PI mm,xmm/mem128        ; 66 0F 2C /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTTPD2PI</literal> converts two packed
+    double-precision FP values in the source operand to two packed
+    single-precision FP values in the destination operand. If the
+    result is inexact, it is truncated (rounded toward zero).</para>
+
+   <para>The destination operand is an &reg.mmx; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-cvttps2dq">
+   <title><literal>CVTTPS2DQ</literal>: Packed Single-Precision FP to
+    Packed Signed INT32 Conversion with Truncation</title>
+
+   <indexterm>
+    <primary><literal>CVTTPS2DQ</literal></primary>
+   </indexterm>
+
+   <screen>CVTTPS2DQ xmm1,xmm2/mem128    ; F3 0F 5B /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTTPS2DQ</literal> converts four packed
+    single-precision FP values in the source operand to four packed
+    signed doublewords in the destination operand. If the result is
+    inexact, it is truncated (rounded toward zero).</para>
+
+   <para>The destination operand is an &reg.xmm; register. The source
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-cvttps2pi">
+   <title><literal>CVTTPS2PI</literal>: Packed Single-Precision FP to
+    Packed Signed INT32 Conversion with Truncation</title>
+
+   <indexterm>
+    <primary><literal>CVTTPS2PI</literal></primary>
+   </indexterm>
+
+   <screen>CVTTPS2PI mm,xmm/mem64         ; 0F 2C /r       [KATMAI,SSE]</screen>
+
+   <para><literal>CVTTPS2PI</literal> converts two packed
+    single-precision FP values in the source operand to two packed
+    signed doublewords in the destination operand. If the result is
+    inexact, it is truncated (rounded toward zero). If the source is a
+    register, the input values are in the low quadword.</para>
+
+   <para>The destination operand is an &reg.mmx; register. The source
+    can be either an &reg.xmm; register or a 64-bit memory location.
+    If the source is a register, the input value is in the low
+    quadword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-cvttsd2si">
+   <title><literal>CVTTSD2SI</literal>: Scalar Double-Precision FP to
+    Signed INT32 Conversion with Truncation</title>
+
+   <indexterm>
+    <primary><literal>CVTTSD2SI</literal></primary>
+   </indexterm>
+
+   <screen>CVTTSD2SI reg32,xmm/mem64      ; F2 0F 2C /r    [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>CVTTSD2SI</literal> converts a double-precision FP
+    value in the source operand to a signed doubleword in the
+    destination operand. If the result is inexact, it is truncated
+    (rounded toward zero).</para>
+
+   <para>The destination operand is a general purpose register. The
+    source can be either an &reg.xmm; register or a 64-bit memory
+    location. If the source is a register, the input value is in the
+    low quadword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-cvttss2si">
+   <title><literal>CVTTSS2SI</literal>: Scalar Single-Precision FP to
+    Signed INT32 Conversion with Truncation</title>
+
+   <indexterm>
+    <primary><literal>CVTTSS2SI</literal></primary>
+   </indexterm>
+
+   <screen>CVTTSD2SI reg32,xmm/mem32      ; F3 0F 2C /r    [KATMAI,SSE]</screen>
+
+   <para><literal>CVTTSS2SI</literal> converts a single-precision FP
+    value in the source operand to a signed doubleword in the
+    destination operand. If the result is inexact, it is truncated
+    (rounded toward zero).</para>
+
+   <para>The destination operand is a general purpose register. The
+    source can be either an &reg.xmm; register or a 32-bit memory
+    location. If the source is a register, the input value is in the
+    low doubleword.</para>
+
+   <para>For more details of this instruction, see the Intel Processor
+    manuals.</para>
+  </sect2>
+
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-divpd">
+   <title><literal>DIVPD</literal>: Packed Double-Precision FP
+    Divide</title>
+
+   <indexterm>
+    <primary><literal>DIVPD</literal></primary>
+   </indexterm>
+
+   <screen>DIVPD xmm1,xmm2/mem128        ; 66 0F 5E /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>DIVPD</literal> divides the two packed
+    double-precision FP values in the destination operand by the two
+    packed double-precision FP values in the source operand, and
+    stores the packed double-precision results in the destination
+    register.</para>
+
+   <para>The destination is an &reg.xmm; register. The source operand
+    can be either an &reg.xmm; register or a 128-bit memory
+    location.</para>
+
+   <screen>   dst[0-63]   := dst[0-63]   / src[0-63],
    dst[64-127] := dst[64-127] / src[64-127].</screen>
- </sect2>
+  </sect2>
 ]]>
   <sect2 id="inst-ref-divps">
    <title><literal>DIVPS</literal>: Packed Single-Precision FP
@@ -7588,195 +7762,319 @@ MOVD r/m32,xmm                ; 66 0F 7E /r     [WILLAMETTE,SSE2]]]></screen>
     &reg.mmx; register or a 128-bit &reg.xmm; register]]>.</para>
   </sect2>
 <![%inst-ref.sse2;[
-\H{insMOVDQ2Q} \i\c{MOVDQ2Q}: Move Quadword from XMM to MMX register.
-
-\c MOVDQ2Q mm,xmm                ; F2 OF D6 /r     [WILLAMETTE,SSE2]
-
-\c{MOVDQ2Q} moves the low quadword from the source operand to the
-destination operand.
-
-
-\H{insMOVDQA} \i\c{MOVDQA}: Move Aligned Double Quadword
-
-\c MOVDQA xmm1,xmm2/m128         ; 66 OF 6F /r     [WILLAMETTE,SSE2]
-\c MOVDQA xmm1/m128,xmm2         ; 66 OF 7F /r     [WILLAMETTE,SSE2]
-
-\c{MOVDQA} moves a double quadword from the source operand to the
-destination operand. When the source or destination operand is a
-memory location, it must be aligned to a 16-byte boundary.
-
-To move a double quadword to or from unaligned memory locations,
-use the \c{MOVDQU} instruction (\k{insMOVDQU}).
-
-
-\H{insMOVDQU} \i\c{MOVDQU}: Move Unaligned Double Quadword
-
-\c MOVDQU xmm1,xmm2/m128         ; F3 OF 6F /r     [WILLAMETTE,SSE2]
-\c MOVDQU xmm1/m128,xmm2         ; F3 OF 7F /r     [WILLAMETTE,SSE2]
-
-\c{MOVDQU} moves a double quadword from the source operand to the
-destination operand. When the source or destination operand is a
-memory location, the memory may be unaligned.
-
-To move a double quadword to or from known aligned memory locations,
-use the \c{MOVDQA} instruction (\k{insMOVDQA}).
-
-
-\H{insMOVHLPS} \i\c{MOVHLPS}: Move Packed Single-Precision FP High to Low
-
-\c MOVHLPS xmm1,xmm2             ; OF 12 /r        [KATMAI,SSE] 
-
-\c{MOVHLPS} moves the two packed single-precision FP values from the
-high quadword of the source register xmm2 to the low quadword of the
-destination register, xmm2. The upper quadword of xmm1 is left unchanged.
-
-The operation of this instruction is:
-
-\c    dst[0-63]   := src[64-127],
-\c    dst[64-127] remains unchanged.
-
-
-\H{insMOVHPD} \i\c{MOVHPD}: Move High Packed Double-Precision FP
-
-\c MOVHPD xmm,m64               ; 66 OF 16 /r      [WILLAMETTE,SSE2]
-\c MOVHPD m64,xmm               ; 66 OF 17 /r      [WILLAMETTE,SSE2]
-
-\c{MOVHPD} moves a double-precision FP value between the source and
-destination operands. One of the operands is a 64-bit memory location,
-the other is the high quadword of an \c{XMM} register.
-
-The operation of this instruction is:
-
-\c    mem[0-63]   := xmm[64-127];
-
-or
-
-\c    xmm[0-63]   remains unchanged;
-\c    xmm[64-127] := mem[0-63].
-
-
-\H{insMOVHPS} \i\c{MOVHPS}: Move High Packed Single-Precision FP
-
-\c MOVHPS xmm,m64               ; 0F 16 /r         [KATMAI,SSE]
-\c MOVHPS m64,xmm               ; 0F 17 /r         [KATMAI,SSE]
-
-\c{MOVHPS} moves two packed single-precision FP values between the source
-and destination operands. One of the operands is a 64-bit memory location,
-the other is the high quadword of an \c{XMM} register.
-
-The operation of this instruction is:
-
-\c    mem[0-63]   := xmm[64-127];
-
-or
-
-\c    xmm[0-63]   remains unchanged;
-\c    xmm[64-127] := mem[0-63].
-
-
-\H{insMOVLHPS} \i\c{MOVLHPS}: Move Packed Single-Precision FP Low to High
-
-\c MOVLHPS xmm1,xmm2             ; OF 16 /r         [KATMAI,SSE] 
-
-\c{MOVLHPS} moves the two packed single-precision FP values from the
-low quadword of the source register xmm2 to the high quadword of the
-destination register, xmm2. The low quadword of xmm1 is left unchanged.
-
-The operation of this instruction is:
-
-\c    dst[0-63]   remains unchanged;
-\c    dst[64-127] := src[0-63].
-
-\H{insMOVLPD} \i\c{MOVLPD}: Move Low Packed Double-Precision FP
-
-\c MOVLPD xmm,m64                ; 66 OF 12 /r     [WILLAMETTE,SSE2]
-\c MOVLPD m64,xmm                ; 66 OF 13 /r     [WILLAMETTE,SSE2]
-
-\c{MOVLPD} moves a double-precision FP value between the source and
-destination operands. One of the operands is a 64-bit memory location,
-the other is the low quadword of an \c{XMM} register.
-
-The operation of this instruction is:
-
-\c    mem(0-63)   := xmm(0-63);
-
-or
-
-\c    xmm(0-63)   := mem(0-63);
-\c    xmm(64-127) remains unchanged.
-
-\H{insMOVLPS} \i\c{MOVLPS}: Move Low Packed Single-Precision FP
-
-\c MOVLPS xmm,m64                ; OF 12 /r        [KATMAI,SSE] 
-\c MOVLPS m64,xmm                ; OF 13 /r        [KATMAI,SSE] 
-
-\c{MOVLPS} moves two packed single-precision FP values between the source
-and destination operands. One of the operands is a 64-bit memory location,
-the other is the low quadword of an \c{XMM} register.
-
-The operation of this instruction is:
-
-\c    mem(0-63)   := xmm(0-63);
-
-or
-
-\c    xmm(0-63)   := mem(0-63);
-\c    xmm(64-127) remains unchanged.
-
-
-\H{insMOVMSKPD} \i\c{MOVMSKPD}: Extract Packed Double-Precision FP Sign Mask
-
-\c MOVMSKPD reg32,xmm              ; 66 0F 50 /r   [WILLAMETTE,SSE2]
-
-\c{MOVMSKPD} inserts a 2-bit mask in r32, formed of the most significant
-bits of each double-precision FP number of the source operand.
-
-
-\H{insMOVMSKPS} \i\c{MOVMSKPS}: Extract Packed Single-Precision FP Sign Mask
-
-\c MOVMSKPS reg32,xmm              ; 0F 50 /r      [KATMAI,SSE] 
-
-\c{MOVMSKPS} inserts a 4-bit mask in r32, formed of the most significant
-bits of each single-precision FP number of the source operand.
-
-\H{insMOVNTDQ} \i\c{MOVNTDQ}: Move Double Quadword Non Temporal
-
-\c MOVNTDQ m128,xmm              ; 66 0F E7 /r     [WILLAMETTE,SSE2]
-
-\c{MOVNTDQ} moves the double quadword from the \c{XMM} source
-register to the destination memory location, using a non-temporal
-hint. This store instruction minimizes cache pollution.
-
-\H{insMOVNTI} \i\c{MOVNTI}: Move Doubleword Non Temporal
-
-\c MOVNTI m32,reg32              ; 0F C3 /r        [WILLAMETTE,SSE2]
-
-\c{MOVNTI} moves the doubleword in the source register
-to the destination memory location, using a non-temporal
-hint. This store instruction minimizes cache pollution.
-
-\H{insMOVNTPD} \i\c{MOVNTPD}: Move Aligned Four Packed Single-Precision
-FP Values Non Temporal
-
-\H{insMOVNTPS} \i\c{MOVNTPS}: Move Aligned Four Packed Single-Precision
-FP Values Non Temporal
-
-\c MOVNTPS m128,xmm              ; 0F 2B /r        [KATMAI,SSE]
-
-\c{MOVNTPS} moves the double quadword from the \c{XMM} source
-register to the destination memory location, using a non-temporal
-hint. This store instruction minimizes cache pollution. The memory
-location must be aligned to a 16-byte boundary.
-
-
-\H{insMOVNTQ} \i\c{MOVNTQ}: Move Quadword Non Temporal
-
-\c MOVNTQ m64,mm                 ; 0F E7 /r        [KATMAI,MMX]
-
-\c{MOVNTQ} moves the quadword in the \c{MMX} source register
-to the destination memory location, using a non-temporal
-hint. This store instruction minimizes cache pollution.
+  <sect2 id="inst-ref-movdq2q">
+   <title><literal>MOVDQ2Q</literal>: Move Quadword from &reg.xmm; to
+    &reg.mmx; register.</title>
+
+   <indexterm>
+    <primary><literal>MOVDQ2Q</literal></primary>
+   </indexterm>
+
+   <screen>MOVDQ2Q mm,xmm                ; F2 OF D6 /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVDQ2Q</literal> moves the low quadword from the
+    source operand to the destination operand.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-movdqa">
+   <title><literal>MOVDQA</literal>: Move Aligned Double
+    Quadword</title>
+
+   <indexterm>
+    <primary><literal>MOVDQA</literal></primary>
+   </indexterm>
+
+   <screen>MOVDQA xmm1,xmm2/m128         ; 66 OF 6F /r     [WILLAMETTE,SSE2]
+MOVDQA xmm1/m128,xmm2         ; 66 OF 7F /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVDQA</literal> moves a double quadword from the
+    source operand to the destination operand. When the source or
+    destination operand is a memory location, it must be aligned to a
+    16-byte boundary.</para>
+
+   <para>To move a double quadword to or from unaligned memory
+    locations, use the <literal>MOVDQU</literal> instruction (<xref
+     linkend="inst-ref-movdqu">).</para>
+  </sect2>
+
+  <sect2 id="inst-ref-movdqu">
+   <title><literal>MOVDQU</literal>: Move Unaligned Double
+    Quadword</title>
+
+   <indexterm>
+    <primary><literal>MOVDQU</literal></primary>
+   </indexterm>
+
+   <screen>MOVDQU xmm1,xmm2/m128         ; F3 OF 6F /r     [WILLAMETTE,SSE2]
+MOVDQU xmm1/m128,xmm2         ; F3 OF 7F /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVDQU</literal> moves a double quadword from the
+    source operand to the destination operand. When the source or
+    destination operand is a memory location, the memory may be
+    unaligned.</para>
+
+   <para>To move a double quadword to or from known aligned memory
+    locations, use the <literal>MOVDQA</literal> instruction (<xref
+     linkend="inst-ref-movdqa">).</para>
+  </sect2>
 ]]>
+  <sect2 id="inst-ref-movhlps">
+   <title><literal>MOVHLPS</literal>: Move Packed Single-Precision FP
+    High to Low</title>
+
+   <indexterm>
+    <primary><literal>MOVHLPS</literal></primary>
+   </indexterm>
+
+   <screen>MOVHLPS xmm1,xmm2             ; OF 12 /r        [KATMAI,SSE]</screen>
+
+   <para><literal>MOVHLPS</literal> moves the two packed
+    single-precision FP values from the high quadword of the source
+    register xmm2 to the low quadword of the destination register,
+    xmm2. The upper quadword of xmm1 is left unchanged.</para>
+
+   <para>The operation of this instruction is:</para>
+
+   <screen>   dst[0-63]   := src[64-127],
+   dst[64-127] remains unchanged.</screen>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-movhpd">
+   <title><literal>MOVHPD</literal>: Move High Packed Double-Precision
+    FP</title>
+
+   <indexterm>
+    <primary><literal>MOVHPD</literal></primary>
+   </indexterm>
+
+   <screen>MOVHPD xmm,m64               ; 66 OF 16 /r      [WILLAMETTE,SSE2]
+MOVHPD m64,xmm               ; 66 OF 17 /r      [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVHPD</literal> moves a double-precision FP value
+    between the source and destination operands. One of the operands
+    is a 64-bit memory location, the other is the high quadword of an
+    &reg.xmm; register.</para>
+
+   <para>The operation of this instruction is:</para>
+
+   <screen>   mem[0-63]   := xmm[64-127];</screen>
+
+   <para>or</para>
+
+   <screen>   xmm[0-63]   remains unchanged;
+   xmm[64-127] := mem[0-63].</screen>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-movhps">
+   <title><literal>MOVHPS</literal>: Move High Packed Single-Precision
+    FP</title>
+
+   <indexterm>
+    <primary><literal>MOVHPS</literal></primary>
+   </indexterm>
+
+   <screen>MOVHPS xmm,m64               ; 0F 16 /r         [KATMAI,SSE]
+MOVHPS m64,xmm               ; 0F 17 /r         [KATMAI,SSE]</screen>
+
+   <para><literal>MOVHPS</literal> moves two packed single-precision
+    FP values between the source and destination operands. One of the
+    operands is a 64-bit memory location, the other is the high
+    quadword of an &reg.xmm; register.</para>
+
+   <para>The operation of this instruction is:</para>
+
+   <screen>   mem[0-63]   := xmm[64-127];</screen>
+
+   <para>or</para>
+
+   <screen>   xmm[0-63]   remains unchanged;
+   xmm[64-127] := mem[0-63].</screen>
+  </sect2>
+
+  <sect2 id="inst-ref-movlhps">
+   <title><literal>MOVLHPS</literal>: Move Packed Single-Precision FP
+    Low to High</title>
+
+   <indexterm>
+    <primary><literal>MOVLHPS</literal></primary>
+   </indexterm>
+
+   <screen>MOVLHPS xmm1,xmm2             ; OF 16 /r         [KATMAI,SSE]</screen>
+
+   <para><literal>MOVLHPS</literal> moves the two packed
+    single-precision FP values from the low quadword of the source
+    register xmm2 to the high quadword of the destination register,
+    xmm2. The low quadword of xmm1 is left unchanged.</para>
+
+   <para>The operation of this instruction is:</para>
+
+   <screen>   dst[0-63]   remains unchanged;
+   dst[64-127] := src[0-63].</screen>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-movlpd">
+   <title><literal>MOVLPD</literal>: Move Low Packed Double-Precision
+    FP</title>
+
+   <indexterm>
+    <primary><literal>MOVLPD</literal></primary>
+   </indexterm>
+
+   <screen>MOVLPD xmm,m64                ; 66 OF 12 /r     [WILLAMETTE,SSE2]
+MOVLPD m64,xmm                ; 66 OF 13 /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVLPD</literal> moves a double-precision FP value
+    between the source and destination operands. One of the operands
+    is a 64-bit memory location, the other is the low quadword of an
+    &reg.xmm; register.</para>
+
+   <para>The operation of this instruction is:</para>
+
+   <screen>   mem(0-63)   := xmm(0-63);</screen>
+
+   <para>or</para>
+
+   <screen>   xmm(0-63)   := mem(0-63);
+   xmm(64-127) remains unchanged.</screen>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-movlps">
+   <title><literal>MOVLPS</literal>: Move Low Packed Single-Precision
+    FP</title>
+
+   <indexterm>
+    <primary><literal>MOVLPS</literal></primary>
+   </indexterm>
+
+   <screen>MOVLPS xmm,m64                ; OF 12 /r        [KATMAI,SSE]
+MOVLPS m64,xmm                ; OF 13 /r        [KATMAI,SSE]</screen>
+
+   <para><literal>MOVLPS</literal> moves two packed single-precision
+    FP values between the source and destination operands. One of the
+    operands is a 64-bit memory location, the other is the low
+    quadword of an &reg.xmm; register.</para>
+
+   <para>The operation of this instruction is:</para>
+
+   <screen>   mem(0-63)   := xmm(0-63);</screen>
+
+   <para>or</para>
+
+   <screen>   xmm(0-63)   := mem(0-63);
+   xmm(64-127) remains unchanged.</screen>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-movmskpd">
+   <title><literal>MOVMSKPD</literal>: Extract Packed Double-Precision
+    FP Sign Mask</title>
+
+   <indexterm>
+    <primary><literal>MOVMSKPD</literal></primary>
+   </indexterm>
+
+   <screen>MOVMSKPD reg32,xmm              ; 66 0F 50 /r   [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVMSKPD</literal> inserts a 2-bit mask in r32,
+    formed of the most significant bits of each double-precision FP
+    number of the source operand.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-movmskps">
+   <title><literal>MOVMSKPS</literal>: Extract Packed Single-Precision
+    FP Sign Mask</title>
+
+   <indexterm>
+    <primary><literal>MOVMSKPS</literal></primary>
+   </indexterm>
+
+   <screen>MOVMSKPS reg32,xmm              ; 0F 50 /r      [KATMAI,SSE]</screen>
+
+   <para><literal>MOVMSKPS</literal> inserts a 4-bit mask in r32,
+    formed of the most significant bits of each single-precision FP
+    number of the source operand.</para>
+  </sect2>
+<![%inst-ref.sse2;[
+  <sect2 id="inst-ref-movntdq">
+   <title><literal>MOVNTDQ</literal>: Move Double Quadword Non
+    Temporal</title>
+
+   <indexterm>
+    <primary><literal>MOVNTDQ</literal></primary>
+   </indexterm>
+
+   <screen>MOVNTDQ m128,xmm              ; 66 0F E7 /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVNTDQ</literal> moves the double quadword from the
+    &reg.xmm; source register to the destination memory location,
+    using a non-temporal hint. This store instruction minimizes cache
+    pollution.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-movnti">
+   <title><literal>MOVNTI</literal>: Move Doubleword Non
+    Temporal</title>
+
+   <indexterm>
+    <primary><literal>MOVNTI</literal></primary>
+   </indexterm>
+
+   <screen>MOVNTI m32,reg32              ; 0F C3 /r        [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVNTI</literal> moves the doubleword in the source
+    register to the destination memory location, using a non-temporal
+    hint. This store instruction minimizes cache pollution.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-movntpd">
+   <title><literal>MOVNTPD</literal>: Move Aligned Four Packed
+    Single-Precision FP Values Non Temporal</title>
+
+   <indexterm>
+    <primary><literal>MOVNTPD</literal></primary>
+   </indexterm>
+
+   <screen>MOVNTPD m128,xmm              ; 66 0F 2B /r     [WILLAMETTE,SSE2]</screen>
+
+   <para><literal>MOVNTPD</literal> moves the double quadword from the
+    &reg.xmm; source register to the destination memory location,
+    using a non-temporal hint. This store instruction minimizes cache
+    pollution. The memory location must be aligned to a 16-byte
+    boundary.</para>
+  </sect2>
+]]>
+  <sect2 id="inst-ref-movntps">
+   <title><literal>MOVNTPS</literal>: Move Aligned Four Packed
+    Single-Precision FP Values Non Temporal</title>
+
+   <indexterm>
+    <primary><literal>MOVNTPS</literal></primary>
+   </indexterm>
+
+   <screen>MOVNTPS m128,xmm              ; 0F 2B /r        [KATMAI,SSE]</screen>
+
+   <para><literal>MOVNTPS</literal> moves the double quadword from the
+    &reg.xmm; source register to the destination memory location,
+    using a non-temporal hint. This store instruction minimizes cache
+    pollution. The memory location must be aligned to a 16-byte
+    boundary.</para>
+  </sect2>
+
+  <sect2 id="inst-ref-movntq">
+   <title><literal>MOVNTQ</literal>: Move Quadword Non
+    Temporal</title>
+
+   <indexterm>
+    <primary><literal>MOVNTQ</literal></primary>
+   </indexterm>
+
+   <screen>MOVNTQ m64,mm                 ; 0F E7 /r        [KATMAI,MMX]</screen>
+
+   <para><literal>MOVNTQ</literal> moves the quadword in the &reg.mmx;
+    source register to the destination memory location, using a
+    non-temporal hint. This store instruction minimizes cache
+    pollution.</para>
+  </sect2>
+
   <sect2 id="inst-ref-movq">
    <title><literal>MOVQ</literal>: Move Quadword to/from Packed Data
     Register</title>
