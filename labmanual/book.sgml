@@ -20,22 +20,27 @@
 <!ENTITY % chap.introduction "IGNORE">
 <!ENTITY % chap.using-pc "IGNORE">
 <!ENTITY % chap.text-editors "IGNORE">
-<!ENTITY % chap.debugging "IGNORE">
+
 <!ENTITY % chap.assembly "IGNORE">
 <!ENTITY % chap.nasm "IGNORE">
+<!ENTITY % chap.debugging "IGNORE">
+<!ENTITY % chap.data-structures "IGNORE">
 <!ENTITY % chap.c-prog "IGNORE">
 <!ENTITY % chap.libraries "IGNORE">
-<!ENTITY % chap.data-structures "IGNORE">
+
+<!ENTITY % chap.io-devices "IGNORE">
+<!ENTITY % chap.graphics "IGNORE">
+<!ENTITY % chap.serial-comm "IGNORE">
+<!ENTITY % chap.parallel-comm "IGNORE">
+
 <!ENTITY % chap.pmode-intro "IGNORE">
 <!ENTITY % chap.djgpp "IGNORE">
 <!ENTITY % chap.start-pmode "IGNORE">
 <!ENTITY % chap.realprot-diff "IGNORE">
 <!ENTITY % chap.pmodelib-intro "IGNORE">
-<!ENTITY % chap.io-devices "IGNORE">
-<!ENTITY % chap.graphics "IGNORE">
-<!ENTITY % chap.serial-comm "IGNORE">
-<!ENTITY % chap.parallel-comm "IGNORE">
+
 <!ENTITY % chap.sound "IGNORE">
+
 <!ENTITY % chap.pmodelib-ref "IGNORE">
 <!ENTITY % chap.inst-ref "IGNORE">
 <!ENTITY % chap.ascii-code "IGNORE">
