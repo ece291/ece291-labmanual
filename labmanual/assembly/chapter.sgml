@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/08/01 05:38:42 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/08/03 03:57:34 pete Exp $
 -->
 
 <chapter id="assembly">
@@ -478,7 +478,7 @@ clrmem5:
   </sect2>
 
   <sect2 id="assembly-modular-include">
-   <title>The <literal><!--%-->include</literal> directive</title>
+   <title>The <literal>&percnt;include</literal> directive</title>
 
    <para>An .ASM (or other) file consisting of EQUates, MACROs, and/or
     STRUCture definitions may be inserted into another assembly
