@@ -412,7 +412,7 @@ _main
 
   <para>See the <filename class="directory">examples</filename>
    directory in <filename
-    class="directory">V:/classes/ece291/pmodelib</filename> for more
+    class="directory">V:/ece291/pmodelib</filename> for more
    examples.</para>
  </sect1>
 
@@ -431,7 +431,7 @@ _main
 
    <para>We won't go into all the details of the various graphics file
     formats here, but let's briefly list the formats supported by
-    PModeLib and its two graphics file libraries:</para>
+    PModeLib:</para>
 
    <itemizedlist>
     <listitem>
@@ -516,10 +516,6 @@ _main
 
     <programlisting>
 %include "lib291.inc"
-
-; Define LoadJPG (not part of lib291, so not defined by lib291.inc)
-EXTERN _LoadJPG
-_LoadJPG_arglen equ 16
 
 GLOBAL _main
 
