@@ -1,6 +1,5 @@
 #
-# $FreeBSD: /c/ncvs/doc/share/mk/doc.project.mk,v 1.9 2001/06/11 01:20:30 ache Exp $
-# $IdPath$
+# $FreeBSD: doc/share/mk/doc.project.mk,v 1.11 2001/10/29 10:52:52 murray Exp $
 #
 # This include file <doc.project.mk> is the FreeBSD Documentation Project 
 # co-ordination make file.
@@ -21,7 +20,7 @@
 #
 # 	MAINTAINER	This denotes who is responsible for maintaining
 # 			this section of the project.  If unset, set to
-# 			pete@bilogic.org
+# 			doc@FreeBSD.org
 #
 
 # ------------------------------------------------------------------------
@@ -57,7 +56,7 @@
 
 # Document-specific defaults
 DOCFORMAT?=	docbook
-MAINTAINER?=	pete@bilogic.org
+MAINTAINER?=	doc@FreeBSD.org
 
 # Master list of known target formats.  The doc.<format>.mk files implement 
 # the code to convert from their source format to one or more of these target
@@ -69,17 +68,29 @@ LOCALBASE?=	/usr/local
 PREFIX?=	${LOCALBASE}
 PRI_LANG?=	en_US.ISO8859-1
 
+CP?=		/bin/cp
+ECHO_CMD?=	echo
+LN?=		/bin/ln
+MKDIR?=		/bin/mkdir -p
+RM?=		/bin/rm
+MV?=		/bin/mv
+
 # Image processing (contains code used by the doc.<format>.mk files, so must
 # be listed first).
 .include "doc.images.mk"
+
+# Ownership information.
+.include "doc.install.mk"
 
 # Format-specific configuration
 .if defined(DOC)
 .if ${DOCFORMAT} == "docbook"
 .include "doc.docbook.mk"
 .endif
+.if ${DOCFORMAT} == "html"
+.include "doc.html.mk"
+.endif
 .endif
 
-# Subdirectory glue and ownership information.
+# Subdirectory glue.
 .include "doc.subdir.mk"
-

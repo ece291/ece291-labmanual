@@ -1,6 +1,5 @@
 #
-# $FreeBSD: doc/share/mk/doc.images.mk,v 1.9 2001/06/22 10:12:23 nik Exp $
-# $IdPath$
+# $FreeBSD: doc/share/mk/doc.images.mk,v 1.13 2001/11/05 10:33:38 murray Exp $
 #
 # This include file <doc.images.mk> handles image processing.
 #
@@ -48,18 +47,42 @@
 # to PDF, and hopefully get better quality.
 #
 
-IMAGES_GEN_PNG=  ${IMAGES:M*.eps:S/.eps$/.png/}
-IMAGES_GEN_PNG+= ${IMAGES:M*.dia:S/.dia$/.png/}
-IMAGES_GEN_PNG_TEX=${IMAGES:M*.tex:S/.tex$/.png/}
-IMAGES_GEN_PNG+= ${IMAGES_GEN_PNG_TEX}
-IMAGES_GEN_EPS=  ${IMAGES:M*.png:S/.png$/.eps/}
-IMAGES_GEN_PDF=  ${IMAGES:M*.eps:S/.eps$/.pdf/}
-IMAGES_GEN_PDF+= ${IMAGES:M*.dia:S/.dia$/.pdf/}
+_IMAGES_PNG= ${IMAGES:M*.png}
+_IMAGES_EPS= ${IMAGES:M*.eps}
+_IMAGES_SCR= ${IMAGES:M*.scr}
+
+IMAGES_GEN_PNG= ${_IMAGES_EPS:S/.eps$/.png/}
+IMAGES_GEN_EPS= ${_IMAGES_PNG:S/.png$/.eps/}
+IMAGES_GEN_PDF= ${_IMAGES_EPS:S/.eps$/.pdf/}
+IMAGES_SCR_PNG= ${_IMAGES_SCR:S/.scr$/.png/}
+IMAGES_SCR_EPS= ${_IMAGES_SCR:S/.scr$/.eps/}
 
 CLEANFILES+= ${IMAGES_GEN_PNG} ${IMAGES_GEN_EPS} ${IMAGES_GEN_PDF}
+CLEANFILES+= ${IMAGES_SCR_PNG} ${IMAGES_SCR_EPS}
 
-IMAGES_PNG=${IMAGES:M*.png} ${IMAGES_GEN_PNG}
-IMAGES_EPS=${IMAGES:M*.eps} ${IMAGES_GEN_EPS}
+IMAGES_PNG= ${_IMAGES_PNG} ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
+IMAGES_EPS= ${_IMAGES_EPS} ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS}
+
+.if ${.OBJDIR} != ${.CURDIR}
+LOCAL_IMAGES= ${IMAGES:S|^|${.OBJDIR}/|}
+CLEANFILES+= ${LOCAL_IMAGES}
+
+.if !empty(_IMAGES_PNG)
+LOCAL_IMAGES_PNG= ${_IMAGES_PNG:S|^|${.OBJDIR}/|}
+.endif
+
+.if !empty(_IMAGES_EPS)
+LOCAL_IMAGES_EPS= ${_IMAGES_EPS:S|^|${.OBJDIR}/|}
+.endif
+
+.else
+LOCAL_IMAGES= ${IMAGES}
+LOCAL_IMAGES_PNG= ${_IMAGES_PNG}
+LOCAL_IMAGES_EPS= ${_IMAGES_EPS}
+.endif
+
+LOCAL_IMAGES_PNG+= ${IMAGES_GEN_PNG} ${IMAGES_SCR_PNG}
+LOCAL_IMAGES_EPS+= ${IMAGES_GEN_EPS} ${IMAGES_SCR_EPS}
 
 # The default resolution eps2png (82) assumes a 640x480 monitor, and is too
 # low for the typical monitor in use today. The resolution of 100 looks
@@ -70,53 +93,57 @@ EPS2PNG_RES?= 100
 # We only need to list ${IMAGES_GEN_PDF} here.  If all the source files are
 # EPS then they'll be in this variable; if any of the source files are PNG
 # then we can use them directly, and don't need to list them.
-IMAGES_PDF=${IMAGES_GEN_PDF} ${IMAGES:M*.tex}
+IMAGES_PDF=${IMAGES_GEN_PDF}
 
-# Use suffix rules to convert:
-.SUFFIXES: .dia .eps
-#  .dia files to .eps files
-.dia.eps:
-	dia --nosplash --export=${.TARGET} ${.IMPSRC}
+SCR2PNG?=	${PREFIX}/bin/scr2png
+SCR2PNGOPTS?=	${SCR2PNGFLAGS}
+EPS2PNG?=	${PREFIX}/bin/peps
+EPS2PNGOPTS?=	-p -r ${EPS2PNG_RES} ${EPS2PNGFLAGS}
+PNGTOPNM?=	${PREFIX}/bin/pngtopnm
+PNGTOPNMOPTS?=	${PNGTOPNMFLAGS}
+PNMTOPS?=	${PREFIX}/bin/pnmtops
+PNMTOPSOPTS?=	-noturn ${PNMTOPSFLAGS}
+EPSTOPDF?=	${PREFIX}/bin/epstopdf
+EPSTOPDFOPTS?=	${EPSTOPDFFLAGS}
+
+# Use suffix rules to convert .scr files to .png files
+.SUFFIXES:	.scr .png .eps
+
+.scr.png:
+	${SCR2PNG} ${SCR2PNGOPTS} < ${.IMPSRC} > ${.TARGET}
+.scr.eps:
+	${SCR2PNG} ${SCR2PNGOPTS} < ${.ALLSRC} | \
+		${PNGTOPNM} ${PNGTOPNMOPTS} | \
+		${PNMTOPS} ${PNMTOPSOPTS} > ${.TARGET}
 
 # We can't use suffix rules to generate the rules to convert EPS to PNG and
 # PNG to EPS.  This is because a .png file can depend on a .eps file, and
 # vice versa, leading to a loop in the dependency graph.  Instead, build
 # the targets on the fly.
 
-TMPDIR?= ${DOC_PREFIX}/share/tools
-
-EPS2PNG?= ${DOC_PREFIX}/share/tools/eps2png
-
 .for _curimage in ${IMAGES_GEN_PNG}
 ${_curimage}: ${_curimage:S/.png$/.eps/}
-	${EPS2PNG} -res ${EPS2PNG_RES} -output ${.TARGET} ${.ALLSRC}
-.endfor
-
-.for _curimage in ${IMAGES_GEN_PNG_TEX}
-${_curimage:S/.png$/-img.tex/}: ${_curimage:S/.png$/.tex/}
-	echo \\documentclass[12pt]{article} >${.TARGET}
-	echo \\begin{document} >>${.TARGET}
-	echo \\pagestyle{empty} >>${.TARGET}
-	cat ${.ALLSRC} >>${.TARGET}
-	echo \\end{document} >>${.TARGET}
-
-${_curimage:S/.png$/-img.dvi/}: ${_curimage:S/.png$/-img.tex/}
-	latex ${.ALLSRC}
-	mv *-img.dvi ${.TARGET}
-
-${_curimage:S/.png$/.eps/}: ${_curimage:S/.png$/-img.dvi/}
-	dvips -q -E -o ${.TARGET} ${.ALLSRC}
+	${EPS2PNG} ${EPS2PNGOPTS} -o ${.TARGET} ${.ALLSRC}
 .endfor
 
 .for _curimage in ${IMAGES_GEN_EPS}
 ${_curimage}: ${_curimage:S/.eps$/.png/}
-	pngtopnm ${.ALLSRC} | pnmtops -noturn > ${.TARGET}
+	${PNGTOPNM} ${PNGTOPNMOPTS} ${.ALLSRC} | \
+		${PNMTOPS} ${PNMTOPSOPTS} > ${.TARGET}
 .endfor
 
 .for _curimage in ${IMAGES_GEN_PDF}
 ${_curimage}: ${_curimage:S/.pdf$/.eps/}
-	epstopdf --outfile=${.TARGET} ${_curimage:S/.pdf$/.eps/}
+	${EPSTOPDF} ${EPSTOPDFOPTS} --outfile=${.TARGET} \
+		${.CURDIR}/${_curimage:S/.pdf$/.eps/}
 .endfor
+
+.if ${.OBJDIR} != ${.CURDIR}
+.for _curimage in ${IMAGES}
+${.OBJDIR}/${_curimage}: ${_curimage}
+	${CP} -p ${.ALLSRC} ${.TARGET}
+.endfor
+.endif
 
 #
 # Using library images
@@ -134,6 +161,9 @@ ${_curimage}: ${_curimage:S/.pdf$/.eps/}
 # as necessary.
 #
 
+IMAGES_LIB?=
+LOCAL_IMAGES_LIB ?=
+
 #
 # The name of the directory that contains all the library images for this
 # language and encoding
@@ -149,16 +179,21 @@ IMAGES_LIB_DIR?=	${.CURDIR}/../../share/images
 #
 LOCAL_IMAGES_LIB_DIR?= imagelib
 
-CP?=		/bin/cp
-MKDIR?=		/bin/mkdir
-
 #
 # Create a target for each image used from the library.  This target just
 # ensures that each image required is copied from its location in 
 # ${IMAGES_LIB_DIR} to the same place in ${LOCAL_IMAGES_LIB_DIR}.
 #
+
 .for _curimage in ${IMAGES_LIB}
+LOCAL_IMAGES_LIB += ${LOCAL_IMAGES_LIB_DIR}/${_curimage}
 ${LOCAL_IMAGES_LIB_DIR}/${_curimage}: ${IMAGES_LIB_DIR}/${_curimage}
-	@[ -d ${LOCAL_IMAGES_LIB_DIR}/${_curimage:H} ] || ${MKDIR} -p ${LOCAL_IMAGES_LIB_DIR}/${_curimage:H}
-	${INSTALL} -C -c ${IMAGES_LIB_DIR}/${_curimage} ${LOCAL_IMAGES_LIB_DIR}/${_curimage}
+	@[ -d ${LOCAL_IMAGES_LIB_DIR}/${_curimage:H} ] || \
+		${MKDIR} ${LOCAL_IMAGES_LIB_DIR}/${_curimage:H}
+	${CP} -p ${IMAGES_LIB_DIR}/${_curimage} \
+		 ${LOCAL_IMAGES_LIB_DIR}/${_curimage}
 .endfor
+
+.if !empty(IMAGES_LIB)
+CLEANFILES+= ${IMAGES_LIB:S|^|${LOCAL_IMAGES_LIB_DIR}/|}
+.endif
