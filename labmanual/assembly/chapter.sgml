@@ -797,7 +797,8 @@ HdMsg   db      'Type up to 20 names separated by carriage returns','$'
 
 ..start:
         mov     ax, cs
-        mov     ds, ax          ; Initialize DS register
+        mov     ds, ax          ; Initialize DS and ES registers
+        mov     es, ax
 
         mov     dx, HdMsg
         call    dspmsg
@@ -901,7 +902,9 @@ Sort
         jg      .deci
         dec     ax                      ;   compute offset of
         mul     word [Len]              ;    Jth name
+        add     ax, Array
         mov     si, ax                  ;   SI = offset of Jth name
+        mov     di, ax
         add     di, [Len]               ;   DI = offset of J+1st name
         call    CmpNam
         cmp     byte [Result], 0        ;   if Jth name > J+1st name
