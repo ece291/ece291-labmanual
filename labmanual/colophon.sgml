@@ -1,0 +1,30 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: colophon.sgml,v 1.1 2001/09/14 06:48:33 pete Exp $
+-->
+
+<colophon id="colophon">
+ <para>The contents of this manual are a compilation of various
+  references, guides, and tutorials taken from many sources and
+  written by several independent authors, collectively referred to as
+  "The ECE 291 Documentation Project."  The text is authored in SGML
+  according to the DocBook DTD and is formatted from SGML into many
+  different presentation formats using OpenJade, an open source DSSSL
+  engine.  Norm Walsh's DSSSL stylesheets were used with an additional
+  customization layer to provide the presentation instructions for
+  OpenJade.  The printed version was produced using the PDF
+  capabilities of JadeTeX.</para>
+</colophon>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "colophon.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("book.sgml" "part" "colophon")
+     End:
+-->
