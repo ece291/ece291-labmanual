@@ -4,7 +4,9 @@
 *.index
 index.sgml
 book.pdf
-book.tex-*
+book.ps
+book.dvi
+book.tex*
 book.out
 docbook.css
 HTML.manifest
