@@ -1,13 +1,14 @@
-<!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
+<!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.58 2001/09/13 07:34:57 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.14 2001/09/02 02:37:50 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.22 2001/09/12 21:57:56 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.23 2001/09/14 07:41:41 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
 <!ENTITY % output.print             "IGNORE">
 <!ENTITY % output.print.niceheaders "IGNORE">
 <!ENTITY % output.print.pdf         "IGNORE">
-<!ENTITY % output.print.twosided    "IGNORE">
+<!ENTITY % output.print.justify     "IGNORE">
+<!ENTITY % output.print.twoside     "IGNORE">
 <![ %output.html; [
 <!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN" CDATA DSSSL>
 ]]>
@@ -20,10 +21,15 @@
   <style-specification use="docbook">
     <style-specification-body>
 
+      (declare-flow-object-class formatting-instruction
+        "UNREGISTERED::James Clark//Flow Object Class::formatting-instruction")
+
       <!-- HTML only .................................................... -->
       
       <![ %output.html; [
         <!-- Configure the stylesheet using documented variables -->
+
+	(define %hyphenation% #f)	<!-- Silence a warning -->
 
         (define %gentext-nav-use-tables%
           ;; Use tables to build the navigation headers and footers?
@@ -150,14 +156,8 @@
               3
               1))
 
-	(define %default-quadding%
-	  'justify)
-
 	(define %head-after-factor%
 	  .4)
-
-	(define %hyphenation%
-	  #t)
 
         (element (primaryie ulink)
           (indexentry-link (current-node)))
@@ -409,11 +409,23 @@
 
       ]]>
 
-      <!-- Print two-sided ............................................. --> 
+      <!-- Two-sided Print output ...................................... --> 
 
-      <![ %output.print.twosided; [
+      <![ %output.print.twoside; [
 
 	(define %two-side%
+	  #t)
+
+      ]]>
+
+      <!-- Print with justification .................................... -->
+
+      <![ %output.print.justify; [
+
+	(define %default-quadding%
+	  'justify)
+
+	(define %hyphenation%
 	  #t)
 
       ]]>
@@ -425,6 +437,9 @@
 
       (define %section-autolabel%
         #t)
+
+      (define %label-preface-sections%
+	#f)
 
       (define %may-format-variablelist-as-table%
         #f)
