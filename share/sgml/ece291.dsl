@@ -347,12 +347,47 @@
 	    keep-with-next?: #t
 	    (process-children)))
 
-	(define part-titlepage-recto-style
-	  (style
-	      heading-level: (if %generate-heading-level% 1 0)
-	      font-family-name: %title-font-family%
-	      font-weight: 'bold
-	      font-size: (HSIZE 1)))
+	<!-- Change $verbatim-display$ to multiply calculated fsize from
+	     maximum line length by 2 instead of dividing it by 0.7 (approx.
+	     *1.42).  Also multiplies by %verbatim-size-factor% to get the
+	     /exact/ proper scaling we want. -->
+(define ($verbatim-display$ indent line-numbers?)
+  (let* ((width-in-chars (if (attribute-string (normalize "width"))
+			     (string->number (attribute-string (normalize "width")))
+			     %verbatim-default-width%))
+	 (fsize (lambda () (if (or (attribute-string (normalize "width"))
+				   (not %verbatim-size-factor%))
+			       (* (* (/ (- %text-width%
+					   (inherited-start-indent))
+					width-in-chars) 
+				     2)
+				  %verbatim-size-factor%)
+			       (* (inherited-font-size) 
+				  %verbatim-size-factor%))))
+	 (vspace (if (INBLOCK?)
+		     0pt
+		     (if (INLIST?)
+			 %para-sep% 
+			 %block-sep%))))
+    (make paragraph
+      use: verbatim-style
+      space-before: (if (and (string=? (gi (parent)) (normalize "entry"))
+ 			     (absolute-first-sibling?))
+			0pt
+			vspace)
+      space-after:  (if (and (string=? (gi (parent)) (normalize "entry"))
+ 			     (absolute-last-sibling?))
+			0pt
+			vspace)
+      font-size: (fsize)
+      line-spacing: (* (fsize) %line-spacing-factor%)
+      start-indent: (if (INBLOCK?)
+			(inherited-start-indent)
+			(+ %block-start-indent% (inherited-start-indent)))
+      (if (or indent line-numbers?)
+	  ($linespecific-line-by-line$ indent line-numbers?)
+	  (process-children)))))
+
       ]]>
 
       <!-- More aesthetically pleasing chapter headers for print output -->
@@ -471,6 +506,13 @@
 
       (define %generate-heading-level%
         #t)
+
+	(define part-titlepage-recto-style
+	  (style
+	      heading-level: (if %generate-heading-level% 1 0)
+	      font-family-name: %title-font-family%
+	      font-weight: 'bold
+	      font-size: (HSIZE 1)))
 
       ]]>
 
