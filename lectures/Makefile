@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 2001/07/11 00:23:35 pete Exp $
+# $IdPath$
 
 SUBDIR = pmodelib
 

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.23 2001/09/14 07:41:41 pete Exp $
+# $IdPath$
 #
 # Build the ECE 291 Lab Manual.
 #

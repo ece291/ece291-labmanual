@@ -1,6 +1,6 @@
 #
 # $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.49 2001/09/11 02:32:32 nik Exp $
-# $Id: doc.docbook.mk,v 1.11 2001/09/14 07:41:41 pete Exp $
+# $IdPath$
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.

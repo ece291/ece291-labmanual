@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# $Id: eps2png,v 1.1 2001/06/25 18:57:11 pete Exp $
+# $IdPath$
 
 my $RCS_Id = '$EPS2PNGId: eps2png.pl,v 1.8 2000-07-11 19:04:40+02 jv Exp jv $ ';
 
@@ -20,7 +20,7 @@ my ($my_name, $my_version) = $RCS_Id =~ /: (.+).pl,v ([\d.]+)/;
 $my_version .= '*' if length('$Locker:  $ ') > 12;
 
 use vars qw($VERSION);
-( $VERSION ) = '$Revision: 1.1 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.2 $ ' =~ /\$Revision:\s+([^\s]+)/;
 
 ################ Program parameters ################
 

@@ -6,7 +6,7 @@
 
      Chapters should be listed in the order in which they are referenced.
 
-     $Id: chapters.ent,v 1.1 2001/08/01 20:00:25 pete Exp $
+     $IdPath$
 -->
 
 <!ENTITY chap.introduction          SYSTEM "introduction/chapter.sgml">

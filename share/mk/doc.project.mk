@@ -1,6 +1,6 @@
 #
 # $FreeBSD: /c/ncvs/doc/share/mk/doc.project.mk,v 1.9 2001/06/11 01:20:30 ache Exp $
-# $Id: doc.project.mk,v 1.1 2001/06/25 18:57:11 pete Exp $
+# $IdPath$
 #
 # This include file <doc.project.mk> is the FreeBSD Documentation Project 
 # co-ordination make file.

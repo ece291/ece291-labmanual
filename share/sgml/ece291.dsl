@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.58 2001/09/13 07:34:57 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.14 2001/09/02 02:37:50 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.23 2001/09/14 07:41:41 pete Exp $ -->
+<!-- $IdPath$ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">

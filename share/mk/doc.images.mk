@@ -1,6 +1,6 @@
 #
 # $FreeBSD: doc/share/mk/doc.images.mk,v 1.9 2001/06/22 10:12:23 nik Exp $
-# $Id: doc.images.mk,v 1.1 2001/06/25 18:57:11 pete Exp $
+# $IdPath$
 #
 # This include file <doc.images.mk> handles image processing.
 #

@@ -2,7 +2,7 @@
 #	Id: bsd.subdir.mk,v 1.27 1999/03/21 06:43:40 bde
 #
 # $FreeBSD: /c/ncvs/doc/share/mk/doc.subdir.mk,v 1.6 2001/05/22 03:18:38 dd Exp $
-# $Id: doc.subdir.mk,v 1.1 2001/06/25 18:57:11 pete Exp $
+# $IdPath$
 #
 # This include file <doc.subdir.mk> contains the default targets
 # for building subdirectories in the FreeBSD Documentation Project.
