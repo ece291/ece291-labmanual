@@ -1,16 +1,512 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/08/14 05:21:26 pete Exp $
 -->
 
 <chapter id="using-pc">
  <title>Using the PC</title>
 
+ <highlights>
+  <para>Before a program can be successfully written, one must have a
+   good understanding of the functions and operations of the PC in
+   general. This chapter will describe the operation of the PC as it
+   applies to the creation of programs for this course.</para>
+ </highlights>
+
  <sect1 id="using-pc-mswin">
   <title>Microsoft Windows / DOS</title>
 
-  <para></para>
+  <indexterm>
+   <primary>Windows</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>DOS</primary>
+  </indexterm>
+
+  <para>Microsoft Windows is the program that controls other running
+   programs, supervises and executes the I/O operations (receiving
+   characters from the keyboard or displaying characters on the
+   screen, for instance), and manages the files on the diskettes. When
+   the computer is first powered up (<quote>boot</quote> or
+   <quote>bootstrap</quote>), you commence executing in the Windows
+   system. By means of a dialogue of commands between the system and
+   the user, conducted via the keyboard, mouse, and display, a program
+   may be edited, assembled, and run. You may also create, rename, and
+   delete files on disks or diskettes.</para>
+
+  <indexterm>
+   <primary>DOS prompt</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>Command Prompt</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>prompt</primary>
+  </indexterm>
+
+  <para>Microsoft DOS was the first Disk Operating System used for IBM
+   and IBM-compatible PCs.  Unlike Windows, it ran in text mode and
+   only one program could be open at a time.  Commands were entered at
+   the DOS prompt using a keyboard.  An extended DOS-compatible prompt
+   is still available under Windows, and it will be used extensively
+   in ECE 291 for assembling and running the MPs written in class.  In
+   Windows 2000, this DOS-compatible prompt is sometimes called the
+   Command Prompt.</para>
+
+  <sect2 id="using-pc-mswin-entering-commands">
+   <title>Entering Commands</title>
+
+   <para>DOS displays a prompt to indicate that it is waiting for you
+    to enter a command.  The prompt shows the current disk drive and
+    directory name.  For example,</para>
+
+   <informalexample>
+    <para><prompt>W:\MyFiles&gt;_</prompt></para>
+   </informalexample>
+
+   <para>The underscore (<quote>_</quote>), called the cursor,
+    indicates the location on the screen that text typed on the
+    keyboard will appear. For example, the following command may now
+    be entered:</para>
+
+   <informalexample>
+    <para><prompt>W:\MyFiles&gt;</prompt><userinput>gvim
+      example.asm</userinput></para>
+   </informalexample>
+
+   <indexterm>
+    <primary>argument</primary>
+   </indexterm>
+
+   <para>This command tells DOS to edit the file EXAMPLE.ASM using the
+    VI editor. VI is the command name, and the filename EXAMPLE.ASM is
+    an <firstterm>argument</firstterm> to the command. (Not all DOS
+    commands take arguments).</para>
+  </sect2>
+
+  <sect2 id="using-pc-mswin-files">
+   <title>Files and Filenames</title>
+
+   <indexterm>
+    <primary>system files</primary>
+   </indexterm>
+
+   <para>DOS manages the files stored on your diskettes and the hard
+    disk. This includes <firstterm>system files</firstterm> as well as
+    your own program files. You can manage your files using the same
+    types of functions you use when editing text&mdash;add, delete,
+    etc. As your disks fill up, it's necessary to delete the older
+    files that are no longer needed to free up space.  As the network
+    drives accessible from the lab machines have many gigabytes of
+    space available, it should not be necessary to delete any
+    class-related files.</para>
+
+   <indexterm>
+    <primary>file specification</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>path</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>filename</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>extension</primary>
+   </indexterm>
+
+   <para>Each file is identified by a file specification
+    <replaceable>filespec</replaceable>, which consists of these four
+    parts:</para>
+
+   <informalexample>
+    <para><replaceable>filespec</replaceable> =
+     <optional><replaceable>disk drive
+       name</replaceable>:</optional><optional><replaceable>path</replaceable></optional><replaceable>filename</replaceable><optional>.<replaceable>extension</replaceable></optional></para>
+   </informalexample>
+
+   <para>For example:</para>
+
+   <informalexample>
+    <para><filename>W:\MyFiles\example.asm</filename></para>
+   </informalexample>
+
+   <indexterm>
+    <primary>disk drive name</primary>
+   </indexterm>
+
+   <para>The <firstterm>disk drive name</firstterm> (W:) gives the
+    name of the disk drive containing the file. This can be a hard
+    drive, a network drive, or a diskette drive. If you do not supply
+    a disk drive name, the current one (shown in the DOS prompt) is
+    used. For much of your work, the disk drive need not be specified.
+    The <firstterm>path</firstterm> is a series of directory names
+    which gives the specific directory where your file is contained.
+    For example, if the path was <quote><filename
+      class="directory">\MyFiles\MP0\</filename></quote>, that would
+    mean the directory <filename class="directory">MyFiles</filename>
+    contains the directory <filename class="directory">MP0</filename>,
+    which in turn contains the file. You may decide not to use
+    directories at all, in which case the path can be omitted.
+    However, if you are using directories and you omit the path, DOS
+    will use the current path (shown in the DOS prompt).  The filename
+    is the identifier for the file, and the extension gives the type
+    of the file.  While Windows allows the filename and extension to
+    be any length, some older DOS programs only allow a filename to be
+    a maximum of eight characters in length, and an extension to be a
+    maximum of three characters in length.  The <xref
+     linkend="glossary"> lists some standard extensions.  In many
+    contexts (e.g., DOS commands for program assembly, linking, or
+    execution), the extension need not be specified if it is a
+    standard extension.</para>
+  </sect2>
+
+  <sect2 id="using-pc-mswin-wildcards">
+   <title>Wildcards</title>
+
+   <indexterm>
+    <primary>wildcards</primary>
+   </indexterm>
+
+   <para><firstterm>Wildcards</firstterm> are special characters which
+    can be used in a file specification to simplify the specification
+    of several related files. DOS allows the use of two special
+    characters <quote>*</quote> and <quote>?</quote> in place of
+    specific characters as illustrated below:</para>
+
+   <variablelist>
+    <varlistentry>
+     <term><filename>W:*.COM</filename></term>
+     <listitem>
+      <para>any file on Disk W having extension <quote>COM</quote>.
+       Hence, <quote>*</quote> stands for any <emphasis>sequence of
+	characters</emphasis>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>W:ABC.?OM</filename></term>
+     <listitem>
+      <para>any file on Disk A with name <quote>ABC</quote> and
+       extension ending in <quote>OM</quote>. Hence, <quote>?</quote>
+       stands for any <emphasis>single character</emphasis>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>These can be used in combinations, as in:</para>
+
+   <variablelist>
+    <varlistentry>
+     <term><filename>W:A??C*.*</filename></term>
+     <listitem>
+      <para>any file whose filename starts with an A, then two more
+       characters, then a C.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>The <quote>?</quote> character may be used anywhere in the
+    filename and extension, but the <quote>*</quote> character causes
+    any characters following it <emphasis>in the same field</emphasis>
+    to be ignored
+    (i.e.,<quote><filename>A:AUT*C.BAT</filename></quote> is
+    equivalent to
+    <quote><filename>A:AUT*.BAT</filename></quote>).</para>
+  </sect2>
+
+  <sect2 id="using-pc-mswin-useful-commands">
+   <title>Useful DOS Commands</title>
+
+   <para>Following is a brief list of some useful DOS commands and
+    their meanings. In some instances, examples are given in order to
+    clarify their usage.  <optional>..</optional> indicates optional
+    elements in the command.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>type</command>
+       <arg choice="req"><replaceable>filespec</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Display the named file on the display.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>type</command>
+       <arg choice="req"><replaceable>filespec</replaceable></arg>
+       <arg choice="plain">| more</arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Cause output to pause at page breaks. Any command can be
+       followed by <command>| more</command> to cause its output to
+       pause at page breaks. However, <command>more</command> cannot
+       be used as a command itself.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>dir</command>
+       <arg choice="opt"><replaceable>filespec</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>List the files in the current directory matching
+       <replaceable>filespec</replaceable> (which may contain
+       wildcards as described in <xref
+	linkend="using-pc-mswin-wildcards">), or all the files if
+       <replaceable>filespec</replaceable> is not specified.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>cd</command>
+       <arg choice="req"><replaceable>path</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Change the current directory to
+       <replaceable>path</replaceable>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>mkdir</command>
+       <arg choice="req"><replaceable>name</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Create a new directory in the current directory called
+       <replaceable>name</replaceable>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>rmdir</command>
+       <arg choice="req"><replaceable>name</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Remove the named directory (must be empty).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>del</command>
+       <arg choice="req"><replaceable>filespec</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Delete the files matching
+       <replaceable>filespec</replaceable> (may contain
+       wildcards).</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>copy</command>
+       <arg choice="req"><replaceable>fromfile</replaceable></arg>
+       <arg choice="req"><replaceable>tofile</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Copy <replaceable>fromfile</replaceable> to make
+       <replaceable>tofile</replaceable>.  If the
+       <replaceable>filename</replaceable>.<replaceable>ext</replaceable> 
+       portion of <replaceable>tofile</replaceable> is not specified,
+       the new copy has the same name as the old one.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command>ren</command>
+       <arg choice="req"><replaceable>fromfile</replaceable></arg>
+       <arg choice="req"><replaceable>tofile</replaceable></arg>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Rename a file from <replaceable>fromfile</replaceable> to
+       <replaceable>tofile</replaceable>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><cmdsynopsis>
+       <command><optional><replaceable>drive</replaceable>:</optional><optional><replaceable>path</replaceable></optional><replaceable>filename</replaceable></command>
+      </cmdsynopsis></term>
+     <listitem>
+      <para>Execute the named file (assumed to be in assembled and
+       linked form).</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="using-pc-mswin-batch">
+   <title>Batch files</title>
+
+   <indexterm>
+    <primary>batch files</primary>
+   </indexterm>
+
+   <para>DOS <firstterm>batch files</firstterm> are a very useful way
+    of automating common actions.  A batch file is a file with an
+    extension of <quote>.BAT</quote>.  It contains DOS commands and
+    can be executed just like an .EXE file (by typing the filename
+    without the extension).  As a simple example, create a file called
+    GO.BAT which contains the following two lines:</para>
+
+   <programlisting>nasm -g -f obj mp0.asm
+tlink /c /v mp0, , , lib291</programlisting>
+
+   <para>Now type <userinput>GO</userinput> at the DOS prompt. DOS
+    will execute the batch file, assembling and linking your program
+    in the process. You can also specify input arguments to your batch
+    files. An argument is represented within a batch file by the term
+    <quote>%<replaceable>n</replaceable></quote>, where
+    <replaceable>n</replaceable> is a decimal digit. <quote>%1</quote>
+    represents the first argument, <quote>%2</quote> represents the
+    second, and so on.  Using this feature, you could customize the
+    batch file so it takes the MP number as an argument:</para>
+
+   <programlisting>nasm -g -f obj mp%1.asm
+tlink /c /v mp%1, , , lib291</programlisting>
+
+   <para>This batch file could be called with <userinput>GO
+     0</userinput> to assemble and link MP0, or <userinput>GO
+     1</userinput> to assemble and link MP1, and so on.  Arguments can
+    be any string of text, not just numbers, so you could also input
+    the library name with the following batch file:</para>
+
+   <programlisting>nasm -g -f obj mp%1.asm
+tlink /c /v mp%1, , , %2</programlisting>
+
+   <para>This could be called with <userinput>GO 1 LIB291</userinput>,
+    for example.</para>
+
+   <indexterm>
+    <primary>Make</primary>
+   </indexterm>
+
+   <para>A better way to automate the assembling and linking is by
+    using a tool called Make that conditionally runs programs based on
+    the last modified date of the source and output files.  All of the
+    machine problems in ECE 291 will be distributed with a Makefile to
+    make the build process easier.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="using-pc-assembling-linking">
+  <title>Assembling and Linking Files</title>
+
+  <para>A program may be assembled and linked using the following
+   command-line statements:</para>
+
+  <variablelist>
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>nasm</command>
+      <arg choice="opt">-g</arg>
+      <arg choice="req">-f <replaceable>obj</replaceable></arg>
+      <arg choice="opt">-o <replaceable>outfile</replaceable></arg>
+      <arg choice="req"><replaceable>filename</replaceable></arg>
+      <arg choice="opt">-l <replaceable>listfile</replaceable></arg>
+     </cmdsynopsis></term>
+    <listitem>
+     <para>Assemble the named file.</para>
+     <itemizedlist spacing="compact">
+      <listitem>
+       <para>The <option>-g</option> option enables debugging output
+	(so the original source code is visible in the
+	debugger).</para>
+      </listitem>
+
+      <listitem>
+       <para>The <option>-f</option> option specifies the output
+	object format (obj is standard for DOS programs).</para>
+      </listitem>
+
+      <listitem>
+       <para>The <option>-o</option> option specifies the output
+	filename.  This is optional, as NASM can infer the output
+	filename from the object format and source filename.</para>
+      </listitem>
+
+      <listitem>
+       <para>The <option>-l</option> option specifies the list output
+	filename.  If this option is not specified, a list file will
+	not be written.</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>tlink</command>
+      <arg choice="opt">/c</arg>
+      <arg choice="opt">/v</arg>
+      <arg choice="req"
+       rep="repeat"><replaceable>objfile</replaceable> </arg>
+      <arg choice="plain">,</arg>
+      <arg choice="opt"><replaceable>exefile</replaceable></arg>
+      <arg choice="plain">,</arg>
+      <arg choice="opt"><replaceable>mapfile</replaceable></arg>
+      <arg choice="plain">,</arg>
+      <arg choice="opt"
+       rep="repeat"><replaceable>libfile</replaceable> </arg>
+     </cmdsynopsis></term>
+    <listitem>
+     <para>Link together several object files and libraries into a
+      signle executable.</para>
+
+     <itemizedlist>
+      <listitem>
+       <para>The <option>/c</option> option makes the link
+	case-sensitive.  As NASM is case-sensitive, this should
+	normally be enabled.</para>
+      </listitem>
+
+      <listitem>
+       <para>The <option>/v</option> option includes debugging
+	information in the executable.</para>
+      </listitem>
+
+      <listitem>
+       <para><replaceable>objfile</replaceable> is an input obj
+	file.</para>
+      </listitem>
+
+      <listitem>
+       <para><replaceable>exefile</replaceable> optionally specifies
+	the filename of the output executable.  If not specified, it
+	defaults to the first object file listed with an exe
+	extension.</para>
+      </listitem>
+
+      <listitem>
+       <para><replaceable>mapfile</replaceable> optionally specifies
+	the filename of a map file.  If not specified, a map file is
+	not written.</para>
+      </listitem>
+
+      <listitem>
+       <para><replaceable>libfile</replaceable> is an (optional)
+	library file.</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
  </sect1>
 </chapter>
 
