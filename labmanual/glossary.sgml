@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: glossary.sgml,v 1.3 2001/07/26 06:08:36 pete Exp $
+     $Id: glossary.sgml,v 1.4 2001/08/01 17:31:19 pete Exp $
 -->
 
 <glossary id="glossary">
@@ -15,7 +15,7 @@
  <glossdiv>
   <title>A</title>
 
-  <glossentry id="ASCII">
+  <glossentry id="glossary-ascii">
    <glossterm>American Standard Code for Information
     Interchange</glossterm>
 
@@ -35,7 +35,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="Assembly">
+  <glossentry id="glossary-assembly">
    <glossterm>Assembly</glossterm>
 
    <glossdef>
@@ -47,7 +47,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="AssemblyLanguage">
+  <glossentry id="glossary-assembly-language">
    <glossterm>Assembly Language</glossterm>
 
    <abbrev>Asm.</abbrev>
@@ -63,7 +63,7 @@
  <glossdiv>
   <title>D</title>
 
-  <glossentry id="Directory">
+  <glossentry id="glossary-directory">
    <glossterm>Directory</glossterm>
 
    <glossdef>
@@ -74,7 +74,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="Diskette">
+  <glossentry id="glossary-diskette">
    <glossterm>Diskette</glossterm>
 
    <glossdef>
@@ -93,7 +93,7 @@
  <glossdiv>
   <title>E</title>
 
-  <glossentry id="Editing">
+  <glossentry id="glossary-editing">
    <glossterm>Editing</glossterm>
 
    <glossdef>
@@ -104,7 +104,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="ExecutionTime">
+  <glossentry id="glossary-execution-time">
    <glossterm>Execution Time</glossterm>
 
    <glossdef>
@@ -118,7 +118,7 @@
  <glossdiv>
   <title>F</title>
 
-  <glossentry id="File">
+  <glossentry id="glossary-file">
    <glossterm>File</glossterm>
 
    <glossdef>
@@ -179,7 +179,7 @@
  <glossdiv>
   <title>L</title>
 
-  <glossentry id="ListingFile">
+  <glossentry id="glossary-listing-file">
    <glossterm>Listing File</glossterm>
 
    <glossdef>
@@ -190,7 +190,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="Linking">
+  <glossentry id="glossary-linking">
    <glossterm>Linking</glossterm>
 
    <glossdef>
@@ -208,7 +208,7 @@
  <glossdiv>
   <title>O</title>
 
-  <glossentry id="ObjectFile">
+  <glossentry id="glossary-object-file">
    <glossterm>Object File</glossterm>
 
    <glossdef>
@@ -220,7 +220,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="OperatingSystem">
+  <glossentry id="glossary-operating-system">
    <glossterm>Operating System</glossterm>
 
    <abbrev>O.S.</abbrev>
@@ -238,7 +238,7 @@
  <glossdiv>
   <title>P</title>
 
-  <glossentry id="Printer">
+  <glossentry id="glossary-printer">
    <glossterm>Printer</glossterm>
 
    <glossdef>
@@ -248,7 +248,7 @@
    </glossdef>
   </glossentry>
 
-  <glossentry id="Prompt">
+  <glossentry id="glossary-prompt">
    <glossterm>Prompt</glossterm>
 
    <glossdef>
@@ -263,17 +263,17 @@
  <glossdiv>
   <title>R</title>
 
-  <glossentry id="RunTime">
+  <glossentry id="glossary-run-time">
    <glossterm>Run Time</glossterm>
 
-   <glosssee otherterm="ExecutionTime">
+   <glosssee otherterm="glossary-execution-time">
   </glossentry>
  </glossdiv>
 
  <glossdiv>
   <title>S</title>
 
-  <glossentry id="SourceFile">
+  <glossentry id="glossary-source-file">
    <glossterm>Source File</glossterm>
 
    <glossdef>
