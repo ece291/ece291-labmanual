@@ -498,13 +498,9 @@ _main
 
    <para>Okay, here's the complete code to a simple program that loads
     a 640x480 image named <filename>image.jpg</filename> and displays
-    it on the 640x480 display.  Because we're using
-    <function>LoadJPG</function>, we need to link this program with
-    <filename class="libraryfile">jpg.a</filename> in addition to
-    <filename class="libraryfile">lib291.a</filename>, and since it
-    uses PModeLib graphics, we'll need to load the
-    <command>EX291</command> driver before running it on Windows
-    2000.</para>
+    it on the 640x480 display.  Since this program uses PModeLib
+    graphics, we'll need to load the <command>EX291</command> driver
+    before running it on Windows 2000.</para>
 
    <para>This program combines all of the concepts earlier in this
     lecture, except we're using a specialized image loading function
