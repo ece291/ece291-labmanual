@@ -23,8 +23,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: doc/share/misc/docbook.css,v 1.2 2001/06/20 16:23:30 nik Exp $
- * $Id: docbook.css,v 1.1 2001/06/25 18:57:11 pete Exp $
+ * $FreeBSD: doc/share/misc/docbook.css,v 1.3 2001/07/03 12:30:32 nik Exp $
+ * $Id: docbook.css,v 1.2 2001/07/03 18:06:05 pete Exp $
  */
 
 BODY ADDRESS {
@@ -48,21 +48,12 @@ HTML BODY {
 	font-variant: small-caps;
 }
 
-BODY DD {
-	line-height: 1.2;
-	margin: 0 0 0 5%;
-}
-
 BODY DIV {
 	margin: 0;
 }
 
 BODY DL {
 	margin: .8em 0;
-}
-
-BODY DT {
-	margin: .3em 0 0 0;
 	line-height: 1.2;
 }
 
@@ -114,10 +105,6 @@ BODY HR {
 
 BODY IMG.NAVHEADER {
 	margin: 0 0 0 -4%;
-}
-
-BODY LI {
-	margin: .6em 0
 }
 
 BODY OL {
