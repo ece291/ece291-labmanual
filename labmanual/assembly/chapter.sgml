@@ -469,24 +469,26 @@ clrmem5:
     development easier and faster.</para>
 
    <para>There are two ways to keep such tools in separate files and
-    combine them with the current program as needed: EQUates, MACROs,
-    and STRUCture definitions are kept in an .ASM file and copied into
-    another .ASM program with the <literal>%include</literal>
-    directive; complete subprocedures are best assembled separately
-    and kept in an .OBJ file from which the linker (TLINK) can extract
+    combine them with the current program as needed: EQUates, macros,
+    and STRUCture definitions are kept in an <filename>.ASM</filename>
+    or <filename>.INC</filename> source file and copied into another
+    <filename>.ASM</filename> source file with the
+    <literal>%include</literal> directive; complete subprocedures are
+    best assembled separately and kept in an <filename>.OBJ</filename>
+    file from which the linker (<command>TLINK</command>) can extract
     the required subprocedures and combine them with the program into
-    one .EXE file&mdash;that is in fact a linker's main
-    <emphasis>raison d'etre</emphasis>.</para>
+    one <filename>.EXE</filename> file&mdash;that is in fact a
+    linker's main <emphasis>raison d'etre</emphasis>.</para>
   </sect2>
 
   <sect2 id="assembly-modular-include">
    <title>The <literal>&percnt;include</literal> directive</title>
 
-   <para>An .ASM (or other) file consisting of EQUates, MACROs, and/or
-    STRUCture definitions may be inserted into another assembly
-    language program with the directive</para>
+   <para>An <filename>.ASM</filename> (or other) file consisting of
+    EQUates, macros, and/or STRUCture definitions may be inserted into
+    another assembly language program with the directive</para>
 
-   <programlisting>%include <replaceable>[path]filename.ext</replaceable></programlisting>
+   <programlisting>%include "<replaceable>[path]filename.ext</replaceable>"</programlisting>
 
    <para>The entire file specified is inserted immediately after the
     <literal>%include</literal> directive and is assembled together
@@ -497,7 +499,7 @@ clrmem5:
     before any of the macros are invoked.</para>
 
    <para><literal>%include</literal> is particularly well suited for a
-    library of EQUates, MACRO, and/or STRUCture definitions, since
+    library of EQUates, macros, and/or STRUCture definitions, since
     they add assembly code to the program only when they are invoked;
     for a file of subroutines, on the other hand,
     <literal>%include</literal> lengthens the program by adding to it
@@ -656,9 +658,10 @@ clrmem5:
   <sect2 id="assembly-modular-linking">
    <title>Linking Separately Assembled Modules</title>
 
-   <para>TLINK is designed to link separately assembled procedures as
-    well as extract the library routines used by the program from a
-    library file.  The general form for invoking TLINK is:</para>
+   <para><command>TLINK</command> is designed to link separately
+    assembled procedures as well as extract the library routines used
+    by the program from a library file.  The general form for invoking
+    <command>TLINK</command> is:</para>
 
    <cmdsynopsis>
     <command>tlink</command>
@@ -680,7 +683,7 @@ clrmem5:
     <replaceable>libfile</replaceable>s are the files to be searched
     for library routines.  See <xref
      linkend="using-pc-assembling-linking"> for a more detailed
-    description of the TLINK options.</para>
+    description of the <command>TLINK</command> options.</para>
   </sect2>
  </sect1>
 
