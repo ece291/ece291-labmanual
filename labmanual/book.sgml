@@ -164,7 +164,7 @@
   </abstract>
  </bookinfo>
 
- <part>
+ <part id="getting-started">
   <title>Getting Started</title>
 
   <partintro>
@@ -197,7 +197,7 @@
   <![ %chap.text-editors;    [ &chap.text-editors;    ]]>
  </part>
 
- <part>
+ <part id="asm-prog">
   <title>Assembly Programming</title>
 
   <partintro>
@@ -246,7 +246,7 @@
   <![ %chap.libraries;       [ &chap.libraries;       ]]>
  </part>
 
- <part>
+ <part id="world-io">
   <title>Interfacing With the World</title>
 
   <partintro>
@@ -260,7 +260,7 @@
   <![ %chap.parallel-comm;   [ &chap.parallel-comm;   ]]>
  </part>
 
- <part>
+ <part id="pmode">
   <title>Protected Mode</title>
 
   <partintro>
@@ -276,7 +276,7 @@
   <![ %chap.pmodelib-intro;  [ &chap.pmodelib-intro;  ]]>
  </part>
 
- <part>
+ <part id="adv-topics">
   <title>Advanced Topics</title>
 
   <partintro>
@@ -287,7 +287,7 @@
   <![ %chap.sound;           [ &chap.sound;           ]]>
  </part>
 
- <part>
+ <part id="appendices">
   <title>Appendices</title>
 
   <![ %chap.pmodelib-ref;    [ &chap.pmodelib-ref;    ]]>
