@@ -24,7 +24,7 @@
   </listitem>
 
   <listitem>
-   <para>pointer (of any time), 32-bit</para>
+   <para>pointer (of any type), 32-bit</para>
   </listitem>
 
   <listitem>
@@ -1117,7 +1117,7 @@
      <listitem>
       <funcsynopsis>
        <funcprototype>
-	<funcdef>void <function>ReadFile</function></funcdef>
+	<funcdef>int <function>ReadFile</function></funcdef>
 	<paramdef>int <parameter>Handle</parameter></paramdef>
 	<paramdef>void *<parameter>Buffer</parameter></paramdef>
 	<paramdef>unsigned int <parameter>Count</parameter></paramdef>
@@ -1220,7 +1220,7 @@
      <listitem>
       <funcsynopsis>
        <funcprototype>
-	<funcdef>void <function>WriteFile</function></funcdef>
+	<funcdef>int <function>WriteFile</function></funcdef>
 	<paramdef>int <parameter>Handle</parameter></paramdef>
 	<paramdef>void *<parameter>Buffer</parameter></paramdef>
 	<paramdef>unsigned int <parameter>Count</parameter></paramdef>
