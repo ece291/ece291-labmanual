@@ -287,7 +287,7 @@
 
   <para>Neither the 50' maximum cable length nor the maximum data rate
    of the RS-232C standard should be a serious limitation in the
-   DTE-DCE application for which the standard is written   the DTE and
+   DTE-DCE application for which the standard is written.  The DTE and
    the modem are usually located near each other, and reliable
    communication over the switched telephone network at more than
    about 2400 bit/sec is very difficult at present.  Surprisingly, the
