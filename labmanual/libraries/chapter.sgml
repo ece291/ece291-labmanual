@@ -1,0 +1,374 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/06/25 20:13:50 pete Exp $
+-->
+
+<chapter id="libraries">
+ <title>Libraries</title>
+
+ <highlights>
+  <para>This chapter describes the use of libraries in developing
+   programs, as well as the details of the LIB291 library used in ECE
+   291.</para>
+ </highlights>
+
+ <sect1 id="libraries-lib291">
+  <title>The LIB291 Library of Subroutines</title>
+
+  <para>A number of useful routines reside in the LIB291 library file.
+   You are encouraged to use these routines whenever convenient to
+   save programming time.  At the end of this section is a detailed
+   explanation of each routine.  Following that, the code for two of
+   the routines (<function>binasc</function> and
+   <function>ascbin</function>) has been included to show you how they
+   work.</para>
+
+  <variablelist>
+   <title>Subroutines in LIB291</title>
+
+   <varlistentry>
+    <term><function>kbdin</function></term>
+
+    <listitem>
+     <para>Read in one ASCII character from the keyboard.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><function>kbdine</function></term>
+
+    <listitem>
+     <para>Read in one ASCII character from the keyboard and echo it
+      to the screen.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><function>dspout</function></term>
+
+    <listitem>
+     <para>Type out on the display screen one ASCII character.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><function>dspmsg</function></term>
+
+    <listitem>
+     <para>Type out on the display screen a byte string of ASCII
+      characters.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><function>dosxit</function></term>
+
+    <listitem>
+     <para>Exit from your program back to DOS.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><function>ascbin</function></term>
+
+    <listitem>
+     <para>Convert an ASCII string to an equivalent binary
+      integer.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><function>binasc</function></term>
+
+    <listitem>
+     <para>Convert a binary integer to an equivalent ASCII
+      string.</para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <note>
+   <title>Note</title>
+
+   <para>For some of the Machine Problems, special library files will
+    be provided.  These will contain major parts of the Machine
+    Problems which you can use to help develop your code.  If you need
+    to use these libraries in order to demonstrate a working program
+    you may; however, there will be penalties for doing so.</para>
+  </note>
+
+  <sect2 id="libraries-lib291-segassume">
+   <title>Segment Assumptions</title>
+
+   <note>
+    <title>Note Carefully</title>
+
+    <para>LIB291 is written with the assumption of a single code/data
+     segment which is <literal>GLOBAL</literal> and named
+     <literal>CSEG</literal>.  The subroutines also assume that
+     registers &reg.ds;, &reg.ss;, and &reg.sp; have been properly set
+     up before they are called.  It is the user's responsibility to
+     set up the code/data segment as <literal>CSEG</literal> and to
+     properly establish &reg.ds; at <literal>CSEG</literal> and to
+     have a usable stack segment pointed to by &reg.ss; and &reg.sp;
+     upon entry.</para>
+   </note>
+  </sect2>
+
+  <sect2 id="libraries-lib291-using">
+   <title>Using the Library Subroutines</title>
+
+   <para>To use the subroutines available in the library file, LIB291,
+    you must do two things:</para>
+
+   <orderedlist>
+    <listitem>
+     <para>Declare the library subroutine(s) you wish to use as
+      <literal>EXTERN</literal> in your own program:
+      <programlisting>EXTERN dosxit</programlisting></para>
+    </listitem>
+
+    <listitem>
+     <para>Include the file name LIB291 in your
+      <command>TLINK</command> command:</para>
+    </listitem>
+   </orderedlist>
+
+   <para>The <command>TLINK</command> program will then search through
+    the file LIB291.LIB and bring in the appropriate subroutines
+    called for by your program.</para>
+  </sect2>
+
+  <sect2 id="libraries-lib291-descript">
+   <title>LIB291 Subroutine Descriptions</title>
+
+   <sect3 id="kbdin">
+    <title><function>kbdin</function></title>
+
+    <para>This routine awaits a single character typed in from the
+     keyboard. The ASCII code for that character is returned in
+     register &reg.al;.  Note: <function>kbdin</function> does not
+     echo the character back to the display screen.</para>
+
+    <para>Exits with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.al; = the ASCII code of the character typed in.<para>
+     </listitem>
+    </itemizedlist>
+   </sect3>
+
+   <sect3 id="kbdine">
+    <title><function>kbdine</function></title>
+
+    <para>This subroutine is the same as <function>kbdin</function>
+     except that in addition it echoes the received character onto the
+     display screen before returning to the calling program.</para>
+
+    <para>Exits with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.al; = the ASCII code of the character typed
+       in.</para>
+     </listitem>
+    </itemizedlist>
+   </sect3>
+
+   <sect3 id="dspout">
+    <title><function>dspout</function></title>
+
+    <para>This routine types out on the display screen the ASCII-coded
+     character in &reg.dl;.  A typewriter-like format is followed,
+     i.e., successive characters are typed along a line until the
+     end.</para>
+
+    <para>Call with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.dl; = ASCII code of character to be typed on the
+       display.</para>
+     </listitem>
+    </itemizedlist>
+   </sect3>
+
+   <sect3 id="dspmsg">
+    <title><function>dspmsg</function></title>
+
+    <para>This routine prints a string of ASCII-coded characters on
+     the display screen.  The string must be terminated by an ASCII
+     dollar sign (<quote>$</quote>).  The starting offset of the
+     string is to be given as an input in &reg.dx;.</para>
+
+    <para>Call with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.dx; = Offset address of first byte of the ASCII
+       string to be typed.</para>
+     </listitem>
+    </itemizedlist>
+
+    <example id="libraries-example-dspmsg">
+     <title>Use of <function>dspmsg</function> to type out the string
+      <varname>tstmsg</varname> on the display</title>
+
+     <programlisting>
+tstmsg  db      'TEST_MSG$'     ; (byte string in data
+                                ; segment)
+         |
+        mov  dx, tstmsg
+        call dspmsg             ; type it out
+         |</programlisting>
+    </example>
+   </sect3>
+
+   <sect3 id="dosxit">
+    <title><function>dosxit</function></title>
+
+    <para>This routine should be called as the last executed statement
+     to clean up and return control to the DOS system, e.g.,</para>
+
+    <example id="libraries-example-dosxit">
+     <title>Use of <function>dosxit</function></title>
+     <programlisting>
+         |
+done:   call dosxit</programlisting>
+    </example>
+
+    <para><function>dosxit</function> has no arguments.</para>
+   </sect3>
+
+   <sect3 id="ascbin">
+    <title><function>ascbin</function></title>
+
+    <para>This routine scans a string of characters (ASCII-coded
+     digits) in successive bytes of memory, and generates a 16 bit
+     binary integer which is the value of that string.</para>
+
+    <para>Call with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.bx; = Offset address of first character of the ASCII
+       string.</para>
+     </listitem>
+    </itemizedlist>
+
+    <para>Exits with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.ax; = Signed 16-bit integer having value of the ASCII
+       string.</para>
+     </listitem>
+
+     <listitem>
+      <para>&reg.bx; = Offset address of the first non-convertible
+       character in the string (e.g., any ASCII character not a
+       decimal digit).</para>
+     </listitem>
+
+     <listitem>
+      <para>&reg.dl; = Status word giving result of the
+       conversion:</para>
+
+      <itemizedlist spacing=compact mark="None">
+       <listitem>
+	<para>0 if no conversion errors</para>
+       </listitem>
+       <listitem>
+	<para>1 if string had no valid digits</para>
+       </listitem>
+       <listitem>
+	<para>2 if string had too many digits</para>
+       </listitem>
+       <listitem>
+	<para>3 if overflow</para>
+       </listitem>
+       <listitem>
+	<para>4 if underflow (value too negative)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </itemizedlist>
+   </sect3>
+
+   <sect3 id="binasc">
+    <title><function>binasc</function></title>
+
+    <para>This routine converts a 16 bit binary integer into a string
+     of decimal characters (ASCII-coded digits), writing them as a
+     byte string into memory.  Following conversion, the character
+     string may be moved from memory to the display.</para>
+
+    <para>Call with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.ax; = The 16-bit, signed integer to be
+       converted.</para>
+     </listitem>
+
+     <listitem>
+      <para>&reg.bx; = Starting offset address for a 7-byte buffer to
+       hold the byte string generated.</para>
+     </listitem>
+    </itemizedlist>
+
+    <para>Exits with:</para>
+
+    <itemizedlist mark="None">
+     <listitem>
+      <para>&reg.bx; = The offset address of the first non-blank
+       character of the string (this may be a minus sign, if the input
+       number was negative). The string will be right-justified within
+       the 7-byte buffer (padded with blanks to the left), and will
+       have a <quote>$</quote> delimiter character after the last
+       digit.</para>
+     </listitem>
+
+     <listitem>
+      <para>&reg.cl; = Number of non-blank characters generated in the
+       string (including the sign if given).  Hence, &reg.cl; = 3 for
+       the number -78, and &reg.cl; = 2 for the number 78.</para>
+     </listitem>
+    </itemizedlist>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="libraries-codeex">
+  <title>Code Examples of <function>binasc</function> and
+   <function>ascbin</function></title>
+
+  <example id="libraries-example-binasc">
+   <title><function>binasc</function> code example</title>
+
+   <programlisting>
+</programlisting>
+  </example>
+
+  <example id="libraries-example-ascbin">
+   <title><function>ascbin</function> code example</title>
+
+   <programlisting>
+</programlisting>
+  </example>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

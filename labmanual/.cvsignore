@@ -1,0 +1,8 @@
+*.html
+*.log
+*.aux
+book.pdf
+book.tex-pdf
+book.out
+docbook.css
+HTML.manifest
