@@ -603,10 +603,10 @@ _main
 
     <para>Assemble and run the above code.  Run it under cv32, and
      look at the LDT entry of the selector returned by <dpmiref
-      section="api" function="0100" name="Allocate DOS Memory
-      Block"></>.  Play with the code some (until it breaks, and then
-     figure out what's wrong with it)!  We'll come back to this code
-     later (in <xref linkend="pmodelib-intro-using-interrupts">), and
+      section="api" function="0100"></>.  Play with the code some
+     (until it breaks, and then figure out what's wrong with it)!
+     We'll come back to this code later (in <xref
+      linkend="pmodelib-intro-using-interrupts">), and
      rewrite it so it uses PModeLib functions.</para>
    </sect3>
   </sect2>
