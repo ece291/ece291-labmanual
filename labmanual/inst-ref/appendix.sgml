@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: appendix.sgml,v 1.6 2001/09/15 04:42:41 pete Exp $
+     $Id: appendix.sgml,v 1.7 2001/09/15 04:44:26 pete Exp $
 -->
 
 <appendix id="inst-ref">
@@ -5737,9 +5737,9 @@ RCR r/m32,imm8                ; o32 C1 /3 ib         [386]</screen>
   <para><literal>RCL</literal> and <literal>RCR</literal> perform a
    9-bit, 17-bit or 33-bit bitwise rotation operation, involving the
    given source/destination (first) operand and the carry bit. Thus,
-   for example, in the operation <literal>RCL AL,1</literal>, a 9-bit
-   rotation is performed in which &reg.al; is shifted left by 1, the
-   top bit of &reg.al; moves into the carry flag, and the original
+   for example, in the operation <literal>RCL &reg.al;,1</literal>, a
+   9-bit rotation is performed in which &reg.al; is shifted left by 1,
+   the top bit of &reg.al; moves into the carry flag, and the original
    value of the carry flag is placed in the low bit of
    &reg.al;.</para>
 
@@ -5891,9 +5891,9 @@ ROR r/m32,imm8                ; o32 C1 /1 ib         [386]</screen>
   <para><literal>ROL</literal> and <literal>ROR</literal> perform a
    bitwise rotation operation on the given source/destination (first)
    operand. Thus, for example, in the operation <literal>ROL
-    AL,1</literal>, an 8-bit rotation is performed in which &reg.al;
-   is shifted left by 1 and the original top bit of &reg.al; moves
-   round into the low bit.</para>
+    &reg.al;,1</literal>, an 8-bit rotation is performed in which
+   &reg.al; is shifted left by 1 and the original top bit of &reg.al;
+   moves round into the low bit.</para>
 
   <para>The number of bits to rotate by is given by the second
    operand. Only the bottom 3, 4 or 5 bits (depending on the source
