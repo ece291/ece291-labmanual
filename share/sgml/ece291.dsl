@@ -1,10 +1,11 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.34 2001/06/24 02:46:40 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.3 2001/07/16 20:04:08 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.4 2001/07/16 20:27:50 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
-<!ENTITY % output.html          "IGNORE">
-<!ENTITY % output.html.images   "IGNORE">
-<!ENTITY % output.print         "IGNORE">
-<!ENTITY % output.print.pdf     "IGNORE">
+<!ENTITY % output.html              "IGNORE">
+<!ENTITY % output.html.images       "IGNORE">
+<!ENTITY % output.print             "IGNORE">
+<!ENTITY % output.print.niceheaders "IGNORE">
+<!ENTITY % output.print.pdf         "IGNORE">
 <![ %output.html; [
 <!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN" CDATA DSSSL>
 ]]>
@@ -114,6 +115,103 @@
 
       ]]>
 
+      <!-- More aesthetically pleasing chapter headers for print output -->
+      <![ %output.print.niceheaders; [
+
+      (define ($component-title$)
+	(let* ((info (cond
+		((equal? (gi) (normalize "appendix"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "article"))
+		 (node-list-filter-by-gi (children (current-node))
+					 (list (normalize "artheader")
+					       (normalize "articleinfo"))))
+		((equal? (gi) (normalize "bibliography"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "chapter"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "dedication")) 
+		 (empty-node-list))
+		((equal? (gi) (normalize "glossary"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "index"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "preface"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "reference"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "setindex"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		(else
+		 (empty-node-list))))
+	 (exp-children (if (node-list-empty? info)
+			   (empty-node-list)
+			   (expand-children (children info) 
+					    (list (normalize "bookbiblio") 
+						  (normalize "bibliomisc")
+						  (normalize "biblioset")))))
+	 (parent-titles (select-elements (children (current-node)) (normalize "title")))
+	 (info-titles   (select-elements exp-children (normalize "title")))
+	 (titles        (if (node-list-empty? parent-titles)
+			    info-titles
+			    parent-titles))
+	 (subtitles     (select-elements exp-children (normalize "subtitle"))))
+    (make sequence
+      (make paragraph
+	font-family-name: %title-font-family%
+	font-weight: 'bold
+	font-size: (HSIZE 4)
+	line-spacing: (* (HSIZE 4) %line-spacing-factor%)
+	space-before: (* (HSIZE 4) %head-before-factor%)
+	start-indent: 0pt
+	first-line-start-indent: 0pt
+	quadding: %component-title-quadding%
+	heading-level: (if %generate-heading-level% 1 0)
+	keep-with-next?: #t
+
+	(if (string=? (element-label) "")
+	    (empty-sosofo)
+	    (literal (gentext-element-name-space (current-node))
+		     (element-label)
+		     (gentext-label-title-sep (gi)))))
+      (make paragraph
+	font-family-name: %title-font-family%
+	font-weight: 'bold
+	font-posture: 'italic
+	font-size: (HSIZE 4)
+	line-spacing: (* (HSIZE 4) %line-spacing-factor%)
+	space-before: (* (HSIZE 4) %head-before-factor%)
+	start-indent: 0pt
+	first-line-start-indent: 0pt
+	quadding: %component-title-quadding%
+	heading-level: (if %generate-heading-level% 1 0)
+	keep-with-next?: #t
+
+	(if (node-list-empty? titles)
+	    (element-title-sosofo) ;; get a default!
+	    (with-mode component-title-mode
+	      (make sequence
+		(process-node-list titles)))))
+
+      (make paragraph
+	font-family-name: %title-font-family%
+	font-weight: 'bold
+	font-posture: 'italic
+	font-size: (HSIZE 3)
+	line-spacing: (* (HSIZE 3) %line-spacing-factor%)
+	space-before: (* 0.5 (* (HSIZE 3) %head-before-factor%))
+	space-after: (* (HSIZE 4) %head-after-factor%)
+	start-indent: 0pt
+	first-line-start-indent: 0pt
+	quadding: %component-subtitle-quadding%
+	keep-with-next?: #t
+
+	(with-mode component-title-mode
+	  (make sequence
+	    (process-node-list subtitles)))))))
+
+      ]]>
+
       <![ %output.print.pdf; [
 
       ]]>
@@ -164,6 +262,12 @@
         (list
           (list (normalize "warning")		": ")
 	  (list (normalize "caution")		": ")
+          (list (normalize "chapter")           "  ")
+          (list (normalize "sect1")             "  ")
+          (list (normalize "sect2")             "  ")
+          (list (normalize "sect3")             "  ")
+          (list (normalize "sect4")             "  ")
+          (list (normalize "sect5")             "  ")
           ))
 
     </style-specification-body>
