@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.1 2001/06/25 18:57:10 pete Exp $
+     $Id: book.sgml,v 1.2 2001/06/26 19:41:35 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -15,16 +15,16 @@
  <bookinfo>
   <title>ECE 291 Lab Manual</title>
 
-  <authorgroup>
-   <editor>
-    <firstname>Peter</firstname>
-    <othername>L. B.</othername>
-    <surname>Johnson</surname>
-    <affiliation>
-     <address><email>johnsonp@bilogic.org</email></address>
-    </affiliation>
-   </editor>
-  </authorgroup>
+  <corpauthor>The ECE 291 Documentation Project</corpauthor>
+
+  <editor>
+   <firstname>Peter</firstname>
+   <othername>L. B.</othername>
+   <surname>Johnson</surname>
+   <affiliation>
+    <address><email>johnsonp@bilogic.org</email></address>
+   </affiliation>
+  </editor>
 
   <pubdate>2001</pubdate>
 
@@ -34,7 +34,7 @@
    <year>1995</year>
    <year>1997</year>
    <year>2001</year>
-   <holder></holder>
+   <holder>The ECE 291 Documentation Project</holder>
   </copyright>
 
   <revhistory>
