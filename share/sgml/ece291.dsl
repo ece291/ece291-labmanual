@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
-<!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.21 2001/08/15 06:01:08 pete Exp $ -->
+<!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.14 2001/09/02 02:37:50 murray Exp $ -->
+<!-- $Id: ece291.dsl,v 1.22 2001/09/12 21:57:56 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -293,6 +293,9 @@
       <!-- More aesthetically pleasing chapter headers for print output -->
       <![ %output.print.niceheaders; [
 
+      (define niceheader-rule-spacebefore (* (HSIZE 5) %head-before-factor%))
+      (define niceheader-rule-spaceafter (* (HSIZE 1) %head-after-factor%))
+
       (define ($component-title$)
 	(let* ((info (cond
 		((equal? (gi) (normalize "appendix"))
@@ -388,10 +391,10 @@
       (if (equal? (gi) (normalize "index"))
        (empty-sosofo)
        (make rule
-	 length: 475pt
+	 length: %body-width%
 	 display-alignment: 'start
-	 space-before: (* (HSIZE 5) %head-before-factor%)
-	 space-after: (* (HSIZE 1) %head-after-factor%)
+	 space-before: niceheader-rule-spacebefore
+	 space-after: niceheader-rule-spaceafter
 	 line-thickness: 0.5pt)))))
 
       ]]>
