@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.10 2001/08/03 03:54:10 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.11 2001/08/03 06:00:33 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -80,6 +80,22 @@
 	    (literal "``")
 	    (process-children)
 	    (literal "''")))-->
+
+	<!-- Support for PModeLibRef -->
+	(element pmodelibref
+          (let* ((baseurl	"http://courses.ece.uiuc.edu/ece291/resources/pmodelib-doc/ref/")
+		 (section	(case-fold-down
+				  (attribute-string (normalize "section"))))
+		 (sectionurl	(if (equal? section "top")
+				    "reference.html"
+				    (string-append section ".html")))
+		 (href		(string-append baseurl sectionurl "#"
+					       (attribute-string
+						 (normalize "function")))))
+	    (make element gi: "A"
+	          attributes: (list (list "HREF" href)
+				    (list "TARGET" "_top"))
+		  (process-children))))
 
       ]]>
 
@@ -214,6 +230,9 @@
             (with-mode section-title-mode
 	      (process-node-list subtitles))
             ($section-info$ info))))
+
+	<!-- Support for PModeLibRef -->
+	(element pmodelibref ($charseq$))
 
       ]]>
 

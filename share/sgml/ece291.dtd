@@ -7,7 +7,7 @@
 
      The FPI for this DTD is "-//ECE291//DTD DocBook V4.1-Based Extension//EN"
 
-     $Id: ece291.dtd,v 1.1 2001/08/03 03:54:10 pete Exp $
+     $Id: ece291.dtd,v 1.2 2001/08/03 06:00:33 pete Exp $
 -->
 
 <!-- ..................................................................... -->
@@ -26,7 +26,7 @@
 <!-- Entities for element classes and mixtures ........................... -->
 
 <!-- Character level classes -->
-<!ENTITY % local.tech.char.class "|Register|Instruction">
+<!ENTITY % local.tech.char.class "|Register|Instruction|PModeLibRef">
 
 <!-- Altered general entities ............................................
 
@@ -81,6 +81,34 @@
 <!-- Instructions ........................................................ -->
 <!ELEMENT Instruction - - ((%cptr.char.mix;)+)>
 <!ATTLIST Instruction
+	%common.attrib;
+>
+
+<!-- Pointer to PModeLib Reference ....................................... -->
+<!ELEMENT PModeLibRef - - ((%para.char.mix;)+) %links.exclusion;>
+<!ATTLIST PModeLibRef
+	--
+	Section: Section of the reference the function is in.
+	"top" is the top-level (introduction/ToC) reference page.
+	--
+	Section	(top
+		|init
+		|simulate
+		|memory
+		|file
+		|graphfile
+		|int
+		|textmode
+		|vbeaf
+		|netbios
+		|sockets
+		|sound
+		|dma
+		|util)		#REQUIRED
+	--
+	Function: function name to link to within section (may be blank)
+	--
+	Function	CDATA	#IMPLIED
 	%common.attrib;
 >
 
