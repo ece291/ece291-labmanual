@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.8 2001/07/03 09:23:44 pete Exp $
+# $Id: Makefile,v 1.9 2001/07/26 03:28:50 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -9,6 +9,12 @@ MAINTAINER=pete@bilogic.org
 DOC?= book
 
 FORMATS?= html-split pdf
+
+NICE_HEADERS?= 1
+
+#GEN_INDEX?= 1
+
+OPENJADE?= yes
 
 #
 # SRCS lists the individual SGML files that make up the document.  Changes to
@@ -24,8 +30,10 @@ SRCS+= c-prog/chapter.sgml
 SRCS+= libraries/chapter.sgml
 SRCS+= data-structures/chapter.sgml
 SRCS+= io-devices/chapter.sgml
+SRCS+= graphics/chapter.sgml
 SRCS+= serial-comm/chapter.sgml
 SRCS+= parallel-comm/chapter.sgml
+SRCS+= inst-ref/appendix.sgml
 SRCS+= glossary.sgml
 
 # Entities
@@ -48,6 +56,7 @@ IMAGES+= data-structures/hashfunction.tex
 IMAGES+= data-structures/hfmod.tex
 IMAGES+= data-structures/hfxor.tex
 IMAGES+= io-devices/speaker.dia
+IMAGES+= graphics/text-memory-size.tex
 IMAGES+= serial-comm/typconn.dia
 IMAGES+= serial-comm/baudfreq.dia
 IMAGES+= serial-comm/nullmodem.dia

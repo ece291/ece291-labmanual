@@ -6,7 +6,7 @@
 
      Chapters should be listed in the order in which they are referenced.
 
-     $Id: chapters.ent,v 1.4 2001/07/03 17:32:41 pete Exp $
+     $Id: chapters.ent,v 1.5 2001/07/26 03:28:50 pete Exp $
 -->
 
 <!ENTITY chap.preface               SYSTEM "preface.sgml">
@@ -16,9 +16,13 @@
 <!ENTITY chap.libraries             SYSTEM "libraries/chapter.sgml">
 <!ENTITY chap.data-structures       SYSTEM "data-structures/chapter.sgml">
 <!ENTITY chap.io-devices            SYSTEM "io-devices/chapter.sgml">
+<!ENTITY chap.graphics              SYSTEM "graphics/chapter.sgml">
 <!ENTITY chap.serial-comm           SYSTEM "serial-comm/chapter.sgml">
 <!ENTITY chap.parallel-comm         SYSTEM "parallel-comm/chapter.sgml">
-<!ENTITY chap.glossary              SYSTEM "glossary.sgml">
 
 <!-- Appendices -->
+<!ENTITY chap.inst-ref              SYSTEM "inst-ref/appendix.sgml">
 
+<!-- Glossary and Index -->
+<!ENTITY chap.glossary              SYSTEM "glossary.sgml">
+<!ENTITY chap.index                 SYSTEM "index.sgml">

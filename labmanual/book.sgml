@@ -1,12 +1,20 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.8 2001/07/03 17:57:30 pete Exp $
+     $Id: book.sgml,v 1.9 2001/07/26 03:28:50 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY % registers PUBLIC "-//ECE291//ENTITIES DocBook Register Entities//EN"> %registers;
 <!ENTITY % chapters SYSTEM "chapters.ent"> %chapters;
+
+<!-- Instruction groups to exclude/include.  It isn't safe to include any of
+     these except for inst-ref.undoc because not all of them have been
+     SGMLized yet. -->
+<!ENTITY % inst-ref.katmai "IGNORE">
+<!ENTITY % inst-ref.now3d "IGNORE">
+<!ENTITY % inst-ref.cyrix "IGNORE">
+<!ENTITY % inst-ref.undoc "IGNORE">
 ]>
 
 <book>
@@ -98,6 +106,7 @@
  &chap.libraries;
  &chap.data-structures;
  &chap.io-devices;
+ &chap.graphics;
  &chap.serial-comm;
  &chap.parallel-comm;
 
@@ -120,28 +129,11 @@
   </sect1>
  </appendix>
 
- <appendix id="inst-summary">
-  <title>Instruction Summary</title>
-
-  <para>Following is a summary of common useful assembly language
-   commands.</para>
-
-  <sect1 id="inst-summary-control">
-   <title>Control Transfer Instructions</title>
-
-   <para></para>
-  </sect1>
-
-  <sect1 id="inst-summary-datamove">
-   <title>Data Movement Instructions</title>
-
-   <para></para>
-  </sect1>
- </appendix>
+ &chap.inst-ref;
 
  &chap.glossary;
 
- <index id="book-index"></index>
+ &chap.index;
 </book>
 
 <!--
