@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: appendix.sgml,v 1.5 2001/09/14 22:55:08 pete Exp $
+     $Id: appendix.sgml,v 1.6 2001/09/15 04:42:41 pete Exp $
 -->
 
 <appendix id="inst-ref">
@@ -5890,7 +5890,7 @@ ROR r/m32,imm8                ; o32 C1 /1 ib         [386]</screen>
 
   <para><literal>ROL</literal> and <literal>ROR</literal> perform a
    bitwise rotation operation on the given source/destination (first)
-   operand. Thus, for example, in the operation <literal>ROR
+   operand. Thus, for example, in the operation <literal>ROL
     AL,1</literal>, an 8-bit rotation is performed in which &reg.al;
    is shifted left by 1 and the original top bit of &reg.al; moves
    round into the low bit.</para>
