@@ -45,7 +45,7 @@
    <example id="pmodelib-intro-invoke-example">
     <title>Using the <literal>invoke</literal> macro</title>
 
-    <programlisting>
+    <programlisting width="130">
         invoke  <xref linkend="pmodelib-ref-findgraphicsmode">, word 640, word 480, word 32, dword 1
         invoke  <xref linkend="pmodelib-ref-setgraphicsmode">, ax
         invoke  <xref linkend="pmodelib-ref-copytoscreen">, dword Image, dword 320*4, dword 0, dword 0, dword 320, dword 240, dword 160, dword 120
@@ -373,7 +373,7 @@ _main
   <example id="pmodelib-intro-using-interrupts-dspmsg-example">
    <title>PModeLib <quote>dspmsg</quote> Program</title>
 
-   <programlisting>%include "lib291.inc"
+   <programlisting width="90">%include "lib291.inc"
 
 BITS 32
 
@@ -651,7 +651,7 @@ _main
   <example id="pmodelib-intro-interrupt-timer-example">
    <title>Hooking the timer interrupt</title>
 
-   <programlisting>
+   <programlisting width="97">
 %include "lib291.inc"
 
 GLOBAL _main
@@ -819,7 +819,7 @@ _main
    <example id="pmodelib-intro-graphics-screen-image-example">
     <title>Displaying an Image</title>
 
-    <programlisting>
+    <programlisting width="132">
 %include "lib291.inc"
 
 GLOBAL _main
