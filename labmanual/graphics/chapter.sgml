@@ -129,7 +129,7 @@
      </imageobject>
 
      <textobject>
-      <phrase>80 columns * 25 rows * 2 bytes per row = 4000
+      <phrase>80 columns * 25 rows * 2 bytes per character = 4000
        bytes</phrase>
      </textobject>
     </mediaobject>
@@ -291,13 +291,13 @@
                 |
             (set X and Y and DL to the color)
                 |
-        imul    di, [Y], 320    ; Multiply Y by 320 and store in DI
+        mul     di, [Y], 320    ; Multiply Y by 320 and store in DI
         add     di, [X]         ; Add the X coordinate
         mov     [es:di], dl     ; Set the pixel to the color specified
                                 ;  by DL</programlisting>
 
    <para>This method can be much faster than BIOS, because for most
-    things, only a few IMUL instructions should be needed and the
+    things, only a few MUL instructions should be needed and the
     majority of pixels can be set by moving relative to the original
     address.  For example, to move left or right, simply subtract or
     add 1 from the address, and to move up and down, subtract or add
