@@ -1,0 +1,290 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/06/27 02:37:54 pete Exp $
+-->
+
+<chapter id="parallel-comm">
+ <title>Parallel Communication</title>
+
+ <sect1 id="parallel-comm-hardware">
+  <title>Priter Adapter Hardware</title>
+
+  <!-- TODO: Fix Table references -->
+  <para>The parallel interface provides the signals and hardware to
+   transfer data one character at a time (8 bits in parallel) between
+   the CPU and a device, usually a printer. The signals consist of 8
+   data lines and 9 handshaking (status and control) lines. The
+   hardware (latches and buffers for the data, status and control
+   signals, and logic to connect them to the internal data bus and to
+   address them as I/O ports via the address bus) is located on a
+   printer adapter  card that plugs into an I/O slot. The signals to
+   and from the printer, shown in Table I, are available on a 25-pin
+   female D-shell connector on the printer adapter. Up to 3 printer
+   adapters may be installed; the addresses available for the data,
+   status, and control ports of an adapter are shown in Table II. BIOS
+   determines during the restart initialization which addresses have
+   printer adapters installed; &reg.dx; = 0 to 2 is then used within
+   BIOS to refer to the printer adapters that were found to be
+   present.</para>
+
+  <!-- TODO: Table I and II here -->
+
+  <para>The printer is assumed to use the <quote>Centronics</quote>
+   protocol, shown in <xref linkend="parallel-comm-fig-timing">. The
+   printer sets BUSY high while it is processing a character; BUSY may
+   also be high because the printer is disconnected, off-line, or in
+   an error state.</para>
+
+  <figure id="parallel-comm-fig-timing">
+   <title>Timing Diagram for the Centronics Protocol</title>
+
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="parallel-comm/timing" format=eps>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>In the <firstterm>polled</firstterm> mode of printing, the
+   character bits are put on the DATA lines, BUSY is tested repeatedly
+   until it is found to be low, then the ~STROBE pulse is sent. The
+   printer sets BUSY high when the character data have been latched
+   and sets it low again when the character has been processed. (The
+   Centronics protocol specifies that the DATA lines be stable from at
+   least 500 ns before to at least 500 ns after the ~STROBE pulse, and
+   the ~STROBE pulse be at least 500 ns long. These times may of
+   course be shortened for a specific printer, at the risk of loss of
+   generality.) Programs using the polled mode should include a
+   <quote>timeout</quote> counter to guard against a permanent BUSY
+   condition. BIOS calls and DOS functions use this mode for
+   printing.</para>
+
+  <para>In the <firstterm>interrupt-driven</firstterm> mode of
+   printing, the positive-going edge of the ~ACKNOWLEDGE signal is
+   used to cause an interrupt 0Fh via the IRQ7 line to the Interrupt
+   Controller; the Interrupt Handler can send a new character to the
+   printer whenever it is invoked, since ACKNOWLEDGE indicates that
+   the previous character has been processed. The DOS command
+   <command>PRINT</command> uses this mode to spool and print
+   files.</para>
+ </sect1>
+
+ <sect1 id="parallel-comm-biosdos">
+  <title>BIOS and DOS Function Calls</title>
+
+  <para>BIOS call INT 17h has three subfunctions, selected with AH set
+   to 0-2. Subfunctions assume &reg.dx; = printer number (0-2); they
+   return with &reg.ah; = printer status byte (see below). The
+   subfunctions are:</para>
+
+  <itemizedlist mark="None">
+   <listitem>
+    <para>&reg.ah; = 0: Print character specified in &reg.al;. If BUSY
+     does not go low within about 16 seconds, a <quote>timeout</quote>
+     is declared and BIOS returns with bit 0 of the statues byte set
+     (and the character in &reg.al; is lost).</para>
+   </listitem>
+
+   <listitem>
+    <para>&reg.ah = 1: Initialize (set ~SELECT low, pulse ~INITIALIZE
+     low, set ~AUTO FEED high, and disable IRQ7 interrupts from
+     ~ACKNOWLEDGE). IBM- or EPSON-compatible printers respond to the
+     INITIALIZE pulse by performing a carriage return and establishing
+     the current line as top-of-page.</para>
+   </listitem>
+
+   <listitem>
+    <para>&reg.ah; = 2: Get printer status byte into &reg.ah;. The
+     meaning (some of the signals have been inverted on the way from
+     the connector) is:</para>
+    <!-- Informal table here -->
+   </listitem>
+  </itemizedlist>
+
+  <para>DOS function call INT 21h with &reg.ah; = 5 prints the
+   contents of &reg.dl; interpreted as an ASCII character.</para>
+ </sect1>
+
+ <sect1 id="parallel-comm-asm">
+  <title>Machine Language Control of Printer Adapter</title>
+
+  <para>BIOS calls or DOS functions are most likely adequate for the
+   control of a printer in the polled mode. Direct machine-language
+   control is necessary, however, in situations such as the
+   following:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>Interrupt-driven operation of the printer.</para>
+   </listitem>
+
+   <listitem>
+    <para>Polled operation with features which, e.g., permit taking
+     the printer offline for adding paper without incurring the
+     automatic 16-second timeout and the consequent loss of a
+     character.</para>
+   </listitem>
+
+   <listitem>
+    <para>READING parallel data INTO the CPU from a device.</para>
+   </listitem>
+  </itemizedlist>
+
+  <figure id="parallel-comm-fig-logic">
+   <title>Simplified Logic Diagram of the Printer Adapter</title>
+
+   <mediaobject>
+    <imageobject>
+     <imagedata fileref="parallel-comm/logic" format=eps>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>Machine-language control uses <literal>OUT</literal>
+   instructions to transfer a byte from register &reg.al; of the CPU
+   to the adapter's Out latches, or <literal>IN</literal> instructions
+   to transfer data from the In buffers to register &reg.al;. A
+   simplified logic diagram is shown in <xref
+    linkend="parallel-comm-fig-logic">. Machine language control is
+   straightfoward but several peculiarities of the adapter logic must
+   be noted:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>Data is sent to the printer by <literal>OUT</literal>putting
+     a byte from register &reg.al; to the Data Out Latch. This latch
+     has tri-state outputs which are always enabled. Thus, the
+     printer's Data lines CANNOT be used for input; the Data In Buffer
+     can only be used to read back to data in the Data Out
+     Latch.</para>
+   </listitem>
+
+   <listitem>
+    <!-- TODO: Fix table reference -->
+    <para>Status signals from the printer are <literal>IN</literal>put
+     into register &reg.al; via the Status In Buffer (bits 3-7 only).
+     Table III shows the meaning assigned to the various bits. Note
+     that some signals are complemented between the connector and the
+     In Buffer. (The status byte returned by BIOS call 17h register
+     &reg.ah; has a timeout indicator added in bit 0 and, for some
+     reason, has bits 3 and 6 complemented by software.</para>
+
+    <!-- TODO: Add table III here -->
+   </listitem>
+
+   <listitem>
+    <!-- TODO: Fix table reference -->
+    <para>Control signals are sent to the printer by
+     <literal>OUT</literal>putting register &reg.al; (bits 0-5 only)
+     to the Control Out Latch. Table IV shows the meaning assigned to
+     the various bits. Note that some signals are complemented between
+     the latch output and the connector. Bit 4 (IRQ ENABLE) is not
+     available at the connector; it is used to enable the ORing of the
+     ACKNOWLEDGE status signal to the IRQ7 input to the 8259 Interrupt
+     Controller (which will cause an interrupt 0Fh if not masked). Bit
+     5 is latched but not used further (see, however, the following
+     section).</para>
+   </listitem>
+  </itemizedlist>
+
+  <!-- TODO: Fix table reference -->
+  <para>The control signals at the connector may be read back into
+   register &reg.al; (bits 0-4 only) via the Control In Buffer. There
+   are corresponding complementations between the connector and the In
+   buffer (and bit 4 is simply a copy of the Out latch bit 4) so that
+   Table IV can be used in reverse for input. Note that since the
+   Control Out Latch outputs are buffered, the control signal pins
+   corresponding to control bits 0-3 <emphasis>can</emphasis> be used
+   for input.</para>
+
+  <!-- TODO: Add Table IV here -->
+
+  <para>To illustrate machine language control, a program fragment
+   corresponding to subfunction 0 ("print the character in register
+   &reg.al;") of BIOS call 17h is shown below:</para>
+
+  <programlisting>
+        sti             ; allow higher-priority interrupt
+        ...
+        mov     si, dx  ; printer number
+        mov     bl, [PrintTimeout+si]
+                ; load timeout parameter byte (=10 for PC)
+        shl     si, 1
+        mov     dx, [PrinterBase+si]
+                ; Data port address of printer in DX
+        ...
+        OR      AH, AH
+        JZ      .B2
+        ...
+.B2:                    ; subfunction 0
+        push    ax
+        out     dx, al  ; send character to Data Out latch
+        inc     dx      ; point to Status port
+.B3:                    ; loop while BUSY until timeout
+        sub     cx, cx  ; outer loop
+.B3_1:                  ; inner loop
+        in      al, dx  ; read printer status
+        test    al, 80h ; test the BUSY status bit
+        jnz     .B4     ; not busy
+        loop    .B3_1   ; busy: repeat inner loop
+        dec     bl      ; decr. outer loop counter
+        jnz     .B3     ; repeat outer loop
+        or      ah, 1   ; set timeout flag
+        and     ah, 0F9h; clear unused bits
+        jmp     ...     ; go to return with error flag set
+        ...
+.B4:                    ; NOT BUSY: send ~STROBE
+        inc     dx      ; point to Control port
+        mov     al, 0Dh ; set bit 0 (=STROBE) high -- also sets
+                        ;   IRQ ENABLE low, SELECT high,
+                        ;   ~INITIALIZE high, and AUTO FEED low
+        out     dx, al  ; send character to Control port
+        mov     al, 0Ch ; set STROBE low again
+        out     dx, al
+        pop     ax
+        ...             ; go to read the status into AH
+        iret</programlisting>
+ </sect1>
+
+ <sect1>
+  <title>Use of the Printer Adapter for Data Input</title>
+
+  <para>If 5 bits are sufficient for input, BIOS call 17h, subfunction
+   2, can be used to read the printer status lines into bits 3-7 of
+   register &reg.ah; &ndash; see <xref
+    linkend="parallel-comm-biosdos">. Note that the signals appearing
+   in bits 7, 6, and 3 will have been complemented either by the
+   printer adapter hardware or BIOS software, bits 2 and 1 will be
+   low, and bit 0 will be set to the timeout flag value.</para>
+
+  <!-- TODO: Fix table references -->
+  <para>Either the 5 status lines or the 4 control lines can be read
+   into register &reg.al; with machine language instructions &ndash;
+   see Tables III and IV for the bit assignments and signal
+   complementations. The control lines can safely be used for input
+   since the Control Out Latch outputs are buffered properly.
+   Unconnected lines will float high.</para>
+
+  <para>If 8-bit parallel input via the printer DATA lines is desired
+   the adapter hardware must be modified so that the ~OE (OUTPUT
+   ENABLE) input to the Data Out Latch is under program control. Bit 5
+   of the Control Out Latch can be used for this purpose; in face,
+   since bit 5 of the control byte is held low by the present version
+   of BIOS this modification would not interefere with normal BIOS
+   use. An improved adapter design would allow bit 5 of the Control
+   Out Latch to be read back via the Control In Buffer.</para>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
