@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.2 2001/07/26 06:08:36 pete Exp $
+     $Id: chapter.sgml,v 1.3 2001/08/02 08:04:58 pete Exp $
 -->
 
 <chapter id="io-devices">
@@ -174,6 +174,94 @@
      <constant>0040:0018h</constant> in IBM-compatible BIOS,
      indicating the following:</para>
 
+    <table id="io-devices-keyboard-shift-status-1">
+     <title>Meaning of Shift Status Byte at
+      <constant>0040:0017h</constant></title>
+
+     <tgroup cols="8" align="center">
+      <thead>
+       <row>
+	<entry>Bit 7</entry>
+	<entry>Bit 6</entry>
+	<entry>Bit 5</entry>
+	<entry>Bit 4</entry>
+	<entry>Bit 3</entry>
+	<entry>Bit 2</entry>
+	<entry>Bit 1</entry>
+	<entry>Bit 0</entry>
+       </row>
+      </thead>
+
+      <tbody>
+       <row rowsep="0">
+	<entry><keycap>INSERT</keycap></entry>
+	<entry><keycap>CAPSLK</keycap></entry>
+	<entry><keycap>NUMLK</keycap></entry>
+	<entry><keycap>SCRLK</keycap></entry>
+	<entry><keycap>ALT</keycap></entry>
+	<entry><keycap>CTRL</keycap></entry>
+	<entry><keycap>LSHIFT</keycap></entry>
+	<entry><keycap>RSHIFT</keycap></entry>
+       </row>
+
+       <row>
+	<entry>state&nbsp;active</entry>
+	<entry>state&nbsp;active</entry>
+	<entry>state&nbsp;active</entry>
+	<entry>state&nbsp;active</entry>
+	<entry>key&nbsp;down</entry>
+	<entry>key&nbsp;down</entry>
+	<entry>key&nbsp;down</entry>
+	<entry>key&nbsp;down</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+
+    <table id="io-devices-keyboard-shift-status-2">
+     <title>Meaning of Shift Status Byte at
+      <constant>0040:0018h</constant></title>
+
+     <tgroup cols="8" align="center">
+      <thead>
+       <row>
+	<entry>Bit 7</entry>
+	<entry>Bit 6</entry>
+	<entry>Bit 5</entry>
+	<entry>Bit 4</entry>
+	<entry>Bit 3</entry>
+	<entry>Bit 2</entry>
+	<entry>Bit 1</entry>
+	<entry>Bit 0</entry>
+       </row>
+      </thead>
+
+      <tbody>
+       <row rowsep="0">
+	<entry><keycap>INSERT</keycap></entry>
+	<entry><keycap>CAPSLK</keycap></entry>
+	<entry><keycap>NUMLK</keycap></entry>
+	<entry><keycap>SCRLK</keycap></entry>
+	<entry><keycap>SUSPEND</keycap></entry>
+	<entry>0</entry>
+	<entry>0</entry>
+	<entry>0</entry>
+       </row>
+
+       <row>
+	<entry>key&nbsp;down</entry>
+	<entry>key&nbsp;down</entry>
+	<entry>key&nbsp;down</entry>
+	<entry>key&nbsp;down</entry>
+	<entry>state&nbsp;active</entry>
+	<entry></entry>
+	<entry></entry>
+	<entry></entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+
     <para>KB_BUFFER, the type-ahead buffer maintained by Task 3, is
      independent of the 16-keystroke buffer maintained within the
      keyboard unit.  For every keypress other than shift mode keys
@@ -323,9 +411,9 @@ KbdInt
      <keycap>C</keycap>
     </keycombo> before it is acted upon.</para>
 
-   <!-- TODO: Fix table reference -->
    <para>Subfunction 2 copies the first <quote>shift status</quote>
-    byte (see Table Ia above) into &reg.al;.</para>
+    byte (see <xref linkend="io-devices-keyboard-shift-status-1">)
+    into &reg.al;.</para>
 
    <para>Subfunction 0 and 1 recognize
     <keycombo>
@@ -345,7 +433,47 @@ KbdInt
    <para>Here is a short table summarizing the <literal>INT
      16h</literal> functions above:</para>
 
-   <!-- TODO: Table -->
+   <informaltable>
+    <tgroup cols="2">
+     <colspec colname="function">
+     <colspec colname="description">
+
+     <thead>
+      <row>
+       <entry align="center"><literal>INT 16h</literal> Function</entry>
+       <entry align="center">Description</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry valign="top"><para>&reg.ah;=0</para></entry>
+       <entry><para>Checks (and waits) for a keypress. Removes it from
+	   buffer.</para><simplelist>
+	   <member>&reg.al; &larr; ASCII code</member>
+	   <member>&reg.ah; &larr; scan (or second) code</member>
+	  </simplelist></entry>
+      </row>
+
+      <row>
+       <entry valign="top"><para>&reg.ah;=1</para></entry>
+       <entry><para>Checks (but doesn't wait) for a keypress.  Leaves
+	 it in buffer.</para><simplelist>
+	 <member>&flag.zf; &larr; 0 if an entry is present.  1 if the
+	  buffer is empty.</member>
+	 <member>If an entry is present, it is copied (not removed)
+	  just as above.</member>
+	</simplelist></entry>
+      </row>
+
+      <row>
+       <entry><para>&reg.ah;=2</para></entry>
+       <entry><para>Copies the first shift status byte to
+	 &reg.al;.</para></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </sect2>
 
   <sect2 id="io-devices-keyboard-dos">
@@ -415,6 +543,72 @@ KbdInt
    <para>DOS function 0Ch, with &reg.al; = 01h, 06h, 07h, 08h, or 0Ah,
     first clears KB_BUFFER and then invokes the DOS function specified
     in &reg.al;</para>
+
+   <para>Here is a short table summarizing the <literal>INT
+     21h</literal> functions above:</para>
+
+   <informaltable>
+    <tgroup cols="2">
+     <colspec colname="function">
+     <colspec colname="description">
+
+     <thead>
+      <row>
+       <entry align="center"><literal>INT 21h</literal> Function</entry>
+       <entry align="center">Description</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry valign="top"><para></para><simplelist>
+	 <member>&reg.ah;=01h</member>
+	 <member>&reg.ah;=07h</member>
+	 <member>&reg.ah;=08h</member>
+	</simplelist></entry>
+       <entry><para>Checks (and waits) for a keypress. Removes it from
+	   buffer.</para><simplelist>
+	   <member>&reg.al; &larr; ASCII code</member>
+	   <member>Function 01h also echoes the character.</member>
+	  </simplelist></entry>
+      </row>
+
+      <row>
+       <entry valign="top"><para></para><simplelist>
+	 <member>&reg.ah;=06h</member>
+	 <member>(&reg.dl=-1)</member>
+	</simplelist></entry>
+       <entry><para>Checks (but doesn't wait) for a keypress.  Leaves
+	 it in buffer.</para><simplelist>
+	 <member>&flag.zf; &larr; 0 if an entry is present.  1 if the
+	  buffer is empty.</member>
+	 <member>If an entry is present, it is copied (not removed)
+	  just as above.</member>
+	</simplelist></entry>
+      </row>
+
+      <row>
+       <entry><para>&reg.ah;=0Ah</para></entry>
+       <entry><para>Inputs an entire string. Characters are echoed as
+	 they are typed. ENTER terminates the entry. (See above for
+	 more information).</para></entry>
+      </row>
+
+      <row>
+       <entry><para>&reg.ah;=0Bh</para></entry>
+       <entry><para>&reg.al; &larr; 0 if the buffer is empty, -1 if it
+	 isn't empty.</para></entry>
+      </row>
+
+      <row>
+       <entry><para>&reg.ah;=0Ch</para></entry>
+       <entry><para>With &reg.al;=01h,06h,07h,08h,0Ah, performs the
+	 same functions as above (function is in &reg.al;) but first
+	 clears the buffer.</para></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </sect2>
 
   <sect2 id="io-devices-keyboard-xascii">
@@ -430,8 +624,160 @@ KbdInt
       LOCK</keycap>, or <keycap>CTRL</keycap>) the extended ASCII code
      consists of the key's scan code in the high byte (with MSB = 0
      for a key press) and the corresponding ASCII code in the low
-     byte. Scan codes for the standard and the AT keyboards ae shown
-     below.</para>
+     byte.  Scan codes for the standard and the AT keyboards ae shown
+     below.  Key releases are indicated by the scan code MSB = 1 and
+     the low 7 bits set to the scan code.</para>
+
+    <table frame="none" id="io-devices-keyboard-scancodes">
+     <title>Scan Codes Assigned to Keys on the Standard or AT
+      Keyboard</title>
+
+     <tgroup cols="2">
+      <thead>
+       <row>
+	<entry>Key</entry>
+	<entry>Scan Code</entry>
+       </row>
+      </thead>
+
+      <tbody>
+       <row>
+	<entry>ESCape</entry>
+	<entry>1</entry>
+       </row>
+
+       <row>
+	<entry>1 2 3 4 5 6 7 8 9 0 - =</entry>
+	<entry>2-13</entry>
+       </row>
+
+       <row>
+	<entry>Backspace</entry>
+	<entry>14</entry>
+       </row>
+
+       <row>
+	<entry>Tab</entry>
+	<entry>15</entry>
+       </row>
+
+       <row>
+	<entry>Q W E R T Y U I O P [ ]</entry>
+	<entry>16-27</entry>
+       </row>
+
+       <row>
+	<entry>ENTER</entry>
+	<entry>28</entry>
+       </row>
+
+       <row>
+	<entry>CTRL</entry>
+	<entry>29</entry>
+       </row>
+
+       <row>
+	<entry>A S D F G H J K L ; ' `</entry>
+	<entry>30-41</entry>
+       </row>
+
+       <row>
+	<entry>SHIFT (left)</entry>
+	<entry>42</entry>
+       </row>
+
+       <row>
+	<entry>\</entry>
+	<entry>43</entry>
+       </row>
+
+       <row>
+	<entry>Z X C V B N M , . /</entry>
+	<entry>44-53</entry>
+       </row>
+
+       <row>
+	<entry>SHIFT (right)</entry>
+	<entry>54</entry>
+       </row>
+
+       <row>
+	<entry>Print Screen</entry>
+	<entry>55</entry>
+       </row>
+
+       <row>
+	<entry>ALT (left)</entry>
+	<entry>56</entry>
+       </row>
+
+       <row>
+	<entry>SPACEBAR</entry>
+	<entry>57</entry>
+       </row>
+
+       <row>
+	<entry>CAPS LOCK</entry>
+	<entry>58</entry>
+       </row>
+
+       <row>
+	<entry>F1 to F10</entry>
+	<entry>59-68</entry>
+       </row>
+
+       <row>
+	<entry>NUM LOCK</entry>
+	<entry>69</entry>
+       </row>
+
+       <row>
+	<entry>SCROLL LOCK</entry>
+	<entry>70</entry>
+       </row>
+
+       <row>
+	<entry>7 8 9 (Numeric keypad)</entry>
+	<entry>71-73</entry>
+       </row>
+
+       <row>
+	<entry>gray -</entry>
+	<entry>74</entry>
+       </row>
+
+       <row>
+	<entry>4 5 6 (Numeric keypad)</entry>
+	<entry>75-77</entry>
+       </row>
+
+       <row>
+	<entry>gray +</entry>
+	<entry>78</entry>
+       </row>
+
+       <row>
+	<entry>1 2 3 (Numeric keypad)</entry>
+	<entry>79-81</entry>
+       </row>
+
+       <row>
+	<entry>0 (Numeric keypad)</entry>
+	<entry>82</entry>
+       </row>
+
+       <row>
+	<entry>DELETE</entry>
+	<entry>83</entry>
+       </row>
+
+       <row>
+	<entry>SYSTEM REQUEST</entry>
+	<entry>84</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
 
     <para>ASCII codes composed on the numeric keypad with
      <keycap>ALT</keycap> held down return a <keycode>00h</keycode>
@@ -441,13 +787,169 @@ KbdInt
    <sect3 id="io-devices-keyboard-xascii-secondcode">
     <title>Second Codes</title>
 
-    <!-- TODO: Fix table reference -->
     <para>Keys which have no standard ASCII representation
      (<keycap>F1</keycap>, <keycap>PageUp</keycap>,
      <keycap>Insert</keycap>, etc.) are stored with an ASCII code of
      00h in the low byte and a <quote>second code</quote> (usually,
      but not always, the scan code) in the high byte, as shown in
-     Table 9.1d below.  Key combinations not shown are ignored.</para>
+     <xref linkend="io-devices-keyboard-secondcodes">.  Key
+     combinations not shown are ignored.</para>
+
+    <table frame="none" id="io-devices-keyboard-secondcodes">
+     <title><quote>Second Codes</quote> for ASCII Code 00h Key
+      Combinations</title>
+
+     <tgroup cols="2">
+      <thead>
+       <row>
+	<entry>Key</entry>
+	<entry>Scan Code</entry>
+       </row>
+      </thead>
+
+      <tbody>
+       <row>
+	<entry>NUL character</entry>
+	<entry>3</entry>
+       </row>
+
+       <row>
+	<entry>SHIFT-TAB</entry>
+	<entry>15</entry>
+       </row>
+
+       <row>
+	<entry>ALT-Q,W,E,R,T,Y,U,I,O,P</entry>
+	<entry>16-25</entry>
+       </row>
+
+       <row>
+	<entry>ALT-A,S,D,F,G,H,J,K,L</entry>
+	<entry>30-38</entry>
+       </row>
+
+       <row>
+	<entry>ALT-Z,X,C,V,B,N,M</entry>
+	<entry>44-50</entry>
+       </row>
+
+       <row>
+	<entry>F1 to F10</entry>
+	<entry>59-68</entry>
+       </row>
+
+       <row>
+	<entry>HOME</entry>
+	<entry>71</entry>
+       </row>
+
+       <row>
+	<entry>UP ARROW</entry>
+	<entry>72</entry>
+       </row>
+
+       <row>
+	<entry>PAGE UP</entry>
+	<entry>73</entry>
+       </row>
+
+       <row>
+	<entry>LEFT ARROW</entry>
+	<entry>75</entry>
+       </row>
+
+       <row>
+	<entry>RIGHT ARROW</entry>
+	<entry>77</entry>
+       </row>
+
+       <row>
+	<entry>END</entry>
+	<entry>79</entry>
+       </row>
+
+       <row>
+	<entry>DOWN ARROW</entry>
+	<entry>80</entry>
+       </row>
+
+       <row>
+	<entry>PAGE DOWN</entry>
+	<entry>81</entry>
+       </row>
+
+       <row>
+	<entry>INSERT</entry>
+	<entry>82</entry>
+       </row>
+
+       <row>
+	<entry>DELETE</entry>
+	<entry>83</entry>
+       </row>
+
+       <row>
+	<entry>SHIFT-F1 to F10</entry>
+	<entry>84-93</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-F1 to F10</entry>
+	<entry>94-103</entry>
+       </row>
+
+       <row>
+	<entry>ALT-F1 to F10</entry>
+	<entry>104-113</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-PRINT SCREEN</entry>
+	<entry>114</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-LEFT ARROW</entry>
+	<entry>115</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-RIGHT ARROW</entry>
+	<entry>116</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-END</entry>
+	<entry>117</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-PAGE DOWN</entry>
+	<entry>118</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-HOME</entry>
+	<entry>119</entry>
+       </row>
+
+       <row>
+	<entry>ALT-1,2,3,4,5,6,7,8,9,0,-,=</entry>
+	<entry>120-131</entry>
+       </row>
+
+       <row>
+	<entry>CTRL-PAGE UP</entry>
+	<entry>132</entry>
+       </row>
+
+       <row>
+	<entry>F11, F12</entry>
+	<entry>133, 134</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
    </sect3>
   </sect2>
 
@@ -1074,10 +1576,45 @@ KbdInt
 
   <para>The CONTROL register of a channel is loaded by writing a
    control byte to I/O port 43h. The interpretation of the control
-   byte is shown in the table below; note that bits 7 and 6 determine
-   which channel is affected.</para>
+   byte is shown in <xref linkend="io-devices-timer-tcb">; note that
+   bits 7 and 6 determine which channel is affected.</para>
 
-  <!-- TODO: Table/list "Interpretation of the Timer Control Byte" -->
+  <table frame="none" id="io-devices-timer-tcb">
+   <title>Interpretation of the Timer Control Byte</title>
+
+   <tgroup cols="2">
+    <colspec colname="bits">
+    <colspec colname="description">
+
+    <tbody>
+     <row>
+      <entry><para>Bits 7,6:</para></entry>
+      <entry><para>Channel ID (11 is illegal)</para></entry>
+     </row>
+
+     <row>
+      <entry valign="top"><para>Bits 5,4:</para></entry>
+      <entry><para>Read/load mode for two-byte count
+	value:</para><simplelist>
+	<member>00 &mdash; latch count for reading</member>
+	<member>01 &mdash; read/load high byte only</member>
+	<member>10 &mdash; read/load low byte only</member>
+	<member>11 &mdash; read/load low byte then high byte</member>
+       </simplelist></entry>
+     </row>
+
+     <row>
+      <entry><para>Bits 3,2,1:</para></entry>
+      <entry><para>Count mode selection (000 to 101)</para></entry>
+     </row>
+
+     <row>
+      <entry><para>Bit 0:</para></entry>
+      <entry><para>0/1: Count in binary/BCD</para></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
 
   <para>The 16-bit COUNT registers of channels 0, 1, and 2 are located
    at I/O ports 40h, 41h, and 43h, resp. Each COUNT register must be
@@ -1277,6 +1814,246 @@ KbdInt
 
    <para>The following table lists frequencies and frequency numbers
     for the three octaves around middle C on a piano keyboard.</para>
+
+   <informaltable frame="none">
+    <tgroup cols="3">
+     <colspec colname="note">
+     <colspec colname="frequency">
+     <colspec colname="freqnum">
+
+     <thead>
+      <row>
+       <entry>Note</entry>
+       <entry>Frequency</entry>
+       <entry>Frequency #</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry>C</entry>
+       <entry>130.81</entry>
+       <entry>9121</entry>
+      </row>
+
+      <row>
+       <entry>C#</entry>
+       <entry>138.59</entry>
+       <entry>8609</entry>
+      </row>
+
+      <row>
+       <entry>D</entry>
+       <entry>146.83</entry>
+       <entry>8126</entry>
+      </row>
+
+      <row>
+       <entry>D#</entry>
+       <entry>155.56</entry>
+       <entry>7670</entry>
+      </row>
+
+      <row>
+       <entry>E</entry>
+       <entry>164.81</entry>
+       <entry>7239</entry>
+      </row>
+
+      <row>
+       <entry>F</entry>
+       <entry>174.61</entry>
+       <entry>6833</entry>
+      </row>
+
+      <row>
+       <entry>F#</entry>
+       <entry>185.00</entry>
+       <entry>6449</entry>
+      </row>
+
+      <row>
+       <entry>G</entry>
+       <entry>196.00</entry>
+       <entry>6087</entry>
+      </row>
+
+      <row>
+       <entry>G#</entry>
+       <entry>207.65</entry>
+       <entry>5746</entry>
+      </row>
+
+      <row>
+       <entry>A</entry>
+       <entry>220.00</entry>
+       <entry>5423</entry>
+      </row>
+
+      <row>
+       <entry>A#</entry>
+       <entry>233.08</entry>
+       <entry>5119</entry>
+      </row>
+
+      <row>
+       <entry>B</entry>
+       <entry>246.94</entry>
+       <entry>4831</entry>
+      </row>
+
+      <row>
+       <entry>Middle C</entry>
+       <entry>261.63</entry>
+       <entry>4560</entry>
+      </row>
+
+      <row>
+       <entry>C#</entry>
+       <entry>277.18</entry>
+       <entry>4304</entry>
+      </row>
+
+      <row>
+       <entry>D</entry>
+       <entry>293.66</entry>
+       <entry>4063</entry>
+      </row>
+
+      <row>
+       <entry>D#</entry>
+       <entry>311.13</entry>
+       <entry>3834</entry>
+      </row>
+
+      <row>
+       <entry>E</entry>
+       <entry>329.63</entry>
+       <entry>3619</entry>
+      </row>
+
+      <row>
+       <entry>F</entry>
+       <entry>349.23</entry>
+       <entry>3416</entry>
+      </row>
+
+      <row>
+       <entry>F#</entry>
+       <entry>369.99</entry>
+       <entry>3224</entry>
+      </row>
+
+      <row>
+       <entry>G</entry>
+       <entry>391.00</entry>
+       <entry>3043</entry>
+      </row>
+
+      <row>
+       <entry>G#</entry>
+       <entry>415.30</entry>
+       <entry>2873</entry>
+      </row>
+
+      <row>
+       <entry>A</entry>
+       <entry>440.00</entry>
+       <entry>2711</entry>
+      </row>
+
+      <row>
+       <entry>A#</entry>
+       <entry>466.16</entry>
+       <entry>2559</entry>
+      </row>
+
+      <row>
+       <entry>B</entry>
+       <entry>493.88</entry>
+       <entry>2415</entry>
+      </row>
+
+      <row>
+       <entry>C</entry>
+       <entry>523.25</entry>
+       <entry>2280</entry>
+      </row>
+
+      <row>
+       <entry>C#</entry>
+       <entry>554.37</entry>
+       <entry>2152</entry>
+      </row>
+
+      <row>
+       <entry>D</entry>
+       <entry>587.33</entry>
+       <entry>2031</entry>
+      </row>
+
+      <row>
+       <entry>D#</entry>
+       <entry>622.25</entry>
+       <entry>1917</entry>
+      </row>
+
+      <row>
+       <entry>E</entry>
+       <entry>659.26</entry>
+       <entry>1809</entry>
+      </row>
+
+      <row>
+       <entry>F</entry>
+       <entry>698.46</entry>
+       <entry>1715</entry>
+      </row>
+
+      <row>
+       <entry>F#</entry>
+       <entry>739.99</entry>
+       <entry>1612</entry>
+      </row>
+
+      <row>
+       <entry>G</entry>
+       <entry>783.99</entry>
+       <entry>1521</entry>
+      </row>
+
+      <row>
+       <entry>G#</entry>
+       <entry>830.61</entry>
+       <entry>1436</entry>
+      </row>
+
+      <row>
+       <entry>A</entry>
+       <entry>880.00</entry>
+       <entry>1355</entry>
+      </row>
+
+      <row>
+       <entry>A#</entry>
+       <entry>923.33</entry>
+       <entry>1292</entry>
+      </row>
+
+      <row>
+       <entry>B</entry>
+       <entry>987.77</entry>
+       <entry>1207</entry>
+      </row>
+
+      <row>
+       <entry>C</entry>
+       <entry>1046.50</entry>
+       <entry>1140</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
   </sect2>
  </sect1>
 </chapter>
