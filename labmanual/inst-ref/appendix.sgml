@@ -1609,9 +1609,9 @@ Z=P=C=1 for "unordered" result (QNaN).
      string <literal>"GenuineIntel"</literal> (or not, if you have a
      clone processor).  That is to say, &reg.ebx; contains
      <literal>"Genu"</literal> (in NASM's own sense of character
-     constants, described in \k{chrconst}), &reg.edx; contains
-     <literal>"ineI"</literal> and &reg.ecx; contains
-     <literal>"ntel"</literal>.</para>
+     constants, described in <xref linkend="nasm-const-char">),
+     &reg.edx; contains <literal>"ineI"</literal> and &reg.ecx;
+     contains <literal>"ntel"</literal>.</para>
    </listitem>
 
    <listitem>
