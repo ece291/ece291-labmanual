@@ -26,7 +26,7 @@
 <!-- Entities for element classes and mixtures ........................... -->
 
 <!-- Character level classes -->
-<!ENTITY % local.tech.char.class "|Register|Instruction|PModeLibRef">
+<!ENTITY % local.tech.char.class "|Register|Instruction|PModeLibRef|DPMIRef">
 
 <!-- Altered general entities ............................................
 
@@ -109,6 +109,30 @@
 	Function: function name to link to within section (may be blank)
 	--
 	Function	CDATA	#IMPLIED
+	%common.attrib;
+>
+
+<!-- Pointer to PModeLib Reference ....................................... -->
+<!ELEMENT DPMIRef - - ((%para.char.mix;)+) %links.exclusion;>
+<!ATTLIST DPMIRef
+	--
+	Section: Section of the specification to link to.
+	Currently only "api" is allowed, to link to an API function.
+	--
+	Section (api)		#REQUIRED
+	--
+	Interrupt: API interrupt number, in hexidecimal.  Most functions are
+	called via interrupt 31, so 31 is the default.
+	--
+	Int		CDATA	#IMPLIED
+	--
+	Function: API function number to link to, in hexidecimal.
+	--
+	Function	CDATA	#REQUIRED
+	--
+	Name: Name of the function (optional).
+	--
+	Name		CDATA	#IMPLIED
 	%common.attrib;
 >
 

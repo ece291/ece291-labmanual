@@ -112,6 +112,34 @@
 						(normalize "function")))))
 		      (process-children)))))
 
+	<!-- Support for DPMIRef -->
+	(element dpmiref
+          (let* ((baseurl	"http://courses.ece.uiuc.edu/ece291/resources/pmode/dpmi/")
+		 (section	(case-fold-down
+				  (attribute-string (normalize "section"))))
+		 (sectionurl	(string-append section "/"))
+		 (intattr	(attribute-string (normalize "int")))
+		 (int		(if intattr intattr "31"))
+		 (function	(attribute-string (normalize "function")))
+		 (functionurl	(string-append function ".html"))
+		 (name		(attribute-string (normalize "name")))
+		 (href		(string-append baseurl
+					       sectionurl
+					       int
+					       functionurl)))
+	  (make element gi: "A"
+		attributes: (list (list "HREF" href)
+				  (list "TARGET" "_top"))
+		(if (node-list-empty? (children (current-node)))
+		    (literal (string-append "DPMI function "
+					    function
+					    "h"
+					    (if name
+						(string-append ", \""
+						   name ",\"")
+						"")))
+		    (process-children)))))
+
       ]]>
 
       <!-- HTML with images  ............................................ -->
