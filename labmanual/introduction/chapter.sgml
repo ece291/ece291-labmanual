@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.5 2001/08/12 22:30:16 pete Exp $
+     $Id: chapter.sgml,v 1.6 2001/08/14 18:27:47 pete Exp $
 -->
 
 <chapter id="introduction">
@@ -23,22 +23,79 @@
     <para>Your machine problems will be graded according to the
      following formula:</para>
 
-    <para>You are expected to provide an original, fully functional
-     solution to all machine problems.  Due to the complexity of MP2
-     and later machine problems, you will occasionally be supplied
-     with additional library subroutines which implement all or some
-     portion of the assignment.  These subroutines are to assist you
-     in writing and debugging your code, but are not intended to be
-     handed in as part of your solution.  If your solution requires
-     the use of one or more library subroutines, you will be penalized
-     accordingly for using them.  The penalty for each library
-     subroutine will be indicated in the assignment.  There is no
-     penalty for the use of the subroutines
-     <function>kbdin</function>, <function>kbdine</function>,
-     <function>dspout</function>, <function>dspmsg</function>,
-     <function>dosxit</function>, <function>ascbin</function>, and
-     <function>binasc</function> (all present in LIB291).  We may
-     announce additions to this list of free subroutines.</para>
+    <informalequation>
+     <mediaobject>
+      <imageobject>
+       <imagedata fileref="introduction/mpgrade" format="tex">
+      </imageobject>
+
+      <textobject>
+       <phrase>MP grade = Functionality Points - Score Modifiers
+	&plusmn; Penalty/Bonus</phrase>
+      </textobject>
+     </mediaobject>
+    </informalequation>
+
+    <sect4 id="introduction-mps-grading-points-functionality">
+     <title>Functionality Points</title>
+
+     <para>You are expected to provide an original, fully functional
+      solution to all machine problems.  Due to the complexity of MP2
+      and later machine problems, you will occasionally be supplied
+      with additional library subroutines which implement all or some
+      portion of the assignment.  These subroutines are to assist you
+      in writing and debugging your code, but are not intended to be
+      handed in as part of your solution.  If your solution requires
+      the use of one or more library subroutines, you will be
+      penalized accordingly for using them.  The penalty for each
+      library subroutine will be indicated in the assignment.  There
+      is no penalty for the use of the subroutines
+      <function>kbdin</function>, <function>kbdine</function>,
+      <function>dspout</function>, <function>dspmsg</function>,
+      <function>dosxit</function>, <function>ascbin</function>, and
+      <function>binasc</function> (all present in LIB291).  We may
+      announce additions to this list of free subroutines.</para>
+    </sect4>
+
+    <sect4 id="introduction-mps-grading-points-modifiers">
+     <title>Score Modifiers</title>
+
+     <para>Points may be subtracted from the functionality score based
+      on your submitted source code.  The graders look for the
+      following items in the source code:</para>
+
+     <itemizedlist>
+      <listitem>
+       <para>Comments</para>
+      </listitem>
+      
+      <listitem>
+       <para>Technique and Style</para>
+      </listitem>
+
+      <listitem>
+       <para>I/O Specifications</para>
+      </listitem>
+
+      <listitem>
+       <para>Modularity</para>
+      </listitem>
+     </itemizedlist>
+    </sect4>
+
+    <sect4 id="introduction-mps-grading-points-penalty-bonus">
+     <title>Penalty/Bonus</title>
+
+     <para>Bonus points are awarded for turning in a machine problem
+      early.  As the lab contains far fewer machines than there are
+      students in the class, long waits to use a computer or demo a
+      machine problem can be avoided by starting and finishing
+      assigned machine problems early.  To encourage this, extra
+      points are awarded for each working day (Mon-Fri) the assignment
+      is early.  The amount of extra points awarded will be shown on
+      the online grading sheet.  Likewise, penalty points are
+      subtracted for every working day an assignment is late.</para>
+    </sect4>
    </sect3>
 
    <sect3 id="introduction-mps-grading-comments">
