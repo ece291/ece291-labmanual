@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.11 2001/07/26 06:15:48 pete Exp $
+     $Id: book.sgml,v 1.12 2001/08/01 05:38:42 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -20,6 +20,8 @@
 <!ENTITY % chap.preface "IGNORE">
 <!ENTITY % chap.introduction "IGNORE">
 <!ENTITY % chap.using-pc "IGNORE">
+<!ENTITY % chap.assembly "IGNORE">
+<!ENTITY % chap.nasm "IGNORE">
 <!ENTITY % chap.c-prog "IGNORE">
 <!ENTITY % chap.libraries "IGNORE">
 <!ENTITY % chap.data-structures "IGNORE">
@@ -118,6 +120,8 @@
  <![ %chap.preface;         [ &chap.preface;         ]]>
  <![ %chap.introduction;    [ &chap.introduction;    ]]>
  <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
+ <![ %chap.assembly;        [ &chap.assembly;        ]]>
+ <![ %chap.nasm;            [ &chap.nasm;            ]]>
  <![ %chap.c-prog;          [ &chap.c-prog;          ]]>
  <![ %chap.libraries;       [ &chap.libraries;       ]]>
  <![ %chap.data-structures; [ &chap.data-structures; ]]>

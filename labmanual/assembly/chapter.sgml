@@ -1,0 +1,1077 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/08/01 05:38:42 pete Exp $
+-->
+
+<chapter id="assembly">
+ <title>Assembly Language</title>
+
+ <highlights>
+  <para>This chapter describes some important aspects of assembly
+   language.</para>
+ </highlights>
+
+ <sect1 id="assembly-conditional">
+  <title>Conditional Branching and Flags</title>
+
+  <sect2 id="assembly-conditional-flags-register">
+   <title>The Processor Flags Register</title>
+
+   <para>The following diagram shows the location of the various flags
+    in the processor status register.</para>
+
+   <informalfigure>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="assembly/flags" format="eps">
+     </imageobject>
+    </mediaobject>
+   </informalfigure>
+
+   <simplelist columns="2">
+    <member>&flag.of; &mdash; Overflow Flag</member>
+    <member>&flag.df; &mdash; Direction Flag</member>
+    <member>&flag.if; &mdash; Interrupt-Enable Flag</member>
+    <member>&flag.tf; &mdash; Trap Flag</member>
+    <member>&flag.sf; &mdash; Sign Flag</member>
+    <member>&flag.zf; &mdash; Zero Flag</member>
+    <member>&flag.af; &mdash; Auxiliary Carry Flag</member>
+    <member>&flag.pf; &mdash; Parity Flag</member>
+    <member>&flag.cf; &mdash; Carry Flag</member>
+   </simplelist>
+  </sect2>
+
+  <sect2 id="assembly-conditional-jumps">
+   <title>Conditional Jumps</title>
+
+   <para>The following table lists the most common jump instructions
+    and the tests they perform:</para>
+
+   <informaltable frame="none">
+    <tgroup cols="3">
+     <colspec colname="instruction">
+     <colspec colname="jumpcond">
+     <colspec colname="test">
+
+     <thead>
+      <row>
+       <entry>Instruction</entry>
+       <entry>Jump Condition</entry>
+       <entry>Test</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>JE</literal></entry>
+       <entry>Jump if Equal</entry>
+       <entry>&flag.zf;=1</entry>
+      </row>
+
+      <row>
+       <entry><literal>JNE</literal></entry>
+       <entry>Jump if Not Equal</entry>
+       <entry>&flag.zf;=0</entry>
+      </row>
+
+      <row>
+       <entry><literal>JG</literal></entry>
+       <entry>Jump if Greater</entry>
+       <entry>(&flag.zf;=0) AND (&flag.sf;=&flag.of;)</entry>
+      </row>
+
+      <row>
+       <entry><literal>JGE</literal></entry>
+       <entry>Jump if Greater or Equal</entry>
+       <entry>&flag.sf;=&flag.of;</entry>
+      </row>
+
+      <row>
+       <entry><literal>JL</literal></entry>
+       <entry>Jump if Less</entry>
+       <entry>&flag.sf;&ne;&flag.of;</entry>
+      </row>
+
+      <row>
+       <entry><literal>JLE</literal></entry>
+       <entry>Jump if Less or Equal</entry>
+       <entry>(&flag.zf;=1) OR (&flag.sf;&ne;&flag.of;)</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+
+   <para>The following conditional branches are similar to the above
+    but involve comparisons which treat the operands as unsigned
+    integers:</para>
+
+   <informaltable frame="none">
+    <tgroup cols="3">
+     <colspec colname="instruction">
+     <colspec colname="jumpcond">
+     <colspec colname="test">
+
+     <thead>
+      <row>
+       <entry>Instruction</entry>
+       <entry>Jump Condition</entry>
+       <entry>Test</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>JA</literal></entry>
+       <entry>Jump if Above</entry>
+       <entry>(&flag.cf;=0) AND (&flag.zf;=0)</entry>
+      </row>
+
+      <row>
+       <entry><literal>JAE</literal></entry>
+       <entry>Jump if Above or Equal</entry>
+       <entry>&flag.cf;=0</entry>
+      </row>
+
+      <row>
+       <entry><literal>JB</literal></entry>
+       <entry>Jump if Below</entry>
+       <entry>&flag.cf;=1</entry>
+      </row>
+
+      <row>
+       <entry><literal>JBE</literal></entry>
+       <entry>Jump if Below or Equal</entry>
+       <entry>(&flag.cf;=1) OR (&flag.zf;=1)</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+
+   <para>Finally, the branches below specifically test flags:</para>
+
+   <informaltable frame="none">
+    <tgroup cols="3">
+     <colspec colname="instruction">
+     <colspec colname="jumpcond">
+     <colspec colname="test">
+
+     <thead>
+      <row>
+       <entry>Instruction</entry>
+       <entry>Jump Condition</entry>
+       <entry>Test</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>JO</literal></entry>
+       <entry>Jump on Overflow</entry>
+       <entry>&flag.of;=1</entry>
+      </row>
+
+      <row>
+       <entry><literal>JNO</literal></entry>
+       <entry>Jump on No Overflow</entry>
+       <entry>&flag.of;=0</entry>
+      </row>
+
+      <row>
+       <entry><literal>JC</literal></entry>
+       <entry>Jump on Carry</entry>
+       <entry>&flag.cf;=1</entry>
+      </row>
+
+      <row>
+       <entry><literal>JNC</literal></entry>
+       <entry>Jump on No Carry</entry>
+       <entry>&flag.cf;=0</entry>
+      </row>
+
+      <row>
+       <entry><literal>JS</literal></entry>
+       <entry>Jump on Sign (Negative)</entry>
+       <entry>&flag.sf;=1</entry>
+      </row>
+
+      <row>
+       <entry><literal>JNS</literal></entry>
+       <entry>Jump on No Sign (Positive)</entry>
+       <entry>&flag.sf;=0</entry>
+      </row>
+
+      <row>
+       <entry><literal>JZ</literal></entry>
+       <entry>Jump if Zero (same as JE)</entry>
+       <entry>&flag.zf;=1</entry>
+      </row>
+
+      <row>
+       <entry><literal>JNZ</literal></entry>
+       <entry>Jump if Not Zero</entry>
+       <entry>&flag.zf;=0</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </sect2>
+
+  <sect2 id="assembly-conditional-flags-meanings">
+   <title>Meanings of the &flag.of;, &flag.cf;, &flag.sf;, and
+    &flag.zf; Flags</title>
+
+   <para>The following table describes the meanings of the four flags
+    used in conditional branching:</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>&flag.of; (Overflow)</term>
+
+     <listitem>
+      <simplelist>
+       <member>1 &mdash; result is outside signed-number
+	range</member>
+       <member>0 &mdash; otherwise</member>
+      </simplelist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>&flag.cf; (Carry)</term>
+
+     <listitem>
+      <para>Carry out of (borrow into) high-order bit.</para>
+
+      <simplelist>
+       <member>1 &mdash; result is outside unsigned-number
+	range</member>
+       <member>0 &mdash; otherwise</member>
+      </simplelist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>&flag.sf; (Sign)</term>
+
+     <listitem>
+      <para>High-order bit of result.</para>
+
+      <simplelist>
+       <member>1 &mdash; negative signed number.</member>
+       <member>0 &mdash; positive signed number.</member>
+      </simplelist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>&flag.zf; (Zero)</term>
+
+     <listitem>
+      <simplelist>
+       <member>1 &mdash; result = 0</member>
+       <member>0 &mdash; otherwise</member>
+      </simplelist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+
+ <sect1 id="assembly-loops">
+  <title>Variations on Loops</title>
+
+  <para>A loop is a programming building block which allows you to
+   repeat certain instructions until some predefined condition holds
+   (or until a condition is no longer met, which is logically
+   equivalent).  Many loops simply repeat for a predefined number of
+   iterations, but others are more complicated.  Every processor
+   architecture has instructions specifically designed to facilitate
+   loop control.  We treat here various methods for writing loops on
+   the x86 processor family.</para>
+
+  <para>The writing of loop code is most easily shown by example; here
+   we use a simple task of clearing a block of memory.  The C version
+   of this would be the following for loop:</para>
+
+  <programlisting>
+for(i=0; i<100; i++)
+    list[i] = 0;</programlisting>
+
+  <para>Assume in the following that the memory block has been defined
+   elsewhere with first byte address, <literal>ListBegin</literal>,
+   and (last byte + 1) address, <literal>ListEnd</literal> (note this
+   means that the last location to be cleared is the one before
+   <literal>ListEnd</literal>), e.g.:</para>
+
+  <indexterm>
+   <primary>$</primary>
+  </indexterm>
+
+  <programlisting>
+ListBegin       resb    100     ; reserve 100 bytes
+ListEnd         equ     $       ; define as last-byte-address+1</programlisting>
+
+  <para>In these examples, &reg.bx; is used as a pointer into the
+   memory block.</para>
+
+  <sect2 id="assembly-loops-standard">
+   <title>Standard Loops</title>
+
+   <para>Here is an example of the standard version of a loop, similar
+    to the C version:</para>
+
+   <programlisting>
+clrmem1:
+        mov     bx, ListBegin   ; loop setup
+.loop:
+        mov     byte [bx], 0    ; loop action
+        inc     bx              ; advance
+        cmp     bx, ListEnd     ; termination test
+        jb      .loop1          ; recycle in loop</programlisting>
+
+   <para>This short and fast version illustrates the 4 elements of a
+    loop: 1) setup; 2) loop action; 3) loop advance; and 4)
+    termination test.  As written, this version has the disadvantage
+    that it always executes the loop action at least once.  This comes
+    about because the end test is performed after the loop action;
+    hence there will be one loop action done even for an empty list
+    (<literal>ListBegin</literal> =
+    <literal>ListEnd</literal>).</para>
+
+   <para>A safer version is:</para>
+
+   <programlisting>
+clrmem2:
+        mov     bx, ListBegin   ; loop setup
+.loop:
+        cmp     bx, ListEnd     ; termination test
+        jae     .next
+        mov     byte [bx], 0    ; loop action
+        inc     bx              ; advance
+        jmp     short .loop     ; recycle
+.next:  ...</programlisting>
+
+   <para>Here, at the cost of one more instruction, the loop will work
+    properly when zero iterations are called for.  To speed up the
+    loop itself, one can use the structure of the first example, but
+    enter into the loop differently, i.e.,</para>
+
+   <programlisting>
+clrmem3:
+        mov     bx, ListBegin   ; loop setup
+        jmp     .lptest         ; check for termination first
+.loop:
+        mov     byte [bx], 0    ; loop action
+        inc     bx              ; advance
+.lptest:
+        cmp     bx, ListEnd     ; termination test
+        jb      .loop           ; recycle in loop</programlisting>
+  </sect2>
+
+  <sect2 id="assembly-loops-indexed">
+   <title>Indexed Loops</title>
+
+   <para>Use of indexed addressing creates a shorter loop
+    sequence:</para>
+
+   <programlisting>
+clrmem4:
+        mov     bx, ListEnd-ListBegin-1 ; BX = # bytes - 1
+.loop:
+        mov     byte [ListBegin+bx], 0  ; loop action
+        dec     bx                      ; advance (dec here)
+        jg      .loop                   ; (arithmetic) termination test</programlisting>
+
+   <para>Note that now the block is cleared in backwards order, i.e.,
+    so that <literal>ListBegin</literal> is cleared last. The
+    arithmetic termination test works here so long as the memory block
+    to be cleared is less than (2<superscript>15</superscript>) bytes
+    long&mdash;i.e., so long as
+    (<literal>ListEnd</literal>-<literal>ListBegin</literal>) is
+    positive.</para>
+  </sect2>
+
+  <sect2 id="assembly-loops-loop">
+   <title>The <literal>LOOP</literal> instruction</title>
+
+   <para>The <literal>LOOP <replaceable>label</replaceable></literal>
+    instruction is useful when the number of iterations can be
+    determined before the execution of the loop begins. The
+    <literal>LOOP</literal> instruction decrements &reg.cx; by 1 and,
+    if the result is not zero, jumps to
+    <replaceable>label</replaceable>. This results in the following
+    form for our example task:</para>
+
+   <programlisting>
+clrmem5:
+        mov     cx, ListEnd-ListBegin   ; CX = # bytes
+        xor     bx, bx                  ; index counts up in BX (from 0)
+.loop:
+        mov     byte [ListBegin+bx], 0  ; loop action
+        inc     bx                      ; advance index
+        loop    .loop                   ; dec cx and jump if cx not 0</programlisting>
+
+   <note>
+    <para>On modern processors, the two instruction sequence</para>
+
+    <programlisting>        dec     cx
+        jnz     .loop</programlisting>
+
+    <para>is faster than <literal>loop .loop</literal></para>
+   </note>
+
+   <para>This loop could be even shorter if it were also possible to
+    index through &reg.cx; rather than &reg.bx;, but alas this is not
+    so in the 16-bit instruction set (in the 32-bit instruction set,
+    it's possible to index using &reg.ecx;).  Note that with a loop
+    offset advance of 1 only, the MOV instruction must be a byte move.
+    There are also variations on the LOOP instruction available for
+    testing zero results from the loop action in addition to counting
+    in &reg.cx;: see <xref linkend="inst-ref-loop"> for further
+    information on LOOPZ and LOOPNZ.</para>
+
+   <para>In addition to the examples shown, there are many other
+    address stepping and testing forms, the usefulness of which
+    depends on special operand situations.  The string instructions
+    (see <xref linkend="assembly-string-inst">) also provide
+    specialized operations (move, compare, scan, load, and store) on
+    memory blocks of words or bytes.</para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="assembly-modular">
+  <title>Modular Programming</title>
+
+  <sect2 id="assembly-modular-structured-design">
+   <title>Structured Design and Modular Programming</title>
+
+   <para>Programs written in assembly language are inherently more
+    difficult to understand than those written in a high-level
+    language like Pascal or C.  A thought that can be expressed in one
+    Pascal statement is spread over ten or so statements in assembly
+    language, and a Pascal construct like IF-THEN-ELSE or
+    WHILE-ENDWHILE has to be simulated using comparisons and jumps.
+    Techniques such as dividing the program into logical modules,
+    commenting, and the use of blank lines and indentations to
+    visually tie together blocks of statements that logically belong
+    together, tend to make a program written in any language more
+    readable but are especially helpful in assembly-language
+    programming.</para>
+
+   <para>Sets of equates, macros, structure definitions, blocks of
+    assembly language statements, and complete subprocedures
+    pertaining to a particular task or device can often become tools
+    useful in other programs. The use of such tools, provided they are
+    tested, validated, and properly documented, tends to make program
+    development easier and faster.</para>
+
+   <para>There are two ways to keep such tools in separate files and
+    combine them with the current program as needed: EQUates, MACROs,
+    and STRUCture definitions are kept in an .ASM file and copied into
+    another .ASM program with the <literal>%include</literal>
+    directive; complete subprocedures are best assembled separately
+    and kept in an .OBJ file from which the linker (TLINK) can extract
+    the required subprocedures and combine them with the program into
+    one .EXE file&mdash;that is in fact a linker's main raison
+    d'etre.</para>
+  </sect2>
+
+  <sect2 id="assembly-modular-include">
+   <title>The <literal><!--%-->include</literal> directive</title>
+
+   <para>An .ASM (or other) file consisting of EQUates, MACROs, and/or
+    STRUCture definitions may be inserted into another assembly
+    language program with the directive</para>
+
+   <programlisting>%include <replaceable>[path]filename.ext</replaceable></programlisting>
+
+   <para>The entire file specified is inserted immediately after the
+    <literal>%include</literal> directive and is assembled together
+    with the rest of the program.  Note that the file to be
+    <literal>%include</literal>d may consist of any collection of
+    statements acceptable to NASM.  If the file contains macro
+    definitions it must of course be <literal>%include</literal>d
+    before any of the macros are invoked.</para>
+
+   <para><literal>%include</literal> is particularly well suited for a
+    library of EQUates, MACRO, and/or STRUCture definitions, since
+    they add assembly code to the program only when they are invoked;
+    for a file of subroutines, on the other hand,
+    <literal>%include</literal> lengthens the program by adding to it
+    the assembly code of all subroutines in the file, even those never
+    invoked by the program, and slows down the assembly.  A library of
+    subroutines should instead be supplied as a file of separately
+    assembled subroutines (although an include file may be supplied to
+    define the routines as <literal>EXTERN</literal>).</para>
+  </sect2>
+
+  <sect2 id="assembly-modular-arguments">
+   <title>Argument Transmission</title>
+
+   <para>The division of a programming task into several logical
+    modules, or subprocedures, where each module's task and interface
+    is defined carefully before detailed programming is started, makes
+    it possible to identify subtasks for which existing subprocedures
+    can be used, leads to faster program development, and makes it
+    easier to test, validate, and verify the program.</para>
+
+   <indexterm>
+    <primary>interface specification</primary>
+   </indexterm>
+
+   <para>The interface specification refers primarily to the calling
+    convention or protocol, i.e., the method that is used to pass
+    arguments to a subprocedure and pass results back to the calling
+    program; restricting all interactions between modules to the
+    well-defined interfaces makes it possible to use
+    separately-developed modules from a tool kit, avoids <quote>side
+     effects,</quote> and minimizes incompatibility problems.  In
+    high-level languages the parameter passing conventions are
+    pre-defined; in assembly language programs several different
+    methods may be used but some preferred protocols are usually
+    established to simplify the problem.</para>
+
+   <para>Arguments may be passed to a subprocedure, and results may be
+    passed back to the calling program, in several different ways.  If
+    the subprocedure is recursive, the only practical way to pass
+    arguments if via the stack; if the subprocedure is not recursive
+    arguments may be passed via registers, via the stack, or via
+    global variables (or a combination of these approaches).  An
+    argument may be passed <quote>by value,</quote> i.e., as a signed
+    or unsigned integer, ASCII character, or other code, or <quote>by
+     reference,</quote> i.e., as an address pointing to a variable,
+    list, table, array, or structure. Commonly, argument passing by
+    value is unidirectional, i.e., the values may be used and modified
+    by the subprocedure with the changes not visible to the calling
+    program.  Argument passing by reference, however, is
+    bidirectional, since the <emphasis>contents</emphasis> of the
+    addresses given as arguments may be modified by the subprocedure,
+    thus implicitly passing results back to the calling
+    program.</para>
+
+   <para>An arbitrarily large number of arguments may be pushed onto
+    the stack before the subprocedure is called; these arguments must
+    be removed from the stack again upon return from the subprocedure.
+    (Passing arguments via the stack is the only practical method for
+    recursive subprocedures).</para>
+
+   <para>Registers are commonly used when few arguments are passed.
+    (Note that one address argument is sufficient to point to an
+    entire array, parameter list, etc).</para>
+
+   <para>Passing arguments via global variables is the least-general
+    method, since specific global variables must be associated with
+    specific subprocedures&mdash;the same effect could be achieved by
+    passing the variables by reference.</para>
+
+   <para>Results computed by the subprocedure may be passed back to
+    the calling program in a similar way, but note that results for
+    arguments passed by reference are passed back implicitly.</para>
+  </sect2>
+
+  <sect2 id="assembly-modular-extern">
+   <title>Rules for NASM Procedures that Call External
+    Procedures</title>
+
+   <indexterm>
+    <primary><literal>EXTERN</literal></primary>
+   </indexterm>
+
+   <para>It is frequently convenient to use procedures that have been
+    assembled separately, such as library routines, and let the linker
+    combine the separately assembled program with the library
+    routines. Procedures in separately assembled modules are
+    considered <quote>external</quote> to each other.  The effective
+    address of a name that is defined in an external procedure cannot
+    be computed by NASM; it will have to be filled in later by the
+    linker. However, such names have to be identified to NASM with the
+    directive</para>
+
+   <programlisting>EXTERN  <replaceable>name</replaceable>[, ...]</programlisting>
+
+   <para>where <replaceable>name</replaceable> is the symbol defined
+    in the external module.</para>
+
+   <indexterm>
+    <primary>GLOBAL</primary>
+   </indexterm>
+
+   <para>Similarly, NASM must be able to tell the linker all names in
+    a module that can be referenced by external procedures.  This is
+    done with the directive</para>
+
+   <programlisting>GLOBAL  <replaceable>name</replaceable>[, ...]</programlisting>
+
+   <para>Note that the names appearing in the EXTRN directive of this
+    module are listed in the PUBLIC directive of the external module,
+    and vice versa.</para>
+
+   <para>Lastly, the code segment in this module should have the same
+    name as the code segment in the external procedure (which cannot
+    be changed in the case of library procedures) and have the
+    <quote>combine-type</quote> PUBLIC so that the two logical code
+    segments are combined into one physical segment.</para>
+  </sect2>
+
+  <sect2 id="assembly-modular-separate">
+   <title>Creating a Separately Assembled Module</title>
+
+   <para>The module containing the main program is, strictly speaking,
+    a separately assembled module.  It differs from other separately
+    assembled modules, however, in the following points:</para>
+
+   <itemizedlist spacing="compact">
+    <listitem>
+     <para>It is most likely the module in which the stack is
+      declared.</para>
+    </listitem>
+
+    <listitem>
+     <para>It is most likely the module containing the starting point
+      of the program (<literal>..start</literal>).</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>Other separately assembled modules, whether parts of the
+    program or library routines, are written following the rules given
+    above but:</para>
+
+   <itemizedlist spacing="compact">
+    <listitem>
+     <para>Need not have a stack specified&mdash;if a stack is
+      specified it will be concatenated with the stack specified in
+      preceding modules</para>
+    </listitem>
+
+    <listitem>
+     <para>Should <emphasis>not</emphasis> define a
+      <literal>..start</literal> label.</para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="assembly-modular-linking">
+   <title>Linking Separately Assembled Modules</title>
+
+   <para><!--TODO: both 16 and 32 bit versions? --></para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="assembly-style">
+  <title>Programming Style</title>
+
+  <para>Your style of writing assembly language programs is almost as
+   important as your accuracy. Good habits in layout, selection of
+   symbolic names, and appropriate and illuminating comments help you
+   to program correctly and easily. Good programming habits also make
+   your programs much easier for your TA to read and grade. Here are
+   two examples of the same NASM program to illustrate good and poor
+   programming styles:</para>
+
+  <programlisting>
+; MP99
+;  Sharon Sharp
+;  02-23-2001
+;
+;   This program copies the word contents of list1 to list2
+
+;     Enter with:
+;       SI = offset of List1
+;       DI = offset of List2
+;
+;     Assumes:
+;       Both lists are in DS
+;       List end marker = 0
+;
+SEGMENT code
+
+        GLOBAL LstCpy
+
+LstCpy
+        push    ax              ; AX used for temp
+.lp:
+        mov     ax, [si]        ; fetch word and test for zero
+        test    ax, ax
+        jz      .exit
+        mov     [di], ax
+        add     si, 2           ; advance and recycle
+        add     di, 2
+        jmp     .lp
+.exit:
+        pop     ax
+        ret</programlisting>
+
+  <para>Here the symbols help to define the program structure and the
+   variables. The comments are inserted only where relevant and give
+   functional rather than trivial instruction explanations. The
+   open-spacing and orderly structure of the program also suggests the
+   various parts. In addition, the listing to be handed in has a
+   useful title.</para>
+
+  <para>The following program is a different kettle of fish:</para>
+
+  <programlisting>
+segment        code
+cc
+ PUSH ax
+    global cc
+A:  mov ax,[si]
+        CMP      AX,0
+   je   b       ;
+ mov    [di],ax;          move ax to list
+  add si,2;     incr si
+        ADD     di,2
+ jmp a
+b:              pop ax
+ ret</programlisting>
+
+  <para>This is a fairly extreme example of muddling up a program. The
+   variables are hard to identify; the comments are thoroughly mixed
+   with the instructions and only explain instructions not their
+   function. Amazingly enough, NASM will still assemble this example
+   to a working program, but it is almost incomprehensible to humans,
+   including your teaching assistants.</para>
+
+  <para>Here is a complete program written to illustrate good
+   programming style:</para>
+
+  <programlisting>
+; Example Program
+;  M. C. Loui
+;  29 June 1986
+;
+; Translated to NASM
+;  Peter L. B. Johnson
+;  2001
+;
+; This boring program illustrates good programming style. The user
+; types a list of names separated by carriage returns; if the user
+; presses ESC before the return, then that name is cancelled. The
+; program uses the extremely inefficient bubble sort algorithm to
+; sort the names into lexicographic order and prints them out.
+
+        CR      equ     0Dh
+        LF      equ     0Ah
+        BEL     equ     07h
+        ESCKEY  equ     1Bh
+        MAXNUM  equ     20      ; Maximum number of names
+        MAXLEN  equ     80      ; Maximum name length
+
+        EXTERN  kbdine, dspout, dspmsg, dosxit
+
+SEGMENT stkseg STACK            ; **** STACK SEGMENT ****
+        resb    64*8
+
+SEGMENT code                    ; **** CODE SEGMENT ****
+
+Array   times MAXNUM*MAXLEN db '$'      ; Array of names
+NumNam  dw      0               ; Number of names input
+HdMsg   db      'Type up to 20 names separated by carriage returns','$'
+
+..start:
+        mov     ax, cs
+        mov     ds, ax          ; Initialize DS register
+
+        mov     dx, HdMsg
+        call    dspmsg
+        call    InNames         ; Input the names
+        call    Sort            ; Sort them
+        call    OutNames        ; Output the names
+        call    dosxit
+
+;
+; Subroutine InNames
+; Reads in list of up to 20 names from the user and stores them in Array.
+;      Output: NumNam - Number of names typed in
+;      Calls:  GetOne
+;
+InNames
+        push    bx
+        mov     word [NumNam], 0        ; Initialize NumNam
+        mov     bx, Array               ; BX points to next name
+.lp:
+        call    GetOne                  ; Input one name
+        cmp     byte [GetStat], 0       ; Done if user typed only
+        je      .done                   ;  a carriage return
+        add     bx, MAXLEN              ; Point to next name
+        inc     word [NumNam]
+        cmp     word [NumNam], MAXNUM   ; Continue only if
+        jl      .lp                     ;  NumNam < MAXNUM
+.done:
+        pop     bx
+        ret
+
+;
+; Subroutine GetOne
+; Reads in one name of up to MAXLEN characters into Array.
+;      Input:  BX - Offset of name in Array
+;      Output: GETSTAT - Status of call
+;                      = 1 if normal return
+;                      = 0 if user typed only carriage return
+;      Calls:  dspmsg, kbdine, dspout
+;
+GetStat resb    1
+Prompt  db      CR,LF,':$'
+GetOne
+        push    si
+        push    dx
+        push    ax
+.lp1:
+        xor     si, si
+        mov     dx, Prompt              ; Prompt user for name
+        call    dspmsg
+.lp2:
+        call    kbdine                  ; Get next character into AL
+        cmp     al, CR
+        je      .cr
+        cmp     al, ESCKEY
+        je      .esc
+        mov     byte [bx+si], al        ; Store character
+        inc     si
+        jmp     short .lp2
+.esc:
+        mov     dl, BEL                 ; If user typed ESC
+        call    dspout                  ;  then ring bell
+        jmp     short .lp1              ;  and restart this name
+.cr:
+        mov     byte [GetStat], 1       ; If user typed only CR
+        test    si, si
+        jnz     .exit
+        mov     byte [GetStat], 0       ;  then set GetStat to 0
+.exit:
+        pop     ax
+        pop     dx
+        pop     si
+        ret
+
+;
+; Subroutine Sort
+; Sorts Array using the bubble sort algorithm.
+; WARNING: This algorithm is extremely inefficient.
+;      Input:  NumNam - Number of names in Array
+;      Calls:  CmpNam, XChgNam
+;
+I       resw    1                       ; Index into Array
+J       resw    1                       ; Index into Array
+Len     resw    1                       ; Length of each name
+Sort
+        push    ax
+        push    dx
+        push    si
+        push    di
+
+        mov     word [Len], MAXLEN
+        mov     ax, [NumNam]            ; Initialize I
+        dec     ax                      ;  to NumNam - 1
+        mov     [I], ax                 ; for I=N-1 down to 1 do
+.loopi:
+        cmp     word [I], 1
+        jl      .exit
+        mov     word [J], 1             ;  for J=1 to I do
+.loopj:
+        mov     ax, [J]
+        cmp     ax, [I]                 ;  (cannot cmp [J],[I])
+        jg      .deci
+        dec     ax                      ;   compute offset of
+        mul     word [Len]              ;    Jth name
+        mov     si, ax                  ;   SI = offset of Jth name
+        add     di, [Len]               ;   DI = offset of J+1st name
+        call    CmpNam
+        cmp     byte [Result], 0        ;   if Jth name > J+1st name
+        jle     .incj
+        call    XChgNam                 ;    then exchange them
+.incj:
+        inc     word [J]
+        jmp     short .loopj            ;  end for
+.deci:
+        dec     word [I]
+        jmp     short .loopi            ; end for
+.exit:
+        pop     di
+        pop     si
+        pop     dx
+        pop     ax
+        ret
+
+;
+; Subroutine CmpNam
+; Compares two names and determines which is lexicographically larger.
+;       Inputs:  SI, DI - pointers to two names
+;       Outputs: Result = -1 if name at SI is before name at DI
+;                       = 0  if name at SI equals name at DI
+;                       = 1  if name at SI is after name at DI
+;
+Result  resb    1
+CmpNam
+        push    ax
+        push    cx
+        push    si
+        push    di
+
+        mov     cx, MAXLEN              ; Length of names
+.lp:
+        mov     al, [si]                ; Compare next bytes
+        cmp     al, [di]
+        ja      .a
+        jb      .b
+        inc     si
+        inc     di
+        loop    .lp
+        mov     byte [Result], 0        ; If all bytes equal, then names
+        jmp     short .exit             ;  equal.
+.a:
+        mov     byte [Result], 1        ; Here if name at SI before name at
+        jmp     short .exit             ;  DI.
+.b:
+        mov     byte [Result], -1       ; Here if name at SI after name at
+.exit:                                  ;  DI.
+        pop     di
+        pop     si
+        pop     cx
+        pop     ax
+        ret
+
+;
+; Subroutine XChgNam
+; Exchanges the names pointed to by SI and DI.
+;       Inputs:  SI, DI - pointers to two names
+;
+XChgNam
+        push    ax
+        push    cx
+        push    si
+        push    di
+
+        mov     cx, MAXLEN
+.lp:
+        mov     al, [si]                ; Exchange bytes pointed to
+        xchg    al, [di]                ;  by SI and DI
+        xchg    al, [si]
+        inc     si
+        inc     di
+        loop    .lp
+
+        pop     di
+        pop     si
+        pop     cx
+        pop     ax
+        ret
+
+;
+; Subroutine OutNames
+; Prints out names from Array
+;       Inputs:  NumNam - Number of names in Array
+;       Calls:   dspmsg
+;
+CRLF    db      CR, LF, '$'
+OutNames
+        push    bx
+        push    cx
+        push    dx
+
+        mov     cx, [NumNam]            ; Number of names to output
+        mov     bx, Array               ; BX holds offset of next name
+.lp:
+        mov     dx, bx
+        call    dspmsg
+        mov     dx, CRLF                ; CR and LF to separate
+        call    dspmsg                  ;  adjacant names
+        add     bx, MAXLEN
+        loop    .lp
+
+        pop     dx
+        pop     cx
+        pop     bx
+        ret</programlisting>
+ </sect1>
+
+ <sect1 id="assembly-string-inst">
+  <title>String Instructions</title>
+
+  <para>String operations are one of the best ways to apply something
+   to a range of memory locations. Typical string operations are
+   copying from one range to another and filling a range of memory
+   locations with a specified value. Some string operations
+   are:</para>
+
+  <simplelist>
+   <member><literal>rep movsd</literal> &mdash; copy one DWORD from
+    one string to another</member>
+   <member><literal>rep stosd</literal> &mdash; set the DWORD to the
+    value in &reg.eax;</member>
+  </simplelist>
+
+  <para>The last letter <quote>D</quote> of <literal>MOVSD</literal>
+   or <literal>STOSD</literal> signifies DWORD.  WORDs and BYTEs can
+   be specified by using <quote>W</quote> or <quote>B,</quote>
+   respectively.</para>
+
+  <para>To use a string operation, 5 steps should be taken:</para>
+
+  <orderedlist>
+   <listitem>
+    <para>Set the source segment and offset</para>
+   </listitem>
+
+   <listitem>
+    <para>Set the destination segment and offset</para>
+   </listitem>
+
+   <listitem>
+    <para>Specify the direction (usually forward) of processing</para>
+   </listitem>
+
+   <listitem>
+    <para>Specify the number of units (DWORDs, WORDs, BYTEs) to apply
+     the operation to</para>
+   </listitem>
+
+   <listitem>
+    <para>Specify the operation</para>
+   </listitem>
+  </orderedlist>
+
+  <para>Use &reg.ds; to point to the source segment:</para>
+
+  <programlisting>        mov     ax, ScratchSeg   ; from a defined segment
+        mov     ds, ax</programlisting>
+
+  <para>Use &reg.es; to point to the destination segment:</para>
+
+  <programlisting>        mov     ax, 0A000h       ; graphics segment
+        mov     es, ax</programlisting>
+
+  <para>Specify the direction:</para>
+
+  <programlisting>        cld             ; set direction flag forward</programlisting>
+
+  <para>Specify the source offset:</para>
+
+  <programlisting>        mov     esi, ScratchPad  ; set the source offset</programlisting>
+
+  <para>Specify the destination offset:</para>
+
+  <programlisting>        xor     edi, edi         ; set to 0</programlisting>
+
+  <para>Specify the number of times to repeat the operation:</para>
+
+  <programlisting>        mov     ecx, 16000</programlisting>
+
+  <para>Specify the operation:</para>
+
+  <programlisting>        rep movsd</programlisting>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

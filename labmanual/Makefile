@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.13 2001/07/28 02:45:13 pete Exp $
+# $Id: Makefile,v 1.14 2001/08/01 05:38:42 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -26,6 +26,8 @@ SRCS=  book.sgml
 SRCS+= preface.sgml
 SRCS+= introduction/chapter.sgml
 SRCS+= using-pc/chapter.sgml
+SRCS+= assembly/chapter.sgml
+SRCS+= nasm/chapter.sgml
 SRCS+= c-prog/chapter.sgml
 SRCS+= libraries/chapter.sgml
 SRCS+= data-structures/chapter.sgml
@@ -41,7 +43,8 @@ SRCS+= glossary.sgml
 SRCS+= chapters.ent
 
 # Images
-IMAGES=  c-prog/enterstack-value.dia
+IMAGES=  assembly/flags.dia
+IMAGES+= c-prog/enterstack-value.dia
 IMAGES+= c-prog/enterstack-ref.dia
 IMAGES+= data-structures/lineararray.tex
 IMAGES+= data-structures/lineararrayac.tex
