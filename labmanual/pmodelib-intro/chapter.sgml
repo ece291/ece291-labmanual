@@ -911,7 +911,7 @@ _main
         ; Find 640x480x32 graphics mode, allowing driver-emulated modes
         invoke  <xref linkend="pmodelib-ref-findgraphicsmode">, word 640, word 480, word 32, dword 1
         cmp     ax, -1           ; Did we find a mode?  If not, exit.
-        jne     near .uninstallkb
+        je      near .uninstallkb
 
         ; Go into graphics mode (finally :)
         invoke  <xref linkend="pmodelib-ref-setgraphicsmode">, ax
