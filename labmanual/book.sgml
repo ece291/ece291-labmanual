@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.4 2001/07/02 23:54:36 pete Exp $
+     $Id: book.sgml,v 1.5 2001/07/03 02:10:14 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -63,6 +63,7 @@
    <revision>
     <revnumber>4</revnumber>
     <date>1997</date>
+    <authorinitials>JWL</authorinitials>
     <revremark>Revised for new lab computers, software,
      resources</revremark>
    </revision>
