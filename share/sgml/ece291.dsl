@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.17 2001/08/13 07:10:50 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.18 2001/08/13 21:23:33 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -129,7 +129,22 @@
       <!-- Print only ................................................... --> 
       <![ %output.print; [
 
-	(define %cals-cell-before-column-margin%
+	(define %titlepage-in-info-order%
+	  #t)
+
+	(define (book-titlepage-verso-elements)
+	  (list (normalize "title") 
+		(normalize "corpauthor") 
+		(normalize "authorgroup") 
+		(normalize "author") 
+		(normalize "editor")
+		(normalize "edition") 
+		(normalize "pubdate") 
+		(normalize "copyright")
+		(normalize "legalnotice") 
+		(normalize "revhistory")))
+
+ 	(define %cals-cell-before-column-margin%
 	  3pt)
 
         (define (toc-depth nd)
@@ -385,22 +400,6 @@
       ]]>
 
       <!-- Both sets of stylesheets .................................... -->
-
-      (define %titlepage-in-info-order%
-	#t)
-
-      (define (book-titlepage-verso-elements)
-	(list (normalize "title") 
-	      (normalize "corpauthor") 
-	      (normalize "authorgroup") 
-	      (normalize "author") 
-	      (normalize "editor")
-	      (normalize "edition") 
-	      (normalize "pubdate") 
-	      (normalize "copyright")
-	      (normalize "legalnotice") 
-	      (normalize "revhistory")))
-
 
       (define %section-autolabel%
         #t)
