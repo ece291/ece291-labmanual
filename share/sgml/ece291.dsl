@@ -466,6 +466,9 @@
       (define %generate-heading-level%
         #t)
 
+      (define %table-cell-after-row-border%
+	#f)
+
       ]]>
 
       <!-- Two-sided Print output ...................................... --> 
