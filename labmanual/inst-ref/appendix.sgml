@@ -1626,8 +1626,8 @@ CMPXCHG r/m32,reg32           ; o32 0F B1 /r         [PENT]</screen>
     operand to the value in &reg.al;, &reg.ax; or &reg.eax; (depending
     on the operand size of the instruction). If they are equal, it
     copies its source (second) operand into the destination and sets
-    the zero flag. Otherwise, it clears the zero flag and leaves the
-    destination alone.</para>
+    the zero flag. Otherwise, it clears the zero flag and copies the
+    destination register to &reg.al;, &reg.ax;, or &reg.eax;.</para>
 
    <para>The destination can be either a register or a memory
     location. The source is a register.</para>
@@ -3400,13 +3400,13 @@ IMUL r/m32                    ; o32 F7 /5            [386]
 IMUL reg16,r/m16              ; o16 0F AF /r         [386]
 IMUL reg32,r/m32              ; o32 0F AF /r         [386]
 
-IMUL reg16,imm8               ; o16 6B /r ib         [286]
-IMUL reg16,imm16              ; o16 69 /r iw         [286]
+IMUL reg16,imm8               ; o16 6B /r ib         [186]
+IMUL reg16,imm16              ; o16 69 /r iw         [186]
 IMUL reg32,imm8               ; o32 6B /r ib         [386]
 IMUL reg32,imm32              ; o32 69 /r id         [386]
 
-IMUL reg16,r/m16,imm8         ; o16 6B /r ib         [286]
-IMUL reg16,r/m16,imm16        ; o16 69 /r iw         [286]
+IMUL reg16,r/m16,imm8         ; o16 6B /r ib         [186]
+IMUL reg16,r/m16,imm16        ; o16 69 /r iw         [186]
 IMUL reg32,r/m32,imm8         ; o32 6B /r ib         [386]
 IMUL reg32,r/m32,imm32        ; o32 69 /r id         [386]</screen>
 
@@ -4869,8 +4869,8 @@ PUSH SS                       ; 16                   [8086]
 PUSH FS                       ; 0F A0                [386]
 PUSH GS                       ; 0F A8                [386]
 
-PUSH imm8                     ; 6A ib                [286]
-PUSH imm16                    ; o16 68 iw            [286]
+PUSH imm8                     ; 6A ib                [186]
+PUSH imm16                    ; o16 68 iw            [186]
 PUSH imm32                    ; o32 68 id            [386]</screen>
 
    <para><literal>PUSH</literal> decrements the stack pointer
@@ -5012,20 +5012,20 @@ PUSHFW                        ; o16 9C               [8086]</screen>
 
    <screen>RCL r/m8,1                    ; D0 /2                [8086]
 RCL r/m8,CL                   ; D2 /2                [8086]
-RCL r/m8,imm8                 ; C0 /2 ib             [286]
+RCL r/m8,imm8                 ; C0 /2 ib             [186]
 RCL r/m16,1                   ; o16 D1 /2            [8086]
 RCL r/m16,CL                  ; o16 D3 /2            [8086]
-RCL r/m16,imm8                ; o16 C1 /2 ib         [286]
+RCL r/m16,imm8                ; o16 C1 /2 ib         [186]
 RCL r/m32,1                   ; o32 D1 /2            [386]
 RCL r/m32,CL                  ; o32 D3 /2            [386]
 RCL r/m32,imm8                ; o32 C1 /2 ib         [386]
 
 RCR r/m8,1                    ; D0 /3                [8086]
 RCR r/m8,CL                   ; D2 /3                [8086]
-RCR r/m8,imm8                 ; C0 /3 ib             [286]
+RCR r/m8,imm8                 ; C0 /3 ib             [186]
 RCR r/m16,1                   ; o16 D1 /3            [8086]
 RCR r/m16,CL                  ; o16 D3 /3            [8086]
-RCR r/m16,imm8                ; o16 C1 /3 ib         [286]
+RCR r/m16,imm8                ; o16 C1 /3 ib         [186]
 RCR r/m32,1                   ; o32 D1 /3            [386]
 RCR r/m32,CL                  ; o32 D3 /3            [386]
 RCR r/m32,imm8                ; o32 C1 /3 ib         [386]</screen>
@@ -5157,20 +5157,20 @@ RETN imm16                    ; C2 iw                [8086]</screen>
 
    <screen>ROL r/m8,1                    ; D0 /0                [8086]
 ROL r/m8,CL                   ; D2 /0                [8086]
-ROL r/m8,imm8                 ; C0 /0 ib             [286]
+ROL r/m8,imm8                 ; C0 /0 ib             [186]
 ROL r/m16,1                   ; o16 D1 /0            [8086]
 ROL r/m16,CL                  ; o16 D3 /0            [8086]
-ROL r/m16,imm8                ; o16 C1 /0 ib         [286]
+ROL r/m16,imm8                ; o16 C1 /0 ib         [186]
 ROL r/m32,1                   ; o32 D1 /0            [386]
 ROL r/m32,CL                  ; o32 D3 /0            [386]
 ROL r/m32,imm8                ; o32 C1 /0 ib         [386]
 
 ROR r/m8,1                    ; D0 /1                [8086]
 ROR r/m8,CL                   ; D2 /1                [8086]
-ROR r/m8,imm8                 ; C0 /1 ib             [286]
+ROR r/m8,imm8                 ; C0 /1 ib             [186]
 ROR r/m16,1                   ; o16 D1 /1            [8086]
 ROR r/m16,CL                  ; o16 D3 /1            [8086]
-ROR r/m16,imm8                ; o16 C1 /1 ib         [286]
+ROR r/m16,imm8                ; o16 C1 /1 ib         [186]
 ROR r/m32,1                   ; o32 D1 /1            [386]
 ROR r/m32,CL                  ; o32 D3 /1            [386]
 ROR r/m32,imm8                ; o32 C1 /1 ib         [386]</screen>
@@ -5240,20 +5240,20 @@ ROR r/m32,imm8                ; o32 C1 /1 ib         [386]</screen>
 
    <screen>SAL r/m8,1                    ; D0 /4                [8086]
 SAL r/m8,CL                   ; D2 /4                [8086]
-SAL r/m8,imm8                 ; C0 /4 ib             [286]
+SAL r/m8,imm8                 ; C0 /4 ib             [186]
 SAL r/m16,1                   ; o16 D1 /4            [8086]
 SAL r/m16,CL                  ; o16 D3 /4            [8086]
-SAL r/m16,imm8                ; o16 C1 /4 ib         [286]
+SAL r/m16,imm8                ; o16 C1 /4 ib         [186]
 SAL r/m32,1                   ; o32 D1 /4            [386]
 SAL r/m32,CL                  ; o32 D3 /4            [386]
 SAL r/m32,imm8                ; o32 C1 /4 ib         [386]
 
 SAR r/m8,1                    ; D0 /7                [8086]
 SAR r/m8,CL                   ; D2 /7                [8086]
-SAR r/m8,imm8                 ; C0 /7 ib             [286]
+SAR r/m8,imm8                 ; C0 /7 ib             [186]
 SAR r/m16,1                   ; o16 D1 /7            [8086]
 SAR r/m16,CL                  ; o16 D3 /7            [8086]
-SAR r/m16,imm8                ; o16 C1 /7 ib         [286]
+SAR r/m16,imm8                ; o16 C1 /7 ib         [186]
 SAR r/m32,1                   ; o32 D1 /7            [386]
 SAR r/m32,CL                  ; o32 D3 /7            [386]
 SAR r/m32,imm8                ; o32 C1 /7 ib         [386]</screen>
@@ -5510,20 +5510,20 @@ SLDT r/m16                    ; 0F 00 /0             [286,PRIV]</screen>
 
    <screen>SHL r/m8,1                    ; D0 /4                [8086]
 SHL r/m8,CL                   ; D2 /4                [8086]
-SHL r/m8,imm8                 ; C0 /4 ib             [286]
+SHL r/m8,imm8                 ; C0 /4 ib             [186]
 SHL r/m16,1                   ; o16 D1 /4            [8086]
 SHL r/m16,CL                  ; o16 D3 /4            [8086]
-SHL r/m16,imm8                ; o16 C1 /4 ib         [286]
+SHL r/m16,imm8                ; o16 C1 /4 ib         [186]
 SHL r/m32,1                   ; o32 D1 /4            [386]
 SHL r/m32,CL                  ; o32 D3 /4            [386]
 SHL r/m32,imm8                ; o32 C1 /4 ib         [386]
 
 SHR r/m8,1                    ; D0 /5                [8086]
 SHR r/m8,CL                   ; D2 /5                [8086]
-SHR r/m8,imm8                 ; C0 /5 ib             [286]
+SHR r/m8,imm8                 ; C0 /5 ib             [186]
 SHR r/m16,1                   ; o16 D1 /5            [8086]
 SHR r/m16,CL                  ; o16 D3 /5            [8086]
-SHR r/m16,imm8                ; o16 C1 /5 ib         [286]
+SHR r/m16,imm8                ; o16 C1 /5 ib         [186]
 SHR r/m32,1                   ; o32 D1 /5            [386]
 SHR r/m32,CL                  ; o32 D3 /5            [386]
 SHR r/m32,imm8                ; o32 C1 /5 ib         [386]</screen>

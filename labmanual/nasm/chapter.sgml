@@ -72,7 +72,8 @@
   </indexterm>
 
   <indexterm>
-   <primary><literal>$</literal> prefix</primary>
+   <primary><literal>$</literal></primary>
+   <secondary>prefix</secondary>
   </indexterm>
 
   <para>Valid characters in labels are letters, numbers,
@@ -644,7 +645,8 @@ msglen  equ $-message</programlisting>
    </indexterm>
 
    <indexterm>
-    <primary><literal>$</literal> prefix</primary>
+    <primary><literal>$</literal></primary>
+    <secondary>prefix</secondary>
    </indexterm>
 
    <para>A numeric constant is simply a number. NASM allows you to
@@ -840,11 +842,12 @@ msglen  equ $-message</programlisting>
    <emphasis>at least</emphasis> 32 bits to work in.</para>
 
   <indexterm>
-   <primary><literal>$</literal> Here token</primary>
+   <primary><literal>$</literal></primary>
+   <secondary>here</secondary>
   </indexterm>
 
   <indexterm>
-   <primary><literal>$$</literal> token</primary>
+   <primary><literal>$$</literal></primary>
   </indexterm>
 
   <indexterm>
