@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/07/26 03:25:37 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/07/28 02:45:13 pete Exp $
 -->
 
 <chapter id="graphics">
@@ -28,7 +28,35 @@
      elsewhere for a complete description of these functions.  A brief
      list of the more useful functions is given here:</para>
 
-    <!-- TODO: segmentedlist or itemizedlist? -->
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="function">
+      <colspec colname="description">
+
+      <tbody>
+       <row>
+	<entry>Function 0</entry>
+	<entry>Set Video Mode</entry>
+       </row>
+
+       <row>
+	<entry>Function 2</entry>
+	<entry>Set Cursor Position</entry>
+       </row>
+
+       <row>
+	<entry>Function 6</entry>
+	<entry>Scroll Active Page Up</entry>
+       </row>
+
+       <row>
+	<entry>Function 9</entry>
+	<entry>Write Attribute/character at Current Cursor
+	 Position</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
    </sect3>
 
    <sect3 id="graphics-text-display-lib291">
@@ -78,7 +106,7 @@
    <informalfigure>
     <mediaobject>
      <imageobject>
-      <imagedata fileref="graphics/text-memory">
+      <imagedata fileref="graphics/text-memory" format="eps">
      </imageobject>
     </mediaobject>
    </informalfigure>
@@ -125,6 +153,1197 @@
         add     bx, 2           ; Update pointer to next character position
         loop    .lp             ; Do 80 characters</programlisting>
    </sect3>
+  </sect2>
+
+  <sect2 id="graphics-text-attrib">
+   <title>Attributes</title>
+
+   <sect3 id="graphics-text-attrib-byte">
+    <title>The Attribute Byte</title>
+
+    <para>The attribute byte specifies the colors for the character
+     and its background. The table below describes the format for the
+     attribute byte. You can write a character and its attribute to
+     the display using Interrupt 10h, Function 09h (see <xref
+      linkend="graphics-int10h-09h">), or by writing directly
+     to video memory. The structure of the attribute is shown in the
+     following figure:</para>
+
+    <informalfigure>
+     <mediaobject>
+      <imageobject>
+       <imagedata fileref="graphics/attrib-byte" format="eps">
+      </imageobject>
+     </mediaobject>
+    </informalfigure>
+
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="part">
+      <colspec colname="description">
+
+      <tbody>
+       <row>
+	<entry>Blink</entry>
+	<entry>1 = blink on, 0 = off.</entry>
+       </row>
+       <row>
+	<entry>Background</entry>
+	<entry>Selects a color from the first eight colors in the
+	 palette.</entry>
+       </row>
+       <row>
+	<entry>Foreground</entry>
+	<entry>Selects one of the 16 colors in the palette.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect3>
+
+   <sect3 id="graphics-text-attrib-palette">
+    <title>Color Palette</title>
+
+    <simplelist columns="2">
+     <member>0 &mdash; Black</member>
+     <member>1 &mdash; Blue</member>
+     <member>2 &mdash; Green</member>
+     <member>3 &mdash; Cyan</member>
+     <member>4 &mdash; Red</member>
+     <member>5 &mdash; Magenta</member>
+     <member>6 &mdash; Brown</member>
+     <member>7 &mdash; Light Gray</member>
+     <member>8 &mdash; Dark Gray</member>
+     <member>9 &mdash; Light Blue</member>
+     <member>10 &mdash; Light Green</member>
+     <member>11 &mdash; Light Cyan</member>
+     <member>12 &mdash; Light Red</member>
+     <member>13 &mdash; Light Magenta</member>
+     <member>14 &mdash; Yellow</member>
+     <member>15 &mdash; White</member>
+    </simplelist>
+
+    <para>After power up the attributes for the entire screen are set
+     to (00000111b), the attribute for a light gray character and a
+     black background, with no blinking.</para>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="graphics-mode13h">
+  <title>VGA Mode 13h Graphics</title>
+
+  <sect2 id="graphics-mode13h-overview">
+   <title>Overview</title>
+
+   <para>Mode 13h is a standard VGA graphics mode.  While it may seem
+    somewhat limited in resolution and colors when compared to SVGA
+    modes, it is supported on nearly every computer available today.
+    There are 320 pixels over and 200 pixels down the screen, each of
+    which may have one of 256 colors.  Mode 13h is unique from other
+    higher-resolution, but only 16-color, VGA graphics modes because
+    the memory for the video screen is arranged linearly, where one
+    byte corresponds to one pixel on the screen.  As a result, Mode
+    13h is very easy to program in since it's not necessary to deal
+    with bit planes.</para>
+
+   <para>The first step to making a Mode 13h program is to call a BIOS
+    interrupt to enter it.  Do this by:</para>
+
+   <programlisting>
+        mov     ax, 0013h
+        int     10h</programlisting>
+
+   <para>To return back to text at the end of the program, use:</para>
+
+   <programlisting>
+        mov     ax, 0003h
+        int     10h</programlisting>
+
+   <para>Once in Mode 13h, each pixel can be set to any color from a
+    palette of 256 colors.  There are two methods to do this
+    by&mdash;using BIOS interrupts or direct writes.  Direct writes
+    are the best choice here due to the simplicity of Mode 13h (the
+    bit planes used in other VGA modes can make BIOS interrupts the
+    best choice).  Since each pixel directly corresponds to one byte,
+    just set the byte to the color (0 - 255).  Use the following
+    formula to determine the address and move a byte into it:</para>
+
+   <informalequation>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="graphics/mode13h-offset" format="tex">
+     </imageobject>
+
+     <textobject>
+      <phrase>offset = 320 * Y + X</phrase>
+     </textobject>
+    </mediaobject>
+   </informalequation>
+
+   <para>The following code fragment illustrates how to set a
+    pixel:</para>
+
+   <programlisting>
+; Before drawing graphics
+        mov     ax, 0A000h      ; Set ES to graphics screen segment
+        mov     es, ax
+                |
+            (set X and Y and DL to the color)
+                |
+        imul    di, [Y], 320    ; Multiply Y by 320 and store in DI
+        add     di, [X]         ; Add the X coordinate
+        mov     [es:di], dl     ; Set the pixel to the color specified
+                                ;  by DL</programlisting>
+
+   <para>This method can be much faster than BIOS, because for most
+    things, only a few IMUL instructions should be needed and the
+    majority of pixels can be set by moving relative to the original
+    address.  For example, to move left or right, simply subtract or
+    add 1 from the address, and to move up and down, subtract or add
+    320, respectively.  Use this method along with string operations
+    to set entire ranges, draw straight horizontal and vertical lines,
+    and draw boxes.  For more information about string operations,
+    refer to <!--xref linkend="assembly-string-inst"-->.</para>
+  </sect2>
+
+  <sect2 id="graphics-mode13h-extraseg">
+   <title>Using Extra Segments</title>
+
+   <para>One of the most aggravating thing about creating animated
+    images is the flicker and delays seen by the user while the image
+    is being drawn.  Because of Mode 13h's memory scheme and usage, it
+    is possible to draw the graphics on another segment in memory
+    instead of the graphics screen, and when an individual  frame  is
+    finished being created, to copy that segment directly onto the VGA
+    screen memory.  The easiest and fastest way to do this is to use
+    string operations.</para>
+
+   <para>To create a blank segment in the program that graphics
+    instructions can be <quote>redirected</quote> to, do the
+    following:</para>
+
+   <programlisting>
+SEGMENT ScratchSeg
+ScratchPad      resb 64000</programlisting>
+
+   <para>This should be included at the beginning of the program along
+    with other segment definitions. Then, instead of setting &reg.es;
+    to point to the VGA memory segment, have &reg.es; point to the
+    ScratchSeg segment when plotting pixels.</para>
+
+   <para>Once an entire frame has been drawn on the scratch segment,
+    it is very simple to copy it to the VGA screen:</para>
+
+   <programlisting>
+        mov     ax, ScratchSeg  ; from scratch segment
+        mov     ds, ax
+        mov     ax, 0A000h      ; to graphics screen
+        mov     es, ax
+        cld                     ; set direction flag forward
+        mov     esi, ScratchPad ; set the source offset
+        xor     edi, edi        ; dest. offset will always be 0
+        mov     ecx, 320*200/4  ; 320*200, copying doublewords
+        rep movsd</programlisting>
+
+   <para>This will issue a <literal>MOV</literal> command 16,000
+    times, each time moving a DWORD (4 pixels) from the ScratchSeg
+    segment to the VGA screen.</para>
+
+   <note>
+    <para>Each segment declared in this fashion occupies 64k = 64000
+     bytes of memory.  Real mode only allows 640k of total memory, so
+     only declare at most 2 or 3 scratch segments.</para>
+   </note>
+  </sect2>
+ </sect1>
+
+ <sect1 id="graphics-int10h">
+  <title>Interrupt 10h Video Reference</title>
+
+  <para>To use one of these funtions, first place the function number
+   in &reg.ah;, then set the other input registers, then call the
+   function with INT 10h.  Registers not used by the function as
+   inputs or outputs are not affected.</para>
+
+  <note>
+   <para>The text functions work in all modes, including graphics
+    modes.</para>
+  </note>
+
+  <sect2 id="graphics-int10h-00h">
+   <title>Function 00h: Set Video Mode</title>
+   <titleabbrev id="graphics-int10h-00h-short">Function
+    00h</titleabbrev>
+
+   <para>Sets the video mode.  This function will clear the screen
+    unless bit 7 of the &reg.al; register is set.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 00h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = Video Mode (add 128 to not clear the screen).
+	 This is an very incomplete list of modes; see another
+	 interrupt reference for full details of all modes
+	 supported.</para>
+
+	<itemizedlist spacing="compact" mark="None">
+	 <listitem>
+	  <para>01h: 40x25 Text, 16 colors, 8 pages</para>
+	 </listitem>
+	 <listitem>
+	  <para>03h: 80x25 Text, 16 colors, 8 pages</para>
+	 </listitem>
+	 <listitem>
+	  <para>13h: 320x200 Graphics, 256 colors, 1 page</para>
+	 </listitem>
+	</itemizedlist>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-01h">
+   <title>Function 01h: Define Cursor Appearance</title>
+   <titleabbrev id="graphics-int10h-01h-short">Function
+    01h</titleabbrev>
+
+   <para>Sets the starting and ending lines of the screen cursor, and
+    can also be used to make the cursor invisible. In some modes, the
+    characters are not exactly 8 lines high  in these cases the
+    graphics hardware will adapt the input values to the current
+    character size.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 01h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.ch; = Starting line of cursor (0-7). Add 20h to
+	 make the cursor invisible.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.cl; = Ending line of cursor (0-7).</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-02h">
+   <title>Function 02h: Set Cursor Position</title>
+   <titleabbrev id="graphics-int10h-02h-short">Function
+    02h</titleabbrev>
+
+   <para>Moves the cursor to the specified position on the screen. The
+    video hardware maintains a separate cursor for each display page,
+    and the cursor will move only if the page number given in &reg.bh;
+    is the current display page. Giving a position that is off the
+    screen will cause the cursor to disappear from the screen.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 02h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh; = Display page (valid only in text
+	 modes&mdash;use 00h for graphics modes).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.dh; = Row (00h is top row).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.dl; = Column (00h is leftmost column).</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-05h">
+   <title>Function 05h: Set Current Display Page</title>
+   <titleabbrev id="graphics-int10h-05h-short">Function
+    05h</titleabbrev>
+
+   <para>Sets the display page which will appear on the screen.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 05h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = Display page (the range of valid values
+	 depends on the current video mode&mdash;see <xref
+	  endterm="graphics-int10h-00h-short"
+	  linkend="graphics-int10h-00h">)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-06h">
+   <title>Function 06h: Scroll Text Lines Up</title>
+   <titleabbrev id="graphics-int10h-06h-short">Function
+    06h</titleabbrev>
+
+   <para>Scrolls part or all of the current display page up by one or
+    more text lines. This function can also be used to clear part or
+    all of the screen.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 06h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = Number of lines to be scrolled up (&reg.al; =
+	 00h will clear the window).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh; = Color attribute for blank lines. In text
+	 mode, this corresponds to the attribute byte.  In VGA
+	 graphics modes, this is the color number to which all the
+	 pixels in the blank lines will be set.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.ch; = Top row of window to be scrolled up.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.cl; = Leftmost column of window.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.dh; = Bottom row of window.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.dl; = Rightmost column of window.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-07h">
+   <title>Function 07h: Scroll Text Lines Down</title>
+   <titleabbrev id="graphics-int10h-07h-short">Function
+    07h</titleabbrev>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 07h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = Number of lines to be scrolled down (&reg.al;
+	 = 00h will clear the window).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh;, &reg.ch;, &reg.cl;, &reg.dh;, &reg.dl; : Same
+	 as <xref endterm="graphics-int10h-06h-short"
+	  linkend="graphics-int10h-06h">.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-08h">
+   <title>Function 08h: Read Character and Attribute at Current Cursor
+    Position</title>
+   <titleabbrev id="graphics-int10h-08h-short">Function
+    08h</titleabbrev>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 08h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh; = Display page.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.al; = ASCII code of character.  If the current
+	 video mode is a graphics mode and no match is found, 00h is
+	 returned.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.ah; = Color attribute.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-09h">
+   <title>Function 09h: Write Character and Attribute at Current
+    Cursor Position</title>
+   <titleabbrev id="graphics-int10h-09h-short">Function
+    09h</titleabbrev>
+
+   <para>Writes the specified character with the specified color
+    attribute at the current cursor position in the specified display
+    page. The cursor is NOT moved to the next screen position. Special
+    control codes are not recognized, and are printed as normal ASCII
+    characters (e.g., writing a carriage return will not cause the
+    cursor to move to the beginning of the line).</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 09h</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = ASCII code.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.cx; = Repeat factor. The character will be written
+	 this many times.  In graphics mode, all the characters must
+	 fit on the same screen line.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh; = Display page.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bl; = Color attribute.  In text mode, this
+	 corresponds to the attribute byte.  In graphics mode, this is
+	 the foreground color (the background color will be 0).  In
+	 graphics mode, if bit 7 is set, the character will be XORed
+	 with the current bitmap.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-0ah">
+   <title>Function 0Ah: Write Character Only at Current Cursor
+    Position</title>
+   <titleabbrev id="graphics-int10h-0ah-short">Function
+    0Ah</titleabbrev>
+
+   <para>This function is identical to <xref
+     endterm="graphics-int10h-09h-short"
+     linkend="graphics-int10h-09h"> except that in text modes, the
+    attribute byte currently in video memory is not modified (&reg.bl;
+    is ignored).  In graphics modes, this function is exactly
+    identical to Function 09h.  See the comments for Function
+    09h.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 0Ah</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al;, &reg.cx;, &reg.bh;, &reg.bl; : Same as <xref
+	  endterm="graphics-int10h-09h-short"
+	  linkend="graphics-int10h-09h"></para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-0ch">
+   <title>Function 0Ch: Write Graphics Pixel</title>
+   <titleabbrev id="graphics-int10h-0ch-short">Function
+    0Ch</titleabbrev>
+
+   <para>Sets the color number of the specified pixel in graphics
+    mode.  Valid in all graphics modes.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 0Ch</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh; = Display page.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.dx; = Screen line (0 is top).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.cx; = Screen column (0 is leftmost).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = Color number.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-0dh">
+   <title>Function 0Dh: Read Graphics Pixel</title>
+   <titleabbrev id="graphics-int10h-0dh-short">Function
+    0Dh</titleabbrev>
+
+   <para>Returns the color number of the specified pixel in graphics
+    mode.  Valid in all graphics modes.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 0Dh</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bh; = Display page.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.dx; = Screen line (0 is top).</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.cx; = Screen column (0 is leftmost).</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.al; = Color number.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-0eh">
+   <title>Function 0Eh: Write Character</title>
+   <titleabbrev id="graphics-int10h-0eh-short">Function
+    0Eh</titleabbrev>
+
+   <para>Writes the specified character to the current cursor position
+    in the current display page. In text modes, the attribute byte is
+    not modified. The cursor is moved to the next screen position, and
+    the screen is scrolled up if necessary. Special ASCII characters,
+    like carriage return and backspace, are interpreted as control
+    codes and will modify the cursor position accordingly.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Inputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>&reg.ah; = 0Eh</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.al; = ASCII code.</para>
+       </listitem>
+
+       <listitem>
+	<para>&reg.bl; = Foreground color (valid only in graphics
+	 modes).</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Outputs</term>
+
+     <listitem>
+      <itemizedlist spacing="compact" mark="None">
+       <listitem>
+	<para>(None)</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="graphics-int10h-10h">
+   <title>Function 10h: VGA Color Functions</title>
+   <titleabbrev id="graphics-int10h-10h-short">Function
+    10h</titleabbrev>
+
+   <para>Color in VGA modes is quite complicated because it is based
+    on a palette of colors.  There are 256 DAC (Digital-to-Analog
+    Converter) registers.  Each of these 18-bit registers contains an
+    RGB (Red, Green, Blue) color value.  These registers define the
+    basic color palette used in 256-color modes. register.  Each
+    palette register corresponds to one color number in video memory.
+    For example, if the bitmap contains color number 17 for a certain
+    pixel, then DAC register #17 determines what color will be
+    generated for the pixel.</para>
+
+   <para>It is possible to set the DAC registers by using either
+    Interrupt 10h functions (listed below) or by directly accessing
+    the VGA card using port I/O.  See <xref
+     linkend="graphics-example-showpcx"> for code that sets the
+    palette using port I/O.  For more information on VGA graphics, see
+    <xref linkend="graphics-mode13h">.</para>
+
+   <sect3 id="graphics-int10h-10h-01h">
+    <title>Subfunction 00h: Set Border (Overscan) Color</title>
+
+    <para>Sets the color of the border around the screen.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+
+      <listitem>
+       <itemizedlist spacing="compact" mark="None">
+	<listitem>
+	 <para>&reg.ax; = 1001h</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.bh; = DAC register number (0-255).</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+
+      <listitem>
+       <itemizedlist spacing="compact" mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+   <sect3 id="graphics-int10h-10h-10h">
+    <title>Subfunction 10h: Set Individual DAC Register</title>
+
+    <para>Sets the RGB (Red, Green, Blue) values for one of the DAC
+     (Digital-to-Analog Converter) registers.</para>
+
+    <variablelist>
+     <varlistentry>
+      <term>Inputs</term>
+
+      <listitem>
+       <itemizedlist spacing="compact" mark="None">
+	<listitem>
+	 <para>&reg.ax; = 1010h</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.bx; = DAC register number (0-255).</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.dh; = Red value (0-63).</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.ch; = Green value (0-63).</para>
+	</listitem>
+
+	<listitem>
+	 <para>&reg.cl; = Blue value (0-63).</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Outputs</term>
+
+      <listitem>
+       <itemizedlist spacing="compact" mark="None">
+	<listitem>
+	 <para>(None)</para>
+	</listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+ </sect1>
+
+ <sect1 id="graphics-pcx">
+  <title>PCX Graphic File Format</title>
+
+  <para>The PCX format is a relatively simple format that provides a
+   minimum of compression using Run Length Encoding (RLE).  RLE means
+   that the file can be read from start to finish in one pass and
+   encoded or decoded without any holistic information (i.e., in order
+   to figure out what the next encoded byte is, you only have to know
+   what preceeded it, not anything after it.)  The PCX format is
+   especially useful for 320x200x256 VGA mode 13h (where each pixel is
+   stored as a byte).  The PCX format was originally used by PC
+   Paintbrush.</para>
+
+  <sect2 id="graphics-pcx-rle">
+   <title>RLE Encoding</title>
+
+   <para>The following discussion assumes 320x200x256 VGA mode 13h, as
+    described in <xref linkend="graphics-mode13h"></para>
+
+   <para>Two types of bytes are stored in the data image portion of a
+    PCX file.  One type is a <emphasis>length</emphasis>, and the
+    other is <emphasis>color</emphasis>.  A length byte is specified
+    by the two upper bits being set.  This limits the length specified
+    by a length byte to 64.  The other type is a color byte, and
+    specifies a value for the byte from the palette table (the palette
+    holds the actual RGB values of the color, and the color byte is an
+    index into this table).  This is the same method used in mode 13h.
+    The first byte from the data is read.  If the two upper bits are
+    set, then it is a length byte, and the next byte is the color
+    which will be replicated as many times as stated by the length
+    byte, from left to right on the screen, ending at the end of a
+    line (see BYTES_PER_LINE below).  If the two bits are not set,
+    then it is a color byte, and it goes onto the screen in the next
+    location (left to right) as is.</para>
+
+   <note>
+    <para>Any color greater than or equal to 192 cannot be stored as a
+     single color byte, and must be a given a length first.  For
+     instance, if you have a single byte of color 192, then it must be
+     represented by two bytes of 193 (length byte of 1) and 192 (color
+     byte 192).</para>
+   </note>
+  </sect2>
+
+  <sect2 id="graphics-pcx-file-format">
+   <title>PCX File Format</title>
+
+   <para>The PCX file itself contains two parts&mdash;the first part
+    is called the <firstterm>header</firstterm>, which contains
+    information about the image; the second part is the
+    <firstterm>image data</firstterm>, which contains actual image
+    data and color information.  Rather than explain each field of the
+    header in detail, a structure is shown below which gives a brief
+    glance at the purpose of each field.</para>
+
+   <programlisting>
+STRUC PCX_Header
+.Manufacturer   resb    1       ; should always be 0Ah
+.Version        resb    1       ; <co id="graphics-pcx-header-version">
+.Encoding       resb    1       ; should always be 01h
+.BitsPerPixel   resb    1       ; <co id="graphics-pcx-header-bitsperpixel">
+.XMin           resw    1       ; image width = XMax-XMin
+.YMin           resw    1       ; image height = YMax-YMin
+.XMax           resw    1
+.YMax           resw    1
+.VertDPI        resw    1       ; <co id="graphics-pcx-header-vertdpi">
+.Palette        resb    48      ; <co id="graphics-pcx-header-palette">
+.Reserved       resb    1
+.ColorPlanes    resb    1       ; <co id="graphics-pcx-header-colorplanes">
+.BytesPerLine   resw    1       ; <co id="graphics-pcx-header-bytesperline">
+.PaletteType    resw    1
+.HScrSize       resw    1       ; only supported by
+.VScrSize       resw    1       ; PC Paintbrush IV or higher
+.Filler         resb    56
+ENDSTRUC</programlisting>
+
+   <calloutlist>
+    <callout arearefs="graphics-pcx-header-version">
+     <para>PCX version number.  It corresponds to the following PC
+      Paintbrush versions and/or features:</para>
+
+     <simplelist>
+      <member>0 &mdash; Version 2.5</member>
+      <member>2 &mdash; Version 2.8, palette included</member>
+      <member>3 &mdash; Version 2.8, use default palette</member>
+      <member>5 &mdash; Version 3.0 or better</member>
+     </simplelist>
+    </callout>
+
+    <callout arearefs="graphics-pcx-header-bitsperpixel">
+     <para>Number of bits of color used for each pixel.</para>
+
+     <simplelist>
+      <member>1 &mdash; Monochrome</member>
+      <member>4 &mdash; 16 colors</member>
+      <member>8 &mdash; 256 colors</member>
+      <member>24 &mdash; 16.7 million colors</member>
+     </simplelist>
+    </callout>
+
+    <callout arearefs="graphics-pcx-header-vertdpi">
+     <para>Vertical resolution, in DPI (dots per inch).</para>
+    </callout>
+
+    <callout arearefs="graphics-pcx-header-palette">
+     <para>If 16 colors or less, contains the color palette.</para>
+    </callout>
+
+    <callout arearefs="graphics-pcx-header-colorplanes">
+     <para>Number of color planes:</para>
+
+     <simplelist>
+      <member>4 &mdash; 16 colors</member>
+      <member>3 &mdash; 24 bit color (16.7 million colors)</member>
+     </simplelist>
+    </callout>
+
+    <callout arearefs="graphics-pcx-header-bytesperline">
+     <para>Number of bytes per line (the width of the image in bytes).
+      For 320x200, 256-color images, this is 320 bytes per
+      line.</para>
+    </callout>
+   </calloutlist>
+
+   <para>In a PCX file containing 16 colors of less, the palette is
+    contained in the <link
+     linkend="graphics-pcx-header-palette">.Palette</link> section of
+    the header.  In a PCX file containing 256 colors, the palette is
+    at the end of the file, and takes up the last 768 bytes (256 * 3
+    bytes per color RGB).  If the last 768 bytes is a palette, there
+    is a padding byte preceding it in the file (whose value is
+    12).</para>
+
+   <example id="graphics-example-showpcx">
+    <title>Displaying a PCX File</title>
+
+    <programlisting>
+EXTERN  kbdin, dosxit           ; LIB291 functions
+
+SEGMENT ScratchSeg
+ScratchPad      resb 65535
+
+SEGMENT stkseg STACK
+        resb    64*8
+stacktop:
+        resb    0
+
+SEGMENT code
+
+PCX1    db      'my_pcx1.pcx', 0        ; Filenames
+PCX2    db      'my_pcx2.pcx', 0        ; (Must end with 0 byte)
+
+..start:
+        mov     ax, cs          ; Set up data and stack segments
+        mov     ds, ax
+        mov     ax, stkseg
+        mov     ss, ax
+        mov     sp, stacktop
+
+MAIN:
+        ; Sets up mode 13h and clears screen
+        mov     ax, 0013h
+        int     10h
+
+        mov     dx, pcx1        ; Filename to display
+        call    ShowPCX         ; Display PCX file to screen
+
+        ; Wait for keypress
+        call    kbdin
+
+        ; Go back to text mode
+        mov     ax, 0003h
+        int     10h
+
+        ; Return to DOS
+        call    dosxit
+
+;-----------------------------------------------------------------------------
+; ShowPCX procedure by Brandon Long,
+;   modified by Eric Meidel and Nathan Jachimiec,
+;   converted to NASM, cleaned up, and better commented by Peter Johnson
+; Inputs: DX has the offset of PCX filename to show.
+; Output: PCX file displayed (all registers unchanged)
+; Notes:  Assumes PCX file is 320x200x256.
+;         Uses ScratchSeg for temporary storage.
+;         The PCX file must be in the same directory as this executable.
+;-----------------------------------------------------------------------------
+ShowPCX
+        push    ax              ; Save registers
+        push    bx
+        push    cx
+        push    si
+        push    di
+        push    es
+
+        mov     ax, 3D00h
+        int     21h             ; Open file
+        jc      .error          ; Exit if open failed
+
+        mov     bx, ax          ; File handle
+        mov     cx, 65535       ; Number of bytes to read
+        mov     ax, ScratchSeg  ; DS:DX -> buffer for data
+        mov     ds, ax
+        mov     dx, ScratchPad
+        mov     si, dx
+        mov     ah, 3Fh
+        int     21h             ; Read from file
+
+        mov     ax, 0A000h      ; Start writing to upper-left corner
+        mov     es, ax          ; of graphics display
+        xor     di, di
+
+        add     si, 128         ; Skip header information
+
+        xor     ch, ch          ; Clear high part of CX for string copies
+
+.nextbyte:
+        mov     cl, [si]        ; Get next byte
+        cmp     cl, 0C0h        ; Is it a length byte?
+        jb      .normal         ;  No, just copy it
+        and     cl, 3Fh         ; Strip upper two bits from length byte
+        inc     si              ; Advance to next byte - color byte
+        lodsb                   ; Get color byte into AL from [SI]
+        rep stosb               ; Store to [ES:DI] and inc DI, CX times
+        jmp     short .tst
+
+.normal:
+        movsb                   ; Copy color value from [SI] to [ES:DI]
+
+.tst:
+        cmp     di, 320*200     ; End of file? (written 320x200 bytes)
+        jb      .nextbyte
+
+        mov     cl, [si]
+        cmp     cl, 0Ch         ; Palette available?
+        jne     .close
+
+        ; Set palette using port I/O
+        mov     dx, 3C8h
+        mov     al, 0
+        out     dx, al
+        inc     dx              ; Port 3C9h
+        mov     cx, 256*3       ; Copy 256 entries, 3 bytes (RGB) apiece
+        inc     si              ; Skip past padding byte
+
+.palette:
+        lodsb
+        shr     al, 1           ; PCX stores color values as 0-255
+        shr     al, 1           ;  but VGA DAC is only 0-63
+        out     dx, al
+        dec     cx
+        jnz     .palette
+
+.close:
+        mov     ah, 3Eh
+        int     21h             ; Close file
+
+.error:
+        pop     es              ; Restore registers
+        pop     di
+        pop     si
+        pop     cx
+        pop     bx
+        pop     ax
+        ret</programlisting>
+   </example>
   </sect2>
  </sect1>
 </chapter>
