@@ -1,5 +1,5 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.34 2001/06/24 02:46:40 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.4 2001/07/16 20:27:50 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.5 2001/07/25 07:39:37 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -46,6 +46,25 @@
         (define html-manifest
           ;; Write a manifest?
           #f)
+
+        (define (book-titlepage-recto-elements)
+          (list (normalize "title")
+                (normalize "subtitle")
+                (normalize "graphic")
+                (normalize "mediaobject")
+                (normalize "corpauthor")
+                (normalize "authorgroup")
+                (normalize "author")
+                (normalize "editor")
+                (normalize "copyright")
+                (normalize "abstract")
+                (normalize "legalnotice")
+                (normalize "isbn")))
+
+	(define html-index-filename
+	  (if nochunks
+	    "html.index"
+	    "html-split.index"))
 
         (define %stylesheet%
 	  "docbook.css")
