@@ -48,9 +48,8 @@
    interrupts and callbacks, text mode, graphics mode, networking,
    sound, and DMA in addition to some other general purpose functions.
    A full reference to all of the functions is available online at
-   <ulink
-    url="http://courses.ece.uiuc.edu/ece291/resources/pmodelib-doc/reference.html"></ulink> 
-   (it's also linked to from the resources page).</para>
+   <pmodelibref section="top"></> (it's also linked to from the
+   resources page).</para>
  </sect1>
 
  <sect1>
