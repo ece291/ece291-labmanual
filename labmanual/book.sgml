@@ -11,9 +11,7 @@
 <!-- Instruction groups to exclude/include.  It isn't safe to include any of
      these except for inst-ref.undoc because not all of them have been
      SGMLized yet. -->
-<!ENTITY % inst-ref.katmai "IGNORE">
-<!ENTITY % inst-ref.now3d "IGNORE">
-<!ENTITY % inst-ref.cyrix "IGNORE">
+<!ENTITY % inst-ref.sse2 "IGNORE">
 <!ENTITY % inst-ref.undoc "IGNORE">
 
 <!-- Chapter entities to allow building of individual chapters -->

@@ -44,6 +44,10 @@
    forbidden by the presence and nature of the instruction
    field.</para>
 
+  <para>NASM uses backslash (\) as the line continuation character; if
+   a line ends with backslash, the next line is considered to be a
+   part of the backslash-ended line.</para>
+
   <indexterm>
    <primary>colon</primary>
   </indexterm>
@@ -1786,6 +1790,24 @@ mt_str:         resb 32
     has no function other than to call the primitive form.</para>
   </sect2>
 
+  <sect2 id="nasm-directive-use16use32">
+   <title><literal>USE16</literal> and <literal>USE32</literal>:
+    Aliases for <literal>BITS</literal></title>
+
+   <indexterm>
+    <primary><literal>USE16</literal></primary>
+   </indexterm>
+
+   <indexterm>
+    <primary><literal>USE32</literal></primary>
+   </indexterm>
+
+   <para>The <literal>USE16</literal> and <literal>USE32</literal>
+    directives can be used in place of <literal>BITS 16</literal> and
+    <literal>BITS 32</literal> for compatibility with other
+    assemblers.</para>
+  </sect2>
+
   <sect2 id="nasm-directive-section">
    <title><literal>SECTION</literal> or <literal>SEGMENT</literal>:
     Changing and Defining Sections</title>
@@ -2107,6 +2129,135 @@ intvar  resd 1</programlisting>
     <literal>GLOBAL</literal>, the primitive form of
     <literal>COMMON</literal> differs from the user-level form only in
     that it can take only one argument at a time.</para>
+  </sect2>
+
+  <sect2 id="nasm-directive-cpu">
+   <title><literal>CPU</literal>: Defining CPU Dependencies</title>
+
+   <indexterm>
+    <primary><literal>CPU</literal></primary>
+   </indexterm>
+
+   <para>The <literal>CPU</literal> directive restricts assembly to
+    those instructions which are available on the specified
+    CPU.  The options are:</para>
+
+   <variablelist>
+    <varlistentry>
+     <term><literal>CPU 8086</literal></term>
+
+     <listitem>
+      <para>Assemble only 8086 instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU 186</literal></term>
+
+     <listitem>
+      <para>Assemble instructions up to the 80186 instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU 286</literal></term>
+
+     <listitem>
+      <para>Assemble instructions up to the 286 instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU 386</literal></term>
+
+     <listitem>
+      <para>Assemble instructions up to the 386 instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU 486</literal></term>
+
+     <listitem>
+      <para>486 instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU 586</literal></term>
+
+     <listitem>
+      <para>Pentium instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU PENTIUM</literal></term>
+
+     <listitem>
+      <para>Same as <literal>CPU 586</literal>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU 686</literal></term>
+
+     <listitem>
+      <para>P6 instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU PPRO</literal></term>
+
+     <listitem>
+      <para>Same as <literal>CPU 686</literal>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU P2</literal></term>
+
+     <listitem>
+      <para>Same as <literal>CPU 686</literal>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU P3</literal></term>
+
+     <listitem>
+      <para>Pentium III and Katmai instruction sets.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU KATMAI</literal></term>
+
+     <listitem>
+      <para>Same as <literal>CPU P3</literal>.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU P4</literal></term>
+
+     <listitem>
+      <para>Pentium 4 (Willamette) instruction set.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>CPU WILLAMETTE</literal></term>
+
+     <listitem>
+      <para>Same as <literal>CPU P4</literal>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>All options are case insensitive.  Instructions will be
+    enabled only if they apply to the selected cpu or lower.</para>
   </sect2>
  </sect1>
 </chapter>
