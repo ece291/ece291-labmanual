@@ -1,0 +1,10 @@
+*.html
+*.log
+*.aux
+*.index
+index.sgml
+book.pdf
+book.tex-*
+book.out
+docbook.css
+HTML.manifest
