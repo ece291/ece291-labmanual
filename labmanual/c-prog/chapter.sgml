@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/07/02 23:54:36 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/07/26 06:08:36 pete Exp $
 -->
 
 <chapter id="c-prog">
@@ -239,25 +239,36 @@ _Sum
      C variable types and how they are returned by the assembly
      code:</para>
 
-    <segmentedlist>
-     <segtitle>Data Type</segtitle>
-     <segtitle>Register</segtitle>
+    <informaltable frame="none">
+     <tgroup cols="2">
+      <colspec colname="datatype">
+      <colspec colname="register">
 
-     <seglistitem>
-      <seg>char</seg>
-      <seg>&reg.al;</seg>
-     </seglistitem>
+      <thead>
+       <row>
+	<entry>Data Type</entry>
+	<entry>Register</entry>
+       </row>
+      </thead>
 
-     <seglistitem>
-      <seg>short</seg>
-      <seg>&reg.ax;</seg>
-     </seglistitem>
+      <tbody>
+       <row>
+	<entry>char</entry>
+	<entry>&reg.al;</entry>
+       </row>
 
-     <seglistitem>
-      <seg>int, long, *</seg>
-      <seg>&reg.eax;</seg>
-     </seglistitem>
-    </segmentedlist>
+       <row>
+	<entry>short</entry>
+	<entry>&reg.ax;</entry>
+       </row>
+
+       <row>
+	<entry>int, long, pointer (*)</entry>
+	<entry>&reg.eax;</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
    </sect3>
 
    <sect3 id="c-prog-mixing-using-asm-local-data">

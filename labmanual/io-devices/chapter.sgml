@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.1 2001/06/25 18:57:11 pete Exp $
+     $Id: chapter.sgml,v 1.2 2001/07/26 06:08:36 pete Exp $
 -->
 
 <chapter id="io-devices">
@@ -1010,23 +1010,35 @@ KbdInt
     <para>The <firstterm>cursor bitmap</firstterm> can be a 16x16
      pixel image which is defined in memory as follows:</para>
 
-    <segmentedlist>
-     <segtitle>Offset</segtitle>
-     <segtitle>Size</segtitle>
-     <segtitle>Description</segtitle>
+    <informaltable frame="none">
+     <tgroup cols="3">
+      <colspec colname="offset">
+      <colspec colname="size">
+      <colspec colname="description">
 
-     <seglistitem>
-      <seg>00h</seg>
-      <seg>16 words</seg>
-      <seg>Screen Mask</seg>
-     </seglistitem>
+      <thead>
+       <row>
+	<entry>Offset</entry>
+	<entry>Size</entry>
+	<entry>Description</entry>
+       </row>
+      </thead>
 
-     <seglistitem>
-      <seg>20h</seg>
-      <seg>16 words</seg>
-      <seg>Cursor Mask</seg>
-     </seglistitem>
-    </segmentedlist>
+      <tbody>
+       <row>
+	<entry>00h</entry>
+	<entry>16 words</entry>
+	<entry>Screen Mask</entry>
+       </row>
+
+       <row>
+	<entry>20h</entry>
+	<entry>16 words</entry>
+	<entry>Cursor Mask</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
 
     <para>Each word defines the sixteen pixels of a row, with the
      rightmost pixel being the least significant bit. The image is
