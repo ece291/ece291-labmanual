@@ -1,0 +1,142 @@
+<!--
+     ECE 291 Lab Manual
+
+     $Id: chapter.sgml,v 1.1 2001/07/26 03:25:37 pete Exp $
+-->
+
+<chapter id="graphics">
+ <title>Graphics</title>
+
+ <highlights>
+  <para>This chapter describes the various common graphics modes and
+   how to use them in assembly language, as well as how to implement
+   various algorithms for drawing lines and other images on the
+   graphics screen.</para>
+ </highlights>
+
+ <sect1 id="graphics-text">
+  <title>Text Mode</title>
+
+  <sect2 id="graphics-text-display">
+   <title>Displaying Text on the Screen</title>
+
+   <sect3 id="graphics-text-display-int10h">
+    <title>INT 10h Functions</title>
+
+    <para>One way to display text on the screen quickly is to use the
+     BIOS interrupt 10h functions.  See the INT 10h function list
+     elsewhere for a complete description of these functions.  A brief
+     list of the more useful functions is given here:</para>
+
+    <!-- TODO: segmentedlist or itemizedlist? -->
+   </sect3>
+
+   <sect3 id="graphics-text-display-lib291">
+    <title>Library Routines</title>
+
+    <para>In addition to these interrupts, the following subroutines
+     for displaying characters are available through the LIB291
+     library file:</para>
+
+    <variablelist>
+     <varlistentry>
+      <term><function>dspout</function></term>
+
+      <listitem>
+       <para>This subroutine prints the character found in &reg.dl; to
+	the screen, at the current cursor position.  The character
+	must be in ASCII.  The contents of &reg.dl; are preserved upon
+	return.  The cursor is advanced after the write.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><function>dspmsg</function></term>
+
+      <listitem>
+       <para>This subroutine will print to the screen, starting at the
+	current cursor position, a string of ASCII characters.
+	&reg.dx; must contain an offset from &reg.ds; to the location
+	of the first character to be printed.  In addition, the string
+	must end with an ASCII dollar sign ($), and hence may not
+	contain one. (The dollar sign is the text delimiter).  The
+	contents of &reg.dx; are preserved upon return.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+
+  <sect3 id="graphics-text-display-memory">
+   <title>Direct Writes to Video Memory</title>
+
+   <para>A third method for displaying text involves accessing the
+    video memory directly.  The contents of the text screen are stored
+    in memory beginning at address B8000h.  Each character on the text
+    display comprises one word in memory, the meaning of which is
+    shown in the following figure:</para>
+
+   <informalfigure>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="graphics/text-memory">
+     </imageobject>
+    </mediaobject>
+   </informalfigure>
+
+   <para>The attribute byte gives information about the color of that
+    particular character on the screen (discussed in the following
+    section).  The character byte is simply the 8-bit ASCII code for
+    the character at that position.</para>
+
+   <para>The screen is divided into rows and columns, with the
+    upper-left character position usually referred to as row 0 and
+    column 0. The first row of the screen is stored first beginning
+    with the first column (row 0, column 0), then the next row, and so
+    on. Thus, an 80x25 text screen requires</para>
+
+   <informalequation>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="graphics/text-memory-size" format="tex">
+     </imageobject>
+
+     <textobject>
+      <phrase>80 columns * 25 rows * 2 bytes per row = 4000
+       bytes</phrase>
+     </textobject>
+    </mediaobject>
+   </informalequation>
+
+    <para>to store the entire screen.</para>
+
+    <para>The following code fragment illustrates an example of how to
+     access the video memory.  This code fragment will change the top
+     row of characters to yellow <quote>A</quote>s on a blue
+     background. Note the use of segment register &reg.es; to access
+     the memory at absolute address B8000h.</para>
+
+    <programlisting>
+        mov     bx, 0           ; Begin pointer at row 0 and column 0
+        mov     ax, 0B800h      ; Set up ES to point to video segment
+        mov     es, ax
+        mov     cx, 80          ; Counter for number of columns in top row
+.lp:
+        mov     [es:bx], 1E41h  ; Yellow 'A' on blue background
+        add     bx, 2           ; Update pointer to next character position
+        loop    .lp             ; Do 80 characters</programlisting>
+   </sect3>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-indent-step: 1
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
