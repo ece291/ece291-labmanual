@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.9 2001/07/26 03:28:50 pete Exp $
+# $Id: Makefile,v 1.10 2001/07/26 05:33:04 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -66,6 +66,11 @@ IMAGES+= serial-comm/plug9pins-null.dia
 IMAGES+= parallel-comm/timing.dia
 
 SYMLINKS= ${DESTDIR} index.html
+
+# Turn on all the chapters.
+CHAPTERS?= ${SRCS:M*.sgml:Nbook.sgml}
+
+JADEFLAGS+= ${CHAPTERS:S/\/chapter//:S/\/appendix//:S/.sgml//:S/^/-i chap./}
 
 DOC_PREFIX?= ${.CURDIR}/..
 .include "${DOC_PREFIX}/share/mk/doc.project.mk"

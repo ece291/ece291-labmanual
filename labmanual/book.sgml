@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: book.sgml,v 1.9 2001/07/26 03:28:50 pete Exp $
+     $Id: book.sgml,v 1.10 2001/07/26 05:33:04 pete Exp $
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
@@ -15,6 +15,21 @@
 <!ENTITY % inst-ref.now3d "IGNORE">
 <!ENTITY % inst-ref.cyrix "IGNORE">
 <!ENTITY % inst-ref.undoc "IGNORE">
+
+<!-- Chapter entities to allow building of individual chapters -->
+<!ENTITY % chap.preface "IGNORE">
+<!ENTITY % chap.introduction "IGNORE">
+<!ENTITY % chap.using-pc "IGNORE">
+<!ENTITY % chap.c-prog "IGNORE">
+<!ENTITY % chap.libraries "IGNORE">
+<!ENTITY % chap.data-structures "IGNORE">
+<!ENTITY % chap.io-devices "IGNORE">
+<!ENTITY % chap.graphics "IGNORE">
+<!ENTITY % chap.serial-comm "IGNORE">
+<!ENTITY % chap.parallel-comm "IGNORE">
+<!ENTITY % chap.inst-ref "IGNORE">
+<!ENTITY % chap.glossary "IGNORE">
+
 ]>
 
 <book>
@@ -99,16 +114,16 @@
   </abstract>
  </bookinfo>
 
- &chap.preface;
- &chap.introduction;
- &chap.using-pc;
- &chap.c-prog;
- &chap.libraries;
- &chap.data-structures;
- &chap.io-devices;
- &chap.graphics;
- &chap.serial-comm;
- &chap.parallel-comm;
+ <![ %chap.preface;         [ &chap.preface;         ]]>
+ <![ %chap.introduction;    [ &chap.introduction;    ]]>
+ <![ %chap.using-pc;        [ &chap.using-pc;        ]]>
+ <![ %chap.c-prog;          [ &chap.c-prog;          ]]>
+ <![ %chap.libraries;       [ &chap.libraries;       ]]>
+ <![ %chap.data-structures; [ &chap.data-structures; ]]>
+ <![ %chap.io-devices;      [ &chap.io-devices;      ]]>
+ <![ %chap.graphics;        [ &chap.graphics;        ]]>
+ <![ %chap.serial-comm;     [ &chap.serial-comm;     ]]>
+ <![ %chap.parallel-comm;   [ &chap.parallel-comm;   ]]>
 
  <appendix id="ascii-code">
   <title>ASCII Code Tables</title>
@@ -129,9 +144,9 @@
   </sect1>
  </appendix>
 
- &chap.inst-ref;
+ <![ %chap.inst-ref;        [ &chap.inst-ref;        ]]>
 
- &chap.glossary;
+ <![ %chap.glossary;        [ &chap.glossary;        ]]>
 
  &chap.index;
 </book>
