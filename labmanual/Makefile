@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.21 2001/09/14 06:48:33 pete Exp $
+# $Id: Makefile,v 1.22 2001/09/14 07:01:46 pete Exp $
 #
 # Build the ECE 291 Lab Manual.
 #
@@ -86,7 +86,7 @@ SYMLINKS= ${DESTDIR} index.html
 # Turn on all the chapters.
 CHAPTERS?= ${SRCS:M*.sgml:Nbook.sgml}
 
-JADEFLAGS+= ${CHAPTERS:S/\/chapter//:S/\/appendix//:S/.sgml//:S/^/-i chap./}
+SGMLFLAGS+= ${CHAPTERS:S/\/chapter//:S/\/appendix//:S/.sgml//:S/^/-i chap./}
 
 DOC_PREFIX?= ${.CURDIR}/..
 .include "${DOC_PREFIX}/share/mk/doc.project.mk"

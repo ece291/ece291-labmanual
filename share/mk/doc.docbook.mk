@@ -1,6 +1,6 @@
 #
-# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.42 2001/07/28 03:00:03 murray Exp $
-# $Id: doc.docbook.mk,v 1.8 2001/08/15 06:01:08 pete Exp $
+# $FreeBSD: doc/share/mk/doc.docbook.mk,v 1.43 2001/08/16 05:19:51 dd Exp $
+# $Id: doc.docbook.mk,v 1.9 2001/09/14 07:01:46 pete Exp $
 #
 # This include file <doc.docbook.mk> handles building and installing of
 # DocBook documentation in the FreeBSD Documentation Project.
@@ -31,9 +31,14 @@
 #
 # Variables used by both users and documents:
 #
-#	JADEFLAGS	Additional options to pass to Jade.  Typically
+#	SGMLFLAGS	Additional options to pass to various SGML
+#			processors (e.g., jade, nsgmls).  Typically
 #			used to define "IGNORE" entities to "INCLUDE"
 #			 with "-i<entity-name>"
+#
+#	JADEFLAGS	Additional options to pass to Jade.  Typically
+#			used to set additional variables, such as
+#			"%generate-article-toc%".
 #
 #	TIDYFLAGS	Additional flags to pass to Tidy.  Typically
 #			used to set "-raw" flag to handle 8bit characters.
@@ -110,7 +115,7 @@ DSSSLBIN=	${PREFIX}/share/sgml/docbook/dsssl/modular/bin
 
 IMAGES_LIB?=
 
-JADEOPTS=	${JADEFLAGS} -c ${ECE291CATALOG} -c ${DSSSLCATALOG} -c ${DOCBOOKCATALOG} -c ${JADECATALOG} ${EXTRA_CATALOGS:S/^/-c /g}
+JADEOPTS=	${JADEFLAGS} ${SGMLFLAGS} -c ${ECE291CATALOG} -c ${DSSSLCATALOG} -c ${DOCBOOKCATALOG} -c ${JADECATALOG} ${EXTRA_CATALOGS:S/^/-c /g}
 
 KNOWN_FORMATS=	html html.tar html-split html-split.tar txt rtf ps pdf tex dvi tar pdb
 
@@ -360,7 +365,7 @@ ${DOC}.tar: ${SRCS}
 #
 
 lint validate:
-	${NSGMLS} ${JADEFLAGS} -s -c ${ECE291CATALOG} -c ${DSSSLCATALOG} -c ${DOCBOOKCATALOG} -c ${JADECATALOG} ${EXTRA_CATALOGS:S/^/-c /g} ${MASTERDOC}
+	${NSGMLS} ${SGMLFLAGS} -s -c ${ECE291CATALOG} -c ${DSSSLCATALOG} -c ${DOCBOOKCATALOG} -c ${JADECATALOG} ${EXTRA_CATALOGS:S/^/-c /g} ${MASTERDOC}
 
 # ------------------------------------------------------------------------
 #
