@@ -347,6 +347,45 @@ Z       resb    r*s*b</programlisting>
    that the first 3 characters have been dequeued.  The 20 memory
    locations assigned to the queue would then contain:</para>
 
+  <informalfigure>
+   <mediaobjectco>
+    <imageobjectco>
+     <areaspec>
+      <area linkends="data-structures-queue-qbeg-co" units="calspair" coords="874,8609 1116,9771" id="data-structures-queue-qbeg">
+      <area linkends="data-structures-queue-front-co" units="calspair" coords="1844,477 2087,1639" id="data-structures-queue-front">
+      <area linkends="data-structures-queue-rear-co" units="calspair" coords="8154,477 8397,1639" id="data-structures-queue-rear">
+      <area linkends="data-structures-queue-qend-co" units="calspair" coords="6213,8609 6456,9771" id="data-structures-queue-qend">
+     </areaspec>
+
+     <imageobject>
+      <imagedata fileref="data-structures/circularqueue" format=eps>
+     </imageobject>
+
+     <calloutlist>
+      <callout arearefs="data-structures-queue-qbeg" id="data-structures-queue-qbeg-co">
+       <para><varname>QBeg</varname>: Offset of the first byte in the
+	queue.</para>
+      </callout>
+
+      <callout arearefs="data-structures-queue-front" id="data-structures-queue-front-co">
+       <para><varname>Front</varname>: Pointer to the last character
+	dequeued.</para>
+      </callout>
+
+      <callout arearefs="data-structures-queue-rear" id="data-structures-queue-rear-co">
+       <para><varname>Rear</varname>: Pointer to the last character
+	enqueued.</para>
+      </callout>
+
+      <callout arearefs="data-structures-queue-qend" id="data-structures-queue-qend-co">
+       <para><literal><varname>QBeg</varname>+<varname>QLen</varname>-1</literal>: 
+	Offset of the last byte in the queue.</para>
+      </callout>
+     </calloutlist>
+    </imageobjectco>
+   </mediaobjectco>
+  </informalfigure>
+
   <para>At this point, additional characters may be dequeued until the
    queue is empty, and additional characters may be enqueued until the
    queue is full. The empty/full conditions may be deduced from the

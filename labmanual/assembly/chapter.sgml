@@ -789,8 +789,9 @@ b:              pop ax
 
         EXTERN  kbdine, dspout, dspmsg, dosxit
 
-SEGMENT stkseg STACK            ; **** STACK SEGMENT ****
+SEGMENT stkseg STACK CLASS=STACK ; **** STACK SEGMENT ****
         resb    64*8
+stacktop:
 
 SEGMENT code                    ; **** CODE SEGMENT ****
 
@@ -802,6 +803,9 @@ HdMsg   db      'Type up to 20 names separated by carriage returns','$'
         mov     ax, cs
         mov     ds, ax          ; Initialize DS and ES registers
         mov     es, ax
+        mov     ax, stkseg      ; Initialize Stack Segment
+        mov     ss, ax
+        mov     sp, stacktop    ; Initialize Stack Pointer
 
         mov     dx, HdMsg
         call    dspmsg

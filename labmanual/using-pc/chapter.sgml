@@ -83,8 +83,9 @@
    </indexterm>
 
    <para>This command tells DOS to edit the file EXAMPLE.ASM using the
-    VI editor. VI is the command name, and the filename EXAMPLE.ASM is
-    an <firstterm>argument</firstterm> to the command. (Not all DOS
+    VI editor.  <literal>gvim</literal> is the command name, and the
+    filename <literal>example.asm</literal> is an
+    <firstterm>argument</firstterm> to the command. (Not all DOS
     commands take arguments).</para>
   </sect2>
 

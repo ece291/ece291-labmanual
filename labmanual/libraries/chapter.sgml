@@ -271,7 +271,7 @@ done:   call dosxit</programlisting>
      </listitem>
 
      <listitem>
-      <para>&reg.dl; = Status word giving result of the
+      <para>&reg.dl; = Status byte giving result of the
        conversion:</para>
 
       <itemizedlist spacing=compact mark="None">
@@ -491,7 +491,7 @@ ascbin:
         mov     si, dx
         imul    word [cs:ten]           ; Multiply AX by 10
         jo      .error34
-        add     ax, si                  ; At this point DX = 0, ..., or 9
+        add     ax, si                  ; At this point SI = 0, ..., or 9
         jo      .error34
         inc     bx                      ; Go to next digit
         jmp     .scan

@@ -66,6 +66,7 @@ IMAGES+= assembly/flags.dia
 IMAGES+= data-structures/lineararray.tex
 IMAGES+= data-structures/lineararrayac.tex
 IMAGES+= data-structures/dimensionalac.tex
+IMAGES+= data-structures/circularqueue.dia
 IMAGES+= data-structures/llistinitial.dia
 IMAGES+= data-structures/llistdelete.dia
 IMAGES+= data-structures/llistafterdelete.dia
@@ -94,6 +95,19 @@ IMAGES+= parallel-comm/logic.dia
 IMAGES+= sound/dma.dia
 IMAGES+= sound/dma1.dia
 IMAGES+= ascii-code/quickref.dia
+
+# Images from the cross-document image library
+IMAGES_LIB_DIR= ${.CURDIR}/../share/images
+IMAGES_LIB=  callouts/1.png
+IMAGES_LIB+= callouts/2.png
+IMAGES_LIB+= callouts/3.png
+IMAGES_LIB+= callouts/4.png
+IMAGES_LIB+= callouts/5.png
+IMAGES_LIB+= callouts/6.png
+IMAGES_LIB+= callouts/7.png
+IMAGES_LIB+= callouts/8.png
+IMAGES_LIB+= callouts/9.png
+IMAGES_LIB+= callouts/10.png
 
 SYMLINKS= ${DESTDIR} index.html
 
