@@ -604,6 +604,14 @@ msglen  equ $-message</programlisting>
    <literal>[&reg.eax;]</literal>, will be coded with no offset
    field.</para>
 
+  <para>The form described in the previous paragraph is also useful if
+   you are trying to access data in a 32-bit segment from within 16
+   bit code.  <!--For more information on this see the section on
+   mixed-size addressing (\k{mixaddr}). -->In particular, if you need to
+   access data with a known offset that is larger than will fit in a
+   16-bit value, if you don't specify that it is a dword offset, NASM
+   will cause the high word of the offset to be lost.</para>
+
   <para>Similarly, NASM will split <literal>[&reg.eax;*2]</literal>
    into <literal>[&reg.eax;+&reg.eax;]</literal> because that allows
    the offset field to be absent and space to be saved; in fact, it
@@ -1182,6 +1190,38 @@ msglen  equ $-message</programlisting>
 
   <para>NASM supports no convenient synonym for this, though you can
    always invent one using the macro processor.</para>
+ </sect1>
+
+ <sect1 id="nasm-strict">
+  <title><literal>STRICT</literal>: Inhibiting Optimization</title>
+
+  <indexterm>
+   <primary><literal>STRICT</literal></primary>
+  </indexterm>
+
+  <para>When assembling with the optimizer set to level 2 or
+   higher<!--(see \k{opt-On})-->, NASM will use size specifiers
+   (<literal>BYTE</literal>, <literal>WORD</literal>,
+   <literal>DWORD</literal>, <literal>QWORD</literal>, or
+   <literal>TWORD</literal>), but will give them the smallest possible
+   size. The keyword <literal>STRICT</literal> can be used to inhibit
+   optimization and force a particular operand to be emitted in the
+   specified size. For example, with the optimizer on, and in
+   <literal>BITS 16</literal> mode,</para>
+
+  <programlisting>        push dword 33</programlisting>
+
+  <para>is encoded in three bytes <literal>66 6A 21</literal>,
+   whereas</para>
+
+  <programlisting>        push strict dword 33</programlisting>
+
+  <para>is encoded in six bytes, with a full dword immediate operand
+   <literal>66 68 21 00 00 00</literal>.</para>
+
+  <para>With the optimizer off, the same code (six bytes) is generated
+   whether the <literal>STRICT</literal> keyword was used or
+   not.</para>
  </sect1>
 
  <sect1 id="nasm-crit">
