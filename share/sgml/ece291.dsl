@@ -378,6 +378,24 @@
 					(normalize "function")))))
 	      (process-children)))
 
+	<!-- Support for DPMIRef -->
+	(element dpmiref
+	  (let* ((function	(attribute-string (normalize "function")))
+		 (name		(attribute-string (normalize "name"))))
+	  (if (node-list-empty? (children (current-node)))
+	      (if name
+		  (make sequence
+		    (literal (string-append "DPMI function "
+					    function
+					    "h, "))
+		    (literal (gentext-start-quote))
+		    (literal (string-append name ","))
+		    (literal (gentext-end-quote)))
+		  (literal (string-append "DPMI function "
+					  function
+					  "h")))
+	      (process-children))))
+
 	<!-- Don't unindent term in varlistentry -->
 	(element (varlistentry term)
 	  (make paragraph
