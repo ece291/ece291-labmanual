@@ -1,0 +1,15 @@
+How to get CALS coordinates for callouts for a dia generated image:
+- Generate an eps from the dia file.
+- Get the "scale", "translate", and "BoundingBox" from the eps file.
+  Remember: x y or x,y ordering (L->R).
+- Calculate the dia bounding box by dividing the eps bounding box by the eps
+  scaling.  Call these bigx and bigy (for horiz and vert respectively).
+- The translate values are actually dia coordinates.  Call them xlatex and
+  xlatey.
+- Look in the dia file for the obj_bb rectangle of the object you want to get
+  the CALS coordinates of.
+- The CALS bounding box is in different order than the dia obj_bb, the
+  dia obj_bb is in order "1,4;3,2" and the CALS bounding box is "1,2 3,4"
+- The individual x and y coordinates are converted by a simple:
+  ((dia_x + xlatex) / bigx) * 10000
+  ((dia_y + xlatey) / bigy) * 10000
