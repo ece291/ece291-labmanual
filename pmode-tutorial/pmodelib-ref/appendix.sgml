@@ -630,8 +630,8 @@
        real-mode interrupt register outputs.</para>
 
       <para>&flag.cf;=1, AX=error code (see <dpmiref section="api"
-	function=""></> for a list) if an error occurred, otherwise
-       &flag.cf;=0.</para>
+	function="0300"></> for a list) if an error occurred,
+       otherwise &flag.cf;=0.</para>
      </listitem>
     </varlistentry>
 
