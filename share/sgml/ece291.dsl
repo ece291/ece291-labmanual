@@ -1,6 +1,6 @@
 <!-- $FreeBSD: doc/share/sgml/freebsd.dsl,v 1.44 2001/08/02 03:24:04 murray Exp $ -->
 <!-- $FreeBSD: doc/en_US.ISO8859-1/share/sgml/freebsd.dsl,v 1.12 2001/07/28 03:00:03 murray Exp $ -->
-<!-- $Id: ece291.dsl,v 1.18 2001/08/13 21:23:33 pete Exp $ -->
+<!-- $Id: ece291.dsl,v 1.19 2001/08/14 05:31:09 pete Exp $ -->
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY % output.html              "IGNORE">
 <!ENTITY % output.html.images       "IGNORE">
@@ -128,9 +128,6 @@
 
       <!-- Print only ................................................... --> 
       <![ %output.print; [
-
-	(define %titlepage-in-info-order%
-	  #t)
 
 	(define (book-titlepage-verso-elements)
 	  (list (normalize "title") 
@@ -400,6 +397,9 @@
       ]]>
 
       <!-- Both sets of stylesheets .................................... -->
+
+      (define %titlepage-in-info-order%
+	#t)
 
       (define %section-autolabel%
         #t)
