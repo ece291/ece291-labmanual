@@ -1,7 +1,7 @@
 <!--
      ECE 291 Lab Manual
 
-     $Id: chapter.sgml,v 1.4 2001/08/12 22:27:39 pete Exp $
+     $Id: chapter.sgml,v 1.5 2001/08/12 22:30:16 pete Exp $
 -->
 
 <chapter id="introduction">
@@ -45,15 +45,15 @@
     <title>Comments</title>
 
     <para>There are two main kinds of comments we are looking for,
-     <emphasis>line comments</emphasis> and <emphasis>procedure
-      comments</emphasis>.  Good line comments supply additional
+     <firstterm>line comments</firstterm> and <firstterm>procedure
+      comments</firstterm>.  Good line comments supply additional
      information or context for a given assembler instruction.  They
      explain something that might not be obvious, rather than merely
      echoing the instruction itself.</para>
 
-    <para>Procedure comments, also known as <emphasis>header
-      comments</emphasis>, are required for each andevery procedure in
-     your program.  Foremost, they describe what the procedure is
+    <para>Procedure comments, also known as <firstterm>header
+      comments</firstterm>, are required for each andevery procedure
+     in your program.  Foremost, they describe what the procedure is
      supposed to do.  They should also describe which registers and/or
      memory locations hold the procedure's input values, which
      registers and/or memory locations hold the output values when the
