@@ -434,35 +434,34 @@ _main
      <para>BMP - Windows Bitmap format.  Uncompressed, no alpha
       support.  This format is only provided for completeness, and for
       the ability to save images.  PNG and JPG provide compression and
-      alpha channel support.  <function>LoadBMP</function> and
-      <function>SaveBMP</function> are included in <filename
-       class="libraryfile">pmodelib.a</filename> and support loading
-      and saving of 8-bit and 24-bit images.</para>
+      alpha channel support.  The PModeLib functions <pmodelibref
+       section="graphfile" function="LoadBMP"></> and <pmodelibref
+       section="graphfile" function="SaveBMP"></> support loading and
+      saving of 8-bit and 24-bit images.</para>
     </listitem>
 
     <listitem>
      <para>PNG - Portable Network Graphics format.  Non-lossy
       compression, alpha channel support, and many bit depths.  It's
-      good for sprites and non-photographic images.  The <filename
-       class="libraryfile">png.a</filename> library provides
-      <function>LoadPNG</function>, which can load any PNG
-      image.</para>
+      good for sprites and non-photographic images.  The PModeLib
+      function <pmodelibref section="graphfile" function="LoadPNG"></>
+      can load any PNG image.</para>
     </listitem>
 
     <listitem>
      <para>JPG - JPEG image format.  Lossy compression, no alpha
       support, only 24-bit images.  It's excellent for photographic
       images, as very high compression rates can be achieved with
-      little quality loss.  The <filename
-       class="libraryfile">jpg.a</filename> library provides
-      <function>LoadJPG</function>, which can load any JPG
+      little quality loss.  The PModeLib function <pmodelibref
+       section="graphfile" function="LoadJPG"></> can load any JPG
       image.</para>
     </listitem>
    </itemizedlist>
 
    <para>All of these functions assume an internal pixel format of
-    uncompressed 32-bit RGBA.  This may or may not be the same format
-    as the video mode selected, so it may be necessary to write
+    uncompressed 32-bit RGBA (the loaded A channel is 0 for formats
+    that don't support it).  This may or may not be the same format as
+    the video mode selected, so it may be necessary to write
     conversion functions to convert between the pixel format used by
     these functions and the pixel format of the display.</para>
   </sect2>
@@ -575,7 +574,7 @@ _main
         mov     [imageoff], eax  ; Save offset
 
         ; Load image
-        invoke  _LoadJPG, dword imagefn, dword [imageoff], dword 0, dword 0
+        invoke  <pmodelibref section="graphfile" function="LoadJPG"></>, dword imagefn, dword [imageoff], dword 0, dword 0
         test    eax, eax         ; Check for error (nonzero return value)
         jnz     near .error
 
