@@ -45,10 +45,11 @@
    <example id="pmodelib-intro-invoke-example">
     <title>Using the <literal>invoke</literal> macro</title>
 
-    <programlisting width="130">
+    <programlisting>
         invoke  <xref linkend="pmodelib-ref-findgraphicsmode">, word 640, word 480, word 32, dword 1
         invoke  <xref linkend="pmodelib-ref-setgraphicsmode">, ax
-        invoke  <xref linkend="pmodelib-ref-copytoscreen">, dword Image, dword 320*4, dword 0, dword 0, dword 320, dword 240, dword 160, dword 120
+        invoke  <xref linkend="pmodelib-ref-copytoscreen">, dword Image, dword 320*4, dword 0, \
+                               dword 0, dword 320, dword 240, dword 160, dword 120
         invoke  <xref linkend="pmodelib-ref-unsetgraphicsmode"></programlisting>
    </example>
   </sect2>
@@ -651,7 +652,7 @@ _main
   <example id="pmodelib-intro-interrupt-timer-example">
    <title>Hooking the timer interrupt</title>
 
-   <programlisting width="97">
+   <programlisting>
 %include "lib291.inc"
 
 GLOBAL _main
@@ -684,7 +685,8 @@ _main
         ; Lock the interrupt handler itself.
         ; Note that we use the TimerDriver_end label to calculate the length
         ;  of the code.
-        invoke  <xref linkend="pmodelib-ref-lockarea">, cs, dword TimerDriver, dword TimerDriver_end-TimerDriver
+        invoke  <xref linkend="pmodelib-ref-lockarea">, cs, dword TimerDriver, \
+                           dword TimerDriver_end-TimerDriver
         test    eax, eax         ; Check for error (nonzero return value)
         jnz     near .error
 
@@ -820,7 +822,7 @@ _main
    <example id="pmodelib-intro-graphics-screen-image-example">
     <title>Displaying an Image</title>
 
-    <programlisting width="132">
+    <programlisting>
 %include "lib291.inc"
 
 GLOBAL _main
@@ -895,7 +897,8 @@ _main
         jnz     near .exitgraphics
 
         ; Lock the interrupt handler itself.
-        invoke  <xref linkend="pmodelib-ref-lockarea">, cs, dword KeyboardHandler, dword KeyboardHandler_end-KeyboardHandler
+        invoke  <xref linkend="pmodelib-ref-lockarea">, cs, dword KeyboardHandler, \
+                           dword KeyboardHandler_end-KeyboardHandler
         test    eax, eax         ; Check for error (nonzero return value)
         jnz     near .exitgraphics
 
@@ -916,7 +919,8 @@ _main
         jnz     near .uninstallkb
 
         ; Copy the image to the screen
-        invoke  <xref linkend="pmodelib-ref-copytoscreen">, dword [imageoff], dword 640*4, dword 0, dword 0, dword 640, dword 480, dword 0, dword 0
+        invoke  <xref linkend="pmodelib-ref-copytoscreen">, dword [imageoff], dword 640*4, \
+                               dword 0, dword 0, dword 640, dword 480, dword 0, dword 0
 
         ; Wait for a keypress
 .loop:
